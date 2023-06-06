@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Google Earth API Demo</title>
+<script src="https://developers.google.com/earth/api/resources/jsapi.js?key=AIzaSyAr4BImtV8mOzXtBC201feWyTKcMVB9iVY "></script>
+<script>
+var ge = new google.earth.GoogleEarth();
+var marker = new google.earth.markers.Marker();
+marker.setPosition(new google.earth.LatLng(document["latitude"], document["longitude"]));
+ge.getFeatures().add(marker);
+document.getElementById("map").appendChild(ge.getDiv());
+</script>
+</head>
+<body>
+<div id="map"></div>
+</body>
+</html>
