@@ -1,0 +1,23 @@
+/* To ensure the background covers the entire viewport */
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+}
+  
+  /* Container for the background */
+.background {
+    position: fixed; /* Fixed position */
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    z-index: -1; /* Place it behind the content */
+    
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(50, 50, 50, 0.9)); /* Dark gradient background */
+    
+    filter: blur(8px); /* Blur effect */
+    -webkit-filter: blur(8px); /* For Safari */
+}
+  
