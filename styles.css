@@ -1,2 +1,27 @@
+/* This will reset the default styles for the body and prevent any unexpected behavior */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+/* The header element's basic styles */
+header {
+    background-color: #333; /* A dark gray color for the header background */
+    color: white; /* Text color */
+    text-align: center; /* Center the header content */
+    padding: 10px 0; /* Padding for the top and bottom of the header */
+    width: 100%; /* Ensure the header spans the full width of the viewport */
+    position: fixed; /* This positions the header relative to the viewport */
+    top: 0; /* This ensures the header stays at the top */
+    z-index: 1000; /* High z-index to ensure the header remains above all other content */
+    transition: top 0.3s; /* Smooth transition for hiding and showing the header */
+}
+
+/* Some content styling for demonstration purposes */
+.content {
+    padding-top: 70px; /* This ensures content starts below the sticky header */
+    height: 2000px; /* Just for demonstration to allow scrolling */
+    background-color: #f4f4f4; /* A light gray background color */
+}
 
   
