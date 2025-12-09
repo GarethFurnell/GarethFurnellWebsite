@@ -1,23 +1,166 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Certificates</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificates - Gareth Furnell</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .certificates-page {
+            padding-top: 80px;
+            min-height: 100vh;
+            background-color: #f8f9fa;
+        }
+
+        .page-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 3rem 0;
+            text-align: center;
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .certificates-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(600px, 1fr));
+            gap: 2rem;
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .certificate-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .certificate-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .certificate-card embed {
+            width: 100%;
+            height: 500px;
+            border: none;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin: 2rem;
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: transform 0.3s ease;
+        }
+
+        .back-link:hover {
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .certificates-grid {
+                grid-template-columns: 1fr;
+                padding: 1rem;
+            }
+
+            .certificate-card embed {
+                height: 400px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <embed src="certificates/gareth-furnell-0c24af96-53f8-4f23-b6d4-92e43442ea80-certificate.pdf" type="application/pdf" width="600" height="500"></embed>
-    <embed src="certificates/gareth-furnell-2b0a79d6-ec53-45ab-a879-a96c1226240c-certificate.pdf" type="application/pdf" width="600" height="500"></embed>
-    <embed src="certificates/gareth-furnell-6b1d1cfa-fba7-4107-b9b4-ad07362fb6e1-certificate.pdf" type="application/pdf" width="600" height="500"></embed>
-    <embed src="certificates/gareth-furnell-6ef378fe-158c-4e5f-91df-25e385a2aeee-certificate.pdf" type="application/pdf" width="600" height="500"></embed>
-    <embed src="certificates/gareth-furnell-9f5e32da-c2d7-4d84-b530-7b34ab3f3d06-certificate.pdf" type="application/pdf" width="600" height="500"></embed>
-    <embed src="certificates/gareth-furnell-074d3690-bee6-4074-b040-811ccbe3a728-certificate.pdf" type="application/pdf" width="600" height="500"></embed>
-    <embed src="certificates/gareth-furnell-88af076a-4400-4540-9d5e-eb4e34cf1e70-certificate.pdf" type="application/pdf" width="600" height="500"></embed>
-    <embed src="certificates/gareth-furnell-14762e97-fce9-43fc-98b3-56cceb604313-certificate.pdf" type="application/pdf" width="600" height="500"></embed>
-    <embed src="certificates/gareth-furnell-15502d7a-f194-4013-9016-ed8e8aa2d117-certificate.pdf" type="application/pdf" width="600" height="500"></embed>
-    <embed src="certificates/gareth-furnell-aec5e0e1-409d-41d9-8308-dff269559430-certificate.pdf" type="application/pdf" width="600" height="500"></embed>
-    <embed src="certificates/gareth-furnell-b7798b6a-9710-4cbd-a84e-606cee381d12-certificate.pdf" type="application/pdf" width="600" height="500"></embed>
-    <embed src="certificates/gareth-furnell-bdcc5f90-4da8-4cf3-853b-25585282f1f0-certificate.pdf" type="application/pdf" width="600" height="500"></embed>
-    <embed src="certificates/gareth-furnell-caeca42c-6057-4e7f-8191-8a08bd88c695-certificate.pdf" type="application/pdf" width="600" height="500"></embed>
-    <embed src="certificates/gareth-furnell-de2d172e-0b3b-4404-bb5f-aa59950c659d-certificate.pdf" type="application/pdf" width="600" height="500"></embed>
-    <embed src="certificates/MongoDBAssociateDatabaseAdministrator_Badge20230421-28-kowzp5.pdf" type="application/pdf" width="600" height="500"></embed>
+    <header>
+        <nav>
+            <div class="logo">Gareth Furnell</div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="certificates.html" class="active">Certificates</a></li>
+                <li><a href="videos.html">Videos</a></li>
+                <li><a href="https://garethfurnell.notion.site/e3b1dbbd92da4efca5ecb0621ce9ca28?v=02d35cc2f0ec497984614ccde8a72409&pvs=4" target="_blank">Documentation</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="certificates-page">
+        <div class="page-header">
+            <h1><i class="fas fa-certificate"></i> My Certificates</h1>
+            <p>Professional certifications and completed courses</p>
+        </div>
+
+        <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Home</a>
+
+        <div class="certificates-grid">
+            <div class="certificate-card">
+                <embed src="certificates/MongoDBAssociateDatabaseAdministrator_Badge20230421-28-kowzp5.pdf" type="application/pdf"></embed>
+            </div>
+            <div class="certificate-card">
+                <embed src="certificates/gareth-furnell-0c24af96-53f8-4f23-b6d4-92e43442ea80-certificate.pdf" type="application/pdf"></embed>
+            </div>
+            <div class="certificate-card">
+                <embed src="certificates/gareth-furnell-2b0a79d6-ec53-45ab-a879-a96c1226240c-certificate.pdf" type="application/pdf"></embed>
+            </div>
+            <div class="certificate-card">
+                <embed src="certificates/gareth-furnell-6b1d1cfa-fba7-4107-b9b4-ad07362fb6e1-certificate.pdf" type="application/pdf"></embed>
+            </div>
+            <div class="certificate-card">
+                <embed src="certificates/gareth-furnell-6ef378fe-158c-4e5f-91df-25e385a2aeee-certificate.pdf" type="application/pdf"></embed>
+            </div>
+            <div class="certificate-card">
+                <embed src="certificates/gareth-furnell-9f5e32da-c2d7-4d84-b530-7b34ab3f3d06-certificate.pdf" type="application/pdf"></embed>
+            </div>
+            <div class="certificate-card">
+                <embed src="certificates/gareth-furnell-074d3690-bee6-4074-b040-811ccbe3a728-certificate.pdf" type="application/pdf"></embed>
+            </div>
+            <div class="certificate-card">
+                <embed src="certificates/gareth-furnell-88af076a-4400-4540-9d5e-eb4e34cf1e70-certificate.pdf" type="application/pdf"></embed>
+            </div>
+            <div class="certificate-card">
+                <embed src="certificates/gareth-furnell-14762e97-fce9-43fc-98b3-56cceb604313-certificate.pdf" type="application/pdf"></embed>
+            </div>
+            <div class="certificate-card">
+                <embed src="certificates/gareth-furnell-15502d7a-f194-4013-9016-ed8e8aa2d117-certificate.pdf" type="application/pdf"></embed>
+            </div>
+            <div class="certificate-card">
+                <embed src="certificates/gareth-furnell-aec5e0e1-409d-41d9-8308-dff269559430-certificate.pdf" type="application/pdf"></embed>
+            </div>
+            <div class="certificate-card">
+                <embed src="certificates/gareth-furnell-b7798b6a-9710-4cbd-a84e-606cee381d12-certificate.pdf" type="application/pdf"></embed>
+            </div>
+            <div class="certificate-card">
+                <embed src="certificates/gareth-furnell-bdcc5f90-4da8-4cf3-853b-25585282f1f0-certificate.pdf" type="application/pdf"></embed>
+            </div>
+            <div class="certificate-card">
+                <embed src="certificates/gareth-furnell-caeca42c-6057-4e7f-8191-8a08bd88c695-certificate.pdf" type="application/pdf"></embed>
+            </div>
+            <div class="certificate-card">
+                <embed src="certificates/gareth-furnell-de2d172e-0b3b-4404-bb5f-aa59950c659d-certificate.pdf" type="application/pdf"></embed>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Gareth Furnell. All rights reserved.</p>
+            <div class="social-links">
+                <a href="https://github.com/GarethFurnell" target="_blank" aria-label="GitHub">
+                    <i class="fab fa-github"></i>
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
 </body>
 </html>

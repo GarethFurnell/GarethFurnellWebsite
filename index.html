@@ -3,19 +3,82 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GarethF</title>
-  <!-- header with background image and links to socials at the top right aligned -->
+  <title>Gareth Furnell - Portfolio</title>
+  <meta name="description" content="Portfolio website of Gareth Furnell - Software Developer">
   <link rel="stylesheet" type="text/css" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
   <header>
-    GarethF
+    <nav>
+      <div class="logo">Gareth Furnell</div>
+      <ul class="nav-links">
+        <li><a href="#home" class="active">Home</a></li>
+        <li><a href="certificates.html">Certificates</a></li>
+        <li><a href="videos.html">Videos</a></li>
+        <li><a href="https://garethfurnell.notion.site/e3b1dbbd92da4efca5ecb0621ce9ca28?v=02d35cc2f0ec497984614ccde8a72409&pvs=4" target="_blank">Documentation</a></li>
+      </ul>
+    </nav>
   </header>
-  <div class="content">
-  <p> To view my certificates, click here> <a href="certificates.html">Certificates </a>.</p>
-  <p> To view my videos, click here> <a href="videos.html">Videos </a>.</p>
-  <p> To view my Documentation, click here> <a href="https://garethfurnell.notion.site/e3b1dbbd92da4efca5ecb0621ce9ca28?v=02d35cc2f0ec497984614ccde8a72409&pvs=4">Documentation </a>.</p>
-  </div>
+  
+  <main>
+    <section id="home" class="hero">
+      <div class="hero-content">
+        <h1>Welcome to My Portfolio</h1>
+        <p class="subtitle">Software Developer & Technology Enthusiast</p>
+        <p class="description">
+          Explore my projects, certifications, and technical documentation. 
+          This portfolio showcases my journey in software development, database management, 
+          API development, and web technologies including OpenGL and WebGL projects.
+        </p>
+      </div>
+    </section>
+
+    <section class="features">
+      <div class="container">
+        <div class="feature-grid">
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-certificate"></i>
+            </div>
+            <h3>Certificates</h3>
+            <p>View my professional certifications and completed courses in various technologies and frameworks.</p>
+            <a href="certificates.html" class="btn">View Certificates</a>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-video"></i>
+            </div>
+            <h3>Videos</h3>
+            <p>Watch demonstrations and tutorials showcasing my projects and technical skills.</p>
+            <a href="videos.html" class="btn">Watch Videos</a>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-book"></i>
+            </div>
+            <h3>Documentation</h3>
+            <p>Access detailed technical documentation and project notes on my Notion workspace.</p>
+            <a href="https://garethfurnell.notion.site/e3b1dbbd92da4efca5ecb0621ce9ca28?v=02d35cc2f0ec497984614ccde8a72409&pvs=4" target="_blank" class="btn">View Documentation</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2024 Gareth Furnell. All rights reserved.</p>
+      <div class="social-links">
+        <a href="https://github.com/GarethFurnell" target="_blank" aria-label="GitHub">
+          <i class="fab fa-github"></i>
+        </a>
+      </div>
+    </div>
+  </footer>
+  
   <script src="script.js"></script>
 </body>
 </html>
