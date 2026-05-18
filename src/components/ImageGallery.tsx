@@ -9,6 +9,14 @@ interface ImageGalleryProps {
   emptyMessage?: string;
 }
 
+// Ensure the basePath is applied to image paths for GitHub Pages
+const basePath = '/GarethFurnellWebsite';
+
+const getImagePath = (src: string) => {
+  if (src.startsWith('http')) return src;
+  return src.startsWith(basePath) ? src : `${basePath}${src}`;
+};
+
 export default function ImageGallery({ images, layout, emptyMessage }: ImageGalleryProps) {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
@@ -46,7 +54,7 @@ export default function ImageGallery({ images, layout, emptyMessage }: ImageGall
           >
             {layout === 'grid' ? (
               <Image
-                src={src}
+                src={getImagePath(src)}
                 alt={`Gallery image ${index + 1}`}
                 fill
                 className="object-cover transition-transform duration-700 group-hover:scale-105"
@@ -55,7 +63,7 @@ export default function ImageGallery({ images, layout, emptyMessage }: ImageGall
             ) : (
               /* For masonry we need a standard img to retain natural height */
               <img
-                src={`/GarethFurnellWebsite${src}`}
+                src={getImagePath(src)}
                 alt={`Gallery image ${index + 1}`}
                 className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105"
                 loading="lazy"
@@ -86,7 +94,7 @@ export default function ImageGallery({ images, layout, emptyMessage }: ImageGall
             </button>
             <div className="relative w-full h-full rounded-2xl overflow-hidden shadow-2xl">
               <Image
-                src={selectedImage}
+                src={getImagePath(selectedImage)}
                 alt="Enlarged view"
                 fill
                 className="object-contain"
