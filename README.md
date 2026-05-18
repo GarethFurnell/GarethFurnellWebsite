@@ -1,1 +1,0 @@
-this is a next.js app for the home page of my personal website. I'm using this to host my portfolio and to share my work with the world.
