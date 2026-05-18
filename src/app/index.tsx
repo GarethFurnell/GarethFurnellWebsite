@@ -17,15 +17,15 @@ export default function Home() {
 
       <main className="flex-1 w-full max-w-4xl mx-auto px-6 pb-24">
         <ul className="flex flex-col gap-2 mt-8">
-          <ListItem 
-            title="Certifications" 
-            subtitle="MongoDB & Google Cloud Certificates" 
-            href="/certifications" 
+          <ListItem
+            title="Certifications"
+            subtitle="MongoDB & Google Cloud Certificates"
+            href="/certifications"
           />
-          <ListItem 
-            title="Photography" 
-            subtitle="Film Photos / 35mm" 
-            href="/photography" 
+          <ListItem
+            title="Photography"
+            subtitle="Film Photos / 35mm"
+            href="/photography"
           />
         </ul>
       </main>
