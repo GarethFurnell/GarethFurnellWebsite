@@ -55,7 +55,7 @@ export default function ImageGallery({ images, layout, emptyMessage }: ImageGall
             ) : (
               /* For masonry we need a standard img to retain natural height */
               <img 
-                src={src} 
+                src={`/GarethFurnellWebsite${src}`} 
                 alt={`Gallery image ${index + 1}`} 
                 className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105"
                 loading="lazy"

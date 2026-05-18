@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "deploy": "npm run build && gh-pages -d out"
   },
   "dependencies": {
     "next": "latest",
@@ -20,6 +21,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "latest",
+    "gh-pages": "^6.3.0",
     "postcss": "^8",
     "tailwindcss": "^4",
     "typescript": "^5"
