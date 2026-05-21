@@ -1,6 +1,14 @@
 import Link from 'next/link';
 import clientPromise from '@/utils/mongodb';
-import HnswGraph, { VectorNode } from '@/components/HnswGraph';
+import dynamic from 'next/dynamic';
+import type { VectorNode } from '@/components/HnswGraph';
+
+// Dynamically import the 3D graph with SSR disabled. 
+// Rendering WebGL on the server can cause massive memory spikes and crashes.
+const HnswGraph = dynamic(() => import('@/components/HnswGraph'), { 
+  ssr: false,
+  loading: () => <div className="w-full h-full flex items-center justify-center bg-zinc-950 text-zinc-500 border border-zinc-800 rounded-xl">Loading 3D Engine...</div>
+});
 
 export const metadata = {
   title: 'Research | Gareth Furnell',
