@@ -27,6 +27,21 @@ export default function Home() {
             subtitle="Film Photos / 35mm"
             href="/photography"
           />
+          <ListItem
+            title="AI"
+            subtitle="Agentic Coding & Automation"
+            href="/ai"
+          />
+          <ListItem
+            title="Music"
+            subtitle="Ableton Projects & Audio"
+            href="/music"
+          />
+          <ListItem
+            title="Research"
+            subtitle="Vectors & Embeddings Visualisations"
+            href="/research"
+          />
         </ul>
       </main>
 

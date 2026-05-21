@@ -59,7 +59,7 @@ export default function ContactPage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
           {platforms.map((platform) => (
             <a
               key={platform.name}
@@ -76,6 +76,51 @@ export default function ContactPage() {
               </span>
             </a>
           ))}
+        </div>
+
+        <div className="mb-12">
+          <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-white mb-4">
+            Recent Videos
+          </h2>
+          <p className="text-zinc-400 max-w-2xl text-lg">
+            Check out some of my latest YouTube content.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="aspect-video w-full rounded-xl overflow-hidden border border-zinc-800 bg-zinc-900">
+            <iframe
+              width="100%"
+              height="100%"
+              src="https://www.youtube.com/embed/R9JHC4t_cJE"
+              title="YouTube video player"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+            ></iframe>
+          </div>
+          <div className="aspect-video w-full rounded-xl overflow-hidden border border-zinc-800 bg-zinc-900">
+            <iframe
+              width="100%"
+              height="100%"
+              src="https://www.youtube.com/embed/vg_fECFwUuU"
+              title="YouTube video player"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+            ></iframe>
+          </div>
+          <div className="aspect-video w-full rounded-xl overflow-hidden border border-zinc-800 bg-zinc-900">
+            <iframe
+              width="100%"
+              height="100%"
+              src="https://www.youtube.com/embed/GprmHqz1i-c"
+              title="YouTube video player"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+            ></iframe>
+          </div>
         </div>
       </main>
     </div>
