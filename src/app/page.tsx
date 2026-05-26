@@ -6,7 +6,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-black text-white selection:bg-zinc-800 selection:text-white flex flex-col font-sans">
       <header className="w-full max-w-4xl mx-auto px-6 py-12 sm:py-20 flex justify-between items-center">
-        <h1 className="font-handscript text-4xl sm:text-5xl font-bold lowercase tracking-wide text-white hover:scale-[1.03] transition-transform origin-left cursor-pointer">
+        <h1 className="text-2xl font-semibold tracking-tight text-white hover:opacity-80 transition-opacity cursor-pointer">
           gareth furnell
         </h1>
         <nav className="flex gap-6 text-sm font-medium text-zinc-400">

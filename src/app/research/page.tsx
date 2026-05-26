@@ -17,7 +17,7 @@ export default function ResearchPage() {
 
       <main className="w-full max-w-4xl mx-auto px-6 pb-24 animate-in fade-in slide-in-from-bottom-4 duration-700">
         <div className="mb-12">
-          <h2 className="font-handscript text-4xl sm:text-5xl font-bold tracking-wide text-white mb-6">
+          <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-white mb-6">
             Vectors & Embeddings
           </h2>
           <p className="text-zinc-400 max-w-2xl text-lg leading-relaxed">
@@ -34,7 +34,7 @@ export default function ResearchPage() {
                 <line x1="12" y1="8" x2="12.01" y2="8"></line>
               </svg>
             </div>
-            <h3 className="font-handscript text-2xl sm:text-3xl font-bold tracking-wide text-white">Bird Sound Analysis</h3>
+            <h3 className="text-2xl font-medium text-white">Bird Sound Analysis</h3>
             <p className="text-zinc-400 leading-relaxed">
               Inspired by recent research on understanding bird language, this upcoming project will visualize how different bird sounds map onto a vector space. By converting audio frequencies into embeddings, we can visually cluster distinct calls and perhaps even cross-reference them with musical stems.
             </p>
@@ -52,7 +52,7 @@ export default function ResearchPage() {
                 <polyline points="2 12 12 17 22 12"></polyline>
               </svg>
             </div>
-            <h3 className="font-handscript text-2xl sm:text-3xl font-bold tracking-wide text-white">HNSW Graph Traversal</h3>
+            <h3 className="text-2xl font-medium text-white">HNSW Graph Traversal</h3>
             <p className="text-zinc-400 leading-relaxed">
               A 3D visualization experiment showing how algorithms navigate Hierarchical Navigable Small World (HNSW) graphs. This will interactively demonstrate the differences between distance metrics like Cosine Similarity and Dot Product when querying nearest neighbors.
             </p>
@@ -67,7 +67,7 @@ export default function ResearchPage() {
           <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" className="text-zinc-700 mb-4">
             <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
           </svg>
-          <h3 className="font-handscript text-xl sm:text-2xl font-bold tracking-wide text-zinc-300 mb-2">Interactive Canvas</h3>
+          <h3 className="text-xl font-medium text-zinc-300 mb-2">Interactive Canvas</h3>
           <p className="text-zinc-500 max-w-md mx-auto">
             Future iterations of this page will include WebGL or Three.js canvases allowing you to rotate, zoom, and explore vector spaces directly in the browser.
           </p>
