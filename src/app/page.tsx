@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import ListItem from '@/components/ListItem';
+import InteractiveEye from '@/components/InteractiveEye';
 
 export default function Home() {
   return (
@@ -16,6 +17,7 @@ export default function Home() {
       </header>
 
       <main className="flex-1 w-full max-w-4xl mx-auto px-6 pb-24">
+        <InteractiveEye />
         <ul className="flex flex-col gap-2 mt-8">
           <ListItem
             title="Certifications"
