@@ -50,7 +50,7 @@ export default function PhotographyPage() {
 
           <section>
             <h3 className="text-2xl font-medium tracking-tight text-white mb-8 border-b border-zinc-900 pb-4">
-              Miscellaneous
+              To be continued.......
             </h3>
             <ImageGallery images={miscImages} layout="masonry" emptyMessage={emptyMsg} />
           </section>
