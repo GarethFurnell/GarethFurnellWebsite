@@ -32,7 +32,7 @@ export default function MusicPage() {
 
       <main className="w-full max-w-4xl mx-auto px-6 pb-24 animate-in fade-in slide-in-from-bottom-4 duration-700">
         <div className="mb-12">
-          <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-white mb-4">
+          <h2 className="font-handscript text-4xl sm:text-5xl font-bold tracking-wide text-white mb-4">
             Ableton Projects
           </h2>
           <p className="text-zinc-400 max-w-2xl text-lg">

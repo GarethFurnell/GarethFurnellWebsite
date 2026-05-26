@@ -24,7 +24,7 @@ export default function CertificationsPage() {
 
       <main className="w-full max-w-6xl mx-auto px-6 pb-24 animate-in fade-in slide-in-from-bottom-4 duration-700">
         <div className="mb-16">
-          <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-white mb-4">
+          <h2 className="font-handscript text-4xl sm:text-5xl font-bold tracking-wide text-white mb-4">
             Professional Certifications
           </h2>
           <p className="text-zinc-400 max-w-2xl text-lg">
@@ -34,14 +34,14 @@ export default function CertificationsPage() {
 
         <div className="flex flex-col gap-24">
           <section>
-            <h3 className="text-2xl font-medium tracking-tight text-white mb-8 border-b border-zinc-900 pb-4">
+            <h3 className="font-handscript text-2xl sm:text-3xl font-bold tracking-wide text-white mb-8 border-b border-zinc-900 pb-4">
               MongoDB
             </h3>
             <ImageGallery images={mongodbImages} layout="grid" emptyMessage={emptyMsg} />
           </section>
 
           <section>
-            <h3 className="text-2xl font-medium tracking-tight text-white mb-8 border-b border-zinc-900 pb-4">
+            <h3 className="font-handscript text-2xl sm:text-3xl font-bold tracking-wide text-white mb-8 border-b border-zinc-900 pb-4">
               Google Cloud
             </h3>
             <ImageGallery images={googleImages} layout="grid" emptyMessage={emptyMsg} />

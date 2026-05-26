@@ -22,7 +22,7 @@ export default function AIPage() {
 
       <main className="w-full max-w-4xl mx-auto px-6 pb-24 animate-in fade-in slide-in-from-bottom-4 duration-700">
         <div className="mb-12">
-          <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-white mb-6">
+          <h2 className="font-handscript text-4xl sm:text-5xl font-bold tracking-wide text-white mb-6">
             Agentic Coding with Antigravity
           </h2>
           <p className="text-zinc-400 max-w-2xl text-lg mb-8 leading-relaxed">
@@ -43,12 +43,12 @@ export default function AIPage() {
         </div>
 
         <div className="prose prose-invert prose-zinc max-w-none">
-          <h3 className="text-2xl font-medium text-zinc-200 mb-4">The Workflow</h3>
+          <h3 className="font-handscript text-2xl sm:text-3xl font-bold tracking-wide text-zinc-200 mb-4">The Workflow</h3>
           <p className="text-zinc-400 leading-relaxed mb-6">
             Our workflow bridges human creativity with machine execution. By connecting my local workspace directly to the AI through a secure GitHub connection and specialised tools, I can express high-level architectural goals or aesthetic desires. In response, Antigravity plans the implementation, writes the React/Next.js code, modifies configurations, and even generates bespoke assets—like the visualization above.
           </p>
 
-          <h3 className="text-2xl font-medium text-zinc-200 mb-4">Continuous Evolution</h3>
+          <h3 className="font-handscript text-2xl sm:text-3xl font-bold tracking-wide text-zinc-200 mb-4">Continuous Evolution</h3>
           <p className="text-zinc-400 leading-relaxed">
             What makes this approach powerful is the iterative nature of it. When I return to this project, I don&apos;t have to remember exactly where every component lives. I simply describe the new feature—be it embedding a music player or adding a new research page—and we work together to integrate it seamlessly into the existing design system. It is pair programming where the AI has hands on the keyboard.
           </p>
