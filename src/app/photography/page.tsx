@@ -10,7 +10,7 @@ export const metadata = {
 export default function PhotographyPage() {
   const golfImages = getImages('photography/golf');
   const motorcycleImages = getImages('photography/motorcycle');
-  const miscImages = getImages('photography/miscellaneous');
+  const natureImages = getImages('photography/nature');
 
   const emptyMsg = "Out in the field taking pictures or the negatives are currently being developed";
 
@@ -50,9 +50,9 @@ export default function PhotographyPage() {
 
           <section>
             <h3 className="text-2xl font-medium tracking-tight text-white mb-8 border-b border-zinc-900 pb-4">
-              To be continued.......
+              Nature
             </h3>
-            <ImageGallery images={miscImages} layout="masonry" emptyMessage={emptyMsg} />
+            <ImageGallery images={natureImages} layout="masonry" emptyMessage={emptyMsg} />
           </section>
         </div>
       </main>
