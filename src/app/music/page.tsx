@@ -42,7 +42,7 @@ export default function MusicPage() {
 
         <div className="flex flex-col gap-6">
           {tracks.map((track) => (
-            <div 
+            <div
               key={track.id}
               className="p-6 bg-zinc-900 border border-zinc-800 rounded-2xl flex flex-col gap-4 transition-all duration-300 hover:border-zinc-600"
             >
@@ -50,13 +50,13 @@ export default function MusicPage() {
                 <h3 className="text-xl font-medium text-zinc-100">{track.title}</h3>
                 <p className="text-zinc-400 mt-1">{track.description}</p>
               </div>
-              
+
               <div className="w-full bg-black rounded-xl p-4 border border-zinc-800">
                 {/* Custom Audio Player Placeholder */}
                 {track.audioSrc ? (
-                  <audio 
-                    controls 
-                    className="w-full h-10 custom-audio-player" 
+                  <audio
+                    controls
+                    className="w-full h-10 custom-audio-player"
                     src={track.audioSrc}
                   >
                     Your browser does not support the audio element.
