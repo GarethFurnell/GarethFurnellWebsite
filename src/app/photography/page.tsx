@@ -9,6 +9,7 @@ export const metadata = {
 
 export default function PhotographyPage() {
   const golfImages = getImages('photography/golf');
+  const motorcycleImages = getImages('photography/motorcycle');
   const miscImages = getImages('photography/miscellaneous');
 
   const emptyMsg = "Out in the field taking pictures or the negatives are currently being developed";
@@ -38,6 +39,13 @@ export default function PhotographyPage() {
               Golf
             </h3>
             <ImageGallery images={golfImages} layout="masonry" emptyMessage={emptyMsg} />
+          </section>
+
+          <section>
+            <h3 className="text-2xl font-medium tracking-tight text-white mb-8 border-b border-zinc-900 pb-4">
+              Motorcycles
+            </h3>
+            <ImageGallery images={motorcycleImages} layout="masonry" emptyMessage={emptyMsg} />
           </section>
 
           <section>
