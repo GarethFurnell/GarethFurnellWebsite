@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import { resolveImagePath } from './resolveImagePath';
 
 export function getImages(directory: string): string[] {
   const directoryPath = path.join(process.cwd(), 'public', 'images', directory);
@@ -16,6 +17,6 @@ export function getImages(directory: string): string[] {
     return ['.jpg', '.jpeg', '.png', '.gif', '.webp'].includes(ext);
   });
 
-  // Return the public URL paths
-  return imageFiles.map(file => `/images/${directory}/${file}`);
+  // Return the public URL paths resolved with basePath
+  return imageFiles.map(file => resolveImagePath(`/images/${directory}/${file}`));
 }

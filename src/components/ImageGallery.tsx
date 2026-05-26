@@ -9,12 +9,10 @@ interface ImageGalleryProps {
   emptyMessage?: string;
 }
 
-// Ensure the basePath is applied to image paths for GitHub Pages
-const basePath = '/GarethFurnellWebsite';
+import { resolveImagePath } from '@/utils/resolveImagePath';
 
 const getImagePath = (src: string) => {
-  if (src.startsWith('http')) return src;
-  return src.startsWith(basePath) ? src : `${basePath}${src}`;
+  return resolveImagePath(src);
 };
 
 export default function ImageGallery({ images, layout, emptyMessage }: ImageGalleryProps) {

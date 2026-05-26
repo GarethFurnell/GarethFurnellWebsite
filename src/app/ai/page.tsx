@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import { getImages } from '@/utils/getImages';
 
 export const metadata = {
   title: 'AI & Antigravity | Gareth Furnell',
@@ -7,6 +8,9 @@ export const metadata = {
 };
 
 export default function AIPage() {
+  const aiImages = getImages('ai');
+  const geminiLogo = aiImages[0] || '/GarethFurnellWebsite/images/ai/Gemini-Google-Logo.jpg';
+
   return (
     <div className="min-h-screen bg-black text-white font-sans selection:bg-zinc-800">
       <header className="w-full max-w-4xl mx-auto px-6 py-12 flex justify-between items-center">
@@ -29,7 +33,7 @@ export default function AIPage() {
 
         <div className="relative w-full aspect-[4/3] sm:aspect-video mb-12 rounded-2xl overflow-hidden border border-zinc-800 shadow-2xl">
           <Image
-            src="/Gemini-Google-Logo.jpg"
+            src={geminiLogo}
             alt="Gemini Logo"
             fill
             className="object-cover"
