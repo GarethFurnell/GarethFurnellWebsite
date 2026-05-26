@@ -9,13 +9,13 @@ export default function MusicPage() {
   const tracks = [
     {
       id: 1,
-      title: 'Project Alpha (Placeholder)',
+      title: 'Project Beta (Placeholder)',
       description: 'An ambient exploration using granular synthesis.',
       audioSrc: '', // e.g., '/audio/project-alpha.mp3'
     },
     {
       id: 2,
-      title: 'Neon Nights (Placeholder)',
+      title: 'Neon Days (Placeholder)',
       description: 'Synthwave inspired by 80s aesthetics.',
       audioSrc: '', // e.g., '/audio/neon-nights.mp3'
     }
