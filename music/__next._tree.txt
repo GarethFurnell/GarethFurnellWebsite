@@ -1,6 +1,3 @@
-:HL["/GarethFurnellWebsite/_next/static/chunks/069snjp8di0m4.css","style"]
+:HL["/GarethFurnellWebsite/_next/static/chunks/01-qvwyloym12.css","style"]
 :HL["/GarethFurnellWebsite/_next/static/media/83afe278b6a6bb3c-s.p.0q-301v4kxxnr.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
-:HL["/GarethFurnellWebsite/_next/static/media/HandscriptBold-s.p.14bgjmvu8ngh6.ttf","font",{"crossOrigin":"","type":"font/ttf"}]
-:HL["/GarethFurnellWebsite/_next/static/media/HandscriptItalic-s.p.0zml59t-b7zlg.ttf","font",{"crossOrigin":"","type":"font/ttf"}]
-:HL["/GarethFurnellWebsite/_next/static/media/Handscriptregular-s.p.12h.ywpj2_7ww.ttf","font",{"crossOrigin":"","type":"font/ttf"}]
-0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"music","param":null,"prefetchHints":0,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}},"staleTime":300,"buildId":"_I3DVFuIjNUDcjvawf7Jq"}
+0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"music","param":null,"prefetchHints":0,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}},"staleTime":300,"buildId":"wppdq39WqV_LhQJqFcCE-"}
