@@ -22,15 +22,15 @@ export default function AIPage() {
             Agentic Coding with Antigravity
           </h2>
           <p className="text-zinc-400 max-w-2xl text-lg mb-8 leading-relaxed">
-            This portfolio isn&apos;t just a display of work; it&apos;s a living experiment in modern web development. 
+            This portfolio isn&apos;t just a display of work; it&apos;s a living experiment in modern web development.
             I build and iterate on this site collaboratively with an AI agent powered by Google Gemini, known as Antigravity.
           </p>
         </div>
 
         <div className="relative w-full aspect-[4/3] sm:aspect-video mb-12 rounded-2xl overflow-hidden border border-zinc-800 shadow-2xl">
           <Image
-            src="/antigravity_hero.png"
-            alt="Futuristic visualization of human and AI collaboration"
+            src="/Gemini-Google-Logo.jpg"
+            alt="Gemini Logo"
             fill
             className="object-cover"
             priority
@@ -43,7 +43,7 @@ export default function AIPage() {
           <p className="text-zinc-400 leading-relaxed mb-6">
             Our workflow bridges human creativity with machine execution. By connecting my local workspace directly to the AI through a secure GitHub connection and specialised tools, I can express high-level architectural goals or aesthetic desires. In response, Antigravity plans the implementation, writes the React/Next.js code, modifies configurations, and even generates bespoke assets—like the visualization above.
           </p>
-          
+
           <h3 className="text-2xl font-medium text-zinc-200 mb-4">Continuous Evolution</h3>
           <p className="text-zinc-400 leading-relaxed">
             What makes this approach powerful is the iterative nature of it. When I return to this project, I don&apos;t have to remember exactly where every component lives. I simply describe the new feature—be it embedding a music player or adding a new research page—and we work together to integrate it seamlessly into the existing design system. It is pair programming where the AI has hands on the keyboard.
