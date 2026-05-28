@@ -3,6 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 
+const basePath = '/GarethFurnellWebsite';
+
 interface QueryOption {
   id: string;
   name: string;
@@ -98,7 +100,7 @@ export default function MongodbPresentation() {
   // Check database status on load
   const checkDatabase = async () => {
     try {
-      const res = await fetch('/api/mongodb-demo', {
+      const res = await fetch(`${basePath}/api/mongodb-demo`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'check' })
@@ -120,7 +122,7 @@ export default function MongodbPresentation() {
   const seedDatabase = async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/mongodb-demo', {
+      const res = await fetch(`${basePath}/api/mongodb-demo`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'seed' })
@@ -148,7 +150,7 @@ export default function MongodbPresentation() {
     setLoading(true);
     setQueryOutput(null);
     try {
-      const res = await fetch('/api/mongodb-demo', {
+      const res = await fetch(`${basePath}/api/mongodb-demo`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: selectedQuery.id })
