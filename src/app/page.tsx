@@ -20,9 +20,14 @@ export default function Home() {
         <InteractiveEye />
         <ul className="flex flex-col gap-2 mt-8">
           <ListItem
-            title="Certifications"
-            subtitle="MongoDB & Google Cloud Certificates"
-            href="/certifications"
+            title="MongoDB"
+            subtitle="Certifications & Live Operators Console"
+            href="/mongodb"
+          />
+          <ListItem
+            title="Google Cloud"
+            subtitle="Professional Cloud Certifications"
+            href="/google"
           />
           <ListItem
             title="Photography"

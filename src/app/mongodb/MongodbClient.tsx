@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import ImageGallery from '@/components/ImageGallery';
 
 const basePath = '';
 
@@ -85,7 +86,7 @@ const count = await db
   }
 ];
 
-export default function MongodbPresentation() {
+export default function MongodbClient({ mongodbImages }: { mongodbImages: string[] }) {
   const [selectedQuery, setSelectedQuery] = useState<QueryOption>(queryOptions[0]);
   const [dbState, setDbState] = useState<{ isEmpty: boolean; count: number } | null>(null);
   const [loading, setLoading] = useState(false);
@@ -173,13 +174,16 @@ export default function MongodbPresentation() {
   };
 
   return (
-    <div className="min-h-screen bg-[#001E2B] text-white font-sans selection:bg-[#00684A]/50">
-      <header className="w-full max-w-7xl mx-auto px-6 py-12 flex justify-between items-center border-b border-[#00684A]">
-        <Link href="/research" className="text-xl font-semibold tracking-tight text-white hover:opacity-80 transition-opacity">
-          ← Back to Research
+    <div className="min-h-screen bg-[#001E2B] text-white font-sans selection:bg-[#00684A]/50 relative overflow-hidden">
+      {/* Immersive Brand Gradient Background */}
+      <div className="absolute top-[-20%] left-[-10%] w-[120%] h-[120%] bg-[radial-gradient(ellipse_at_bottom_right,_var(--tw-gradient-stops))] from-[#00ED64]/15 via-[#00684A]/5 to-transparent pointer-events-none z-0"></div>
+      
+      <header className="relative w-full max-w-7xl mx-auto px-6 py-12 flex justify-between items-center border-b border-[#00684A] z-10">
+        <Link href="/" className="text-xl font-semibold tracking-tight text-white hover:opacity-80 transition-opacity">
+          ← Back to Home
         </Link>
         <div className="flex items-center gap-4">
-          <h1 className="text-xl font-medium text-zinc-300">MongoDB Atlas Live Demo</h1>
+          <h1 className="text-xl font-medium text-zinc-300">MongoDB</h1>
           {dbState !== null && (
             <div className="hidden sm:flex items-center gap-2 px-3 py-1 bg-[#00ED64]/10 border border-[#00ED64]/30 rounded-full text-[#00ED64] text-xs font-semibold">
               <span className="flex h-2 w-2 rounded-full bg-[#00ED64] animate-pulse"></span>
@@ -189,7 +193,16 @@ export default function MongodbPresentation() {
         </div>
       </header>
 
-      <main className="w-full max-w-7xl mx-auto px-6 py-12">
+      <main className="relative w-full max-w-7xl mx-auto px-6 py-12 z-10">
+        
+        {/* Certifications Section */}
+        <div className="mb-20">
+          <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-white mb-6">
+            Certifications
+          </h2>
+          <ImageGallery images={mongodbImages} layout="grid" emptyMessage="Currently studying for the next one!" />
+        </div>
+
         {/* Seed Database Warning Banner */}
         {dbState?.isEmpty && (
           <div className="mb-8 p-6 bg-[#00684A]/20 border border-[#00ED64]/30 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 animate-pulse">

@@ -62,23 +62,7 @@ export default function ResearchPage() {
             </div>
           </div>
 
-          <Link href="/research/mongodb" className="p-8 rounded-2xl bg-zinc-900 border border-zinc-800 flex flex-col gap-4 transition-all hover:border-cyan-500/50 hover:bg-cyan-950/5 group text-left">
-            <div className="w-12 h-12 rounded-full bg-zinc-800 flex items-center justify-center text-zinc-400 mb-2 group-hover:bg-cyan-500/10 group-hover:text-cyan-400 transition-colors">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
-                <path d="M3 5V19A9 3 0 0 0 21 19V5"></path>
-                <path d="M3 12A9 3 0 0 0 21 12"></path>
-              </svg>
-            </div>
-            <h3 className="text-2xl font-medium text-white group-hover:text-cyan-400 transition-colors">MongoDB Live Console</h3>
-            <p className="text-zinc-400 leading-relaxed">
-              An interactive presentation dashboard running live queries against a MongoDB Atlas cluster to demonstrate common operators ($gte, $and, $elemMatch), sorting, limiting, projection, and document counting.
-            </p>
-            <div className="mt-auto pt-4 flex items-center text-sm font-medium text-cyan-500">
-              <span className="flex h-2 w-2 rounded-full bg-emerald-500 mr-2 animate-pulse"></span>
-              Live Presentation
-            </div>
-          </Link>
+
         </div>
 
         <div className="p-8 rounded-2xl border border-dashed border-zinc-800 flex flex-col items-center justify-center text-center py-16">
