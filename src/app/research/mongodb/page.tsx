@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 
-const basePath = '/GarethFurnellWebsite';
+const basePath = '';
 
 interface QueryOption {
   id: string;
