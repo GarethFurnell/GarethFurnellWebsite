@@ -8,6 +8,20 @@ export default function InteractiveEye() {
   const highlightRef = useRef<SVGGElement>(null);
   const [isMouseActive, setIsMouseActive] = useState(false);
 
+  // Clear inline transforms when mouse becomes inactive so CSS keyframe animations can run
+  useEffect(() => {
+    if (!isMouseActive) {
+      if (irisRef.current) {
+        irisRef.current.style.transform = '';
+        irisRef.current.removeAttribute('transform');
+      }
+      if (highlightRef.current) {
+        highlightRef.current.style.transform = '';
+        highlightRef.current.removeAttribute('transform');
+      }
+    }
+  }, [isMouseActive]);
+
   useEffect(() => {
     let idleTimer: NodeJS.Timeout;
 
@@ -25,8 +39,13 @@ export default function InteractiveEye() {
 
       // Get bounding box of the eye SVG
       const rect = svgRef.current.getBoundingClientRect();
+      if (!rect || rect.width === 0 || rect.height === 0) return;
+
       const centerX = rect.left + rect.width / 2;
       const centerY = rect.top + rect.height / 2;
+
+      // Validate pointer coordinates
+      if (typeof e.clientX !== 'number' || typeof e.clientY !== 'number' || isNaN(e.clientX) || isNaN(e.clientY)) return;
 
       // Calculate vector from eye center to pointer position
       const dx = e.clientX - centerX;
@@ -47,13 +66,18 @@ export default function InteractiveEye() {
       const moveX = Math.cos(angle) * currentMove;
       const moveY = Math.sin(angle) * currentMove;
 
-      // Apply transform with smooth translation to iris (iris + pupil + minor highlight)
-      irisRef.current.style.transform = `translate(${moveX}px, ${moveY}px)`;
+      // Validate translation results
+      if (isNaN(moveX) || isNaN(moveY)) return;
+
+      // Apply SVG transform attribute (safer in Safari and correct SVG spec)
+      irisRef.current.setAttribute('transform', `translate(${moveX}, ${moveY})`);
 
       // Parallax effect: major highlights move slightly slower/less to simulate depth
       const highlightX = moveX * 0.45;
       const highlightY = moveY * 0.45;
-      highlightRef.current.style.transform = `translate(${highlightX}px, ${highlightY}px)`;
+      if (!isNaN(highlightX) && !isNaN(highlightY)) {
+        highlightRef.current.setAttribute('transform', `translate(${highlightX}, ${highlightY})`);
+      }
     };
 
     // Listen at the window level for fluid tracking across the entire screen
