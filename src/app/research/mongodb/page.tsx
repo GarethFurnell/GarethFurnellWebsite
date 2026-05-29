@@ -173,28 +173,36 @@ export default function MongodbPresentation() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white font-sans selection:bg-zinc-800">
-      <header className="w-full max-w-7xl mx-auto px-6 py-12 flex justify-between items-center border-b border-zinc-900">
+    <div className="min-h-screen bg-[#001E2B] text-white font-sans selection:bg-[#00684A]/50">
+      <header className="w-full max-w-7xl mx-auto px-6 py-12 flex justify-between items-center border-b border-[#00684A]">
         <Link href="/research" className="text-xl font-semibold tracking-tight text-white hover:opacity-80 transition-opacity">
           ← Back to Research
         </Link>
-        <h1 className="text-xl font-medium text-zinc-400">MongoDB Atlas Live Demo</h1>
+        <div className="flex items-center gap-4">
+          <h1 className="text-xl font-medium text-zinc-300">MongoDB Atlas Live Demo</h1>
+          {dbState !== null && (
+            <div className="hidden sm:flex items-center gap-2 px-3 py-1 bg-[#00ED64]/10 border border-[#00ED64]/30 rounded-full text-[#00ED64] text-xs font-semibold">
+              <span className="flex h-2 w-2 rounded-full bg-[#00ED64] animate-pulse"></span>
+              Connected to MongoDB Cluster
+            </div>
+          )}
+        </div>
       </header>
 
       <main className="w-full max-w-7xl mx-auto px-6 py-12">
         {/* Seed Database Warning Banner */}
         {dbState?.isEmpty && (
-          <div className="mb-8 p-6 bg-amber-500/10 border border-amber-500/20 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 animate-pulse">
+          <div className="mb-8 p-6 bg-[#00684A]/20 border border-[#00ED64]/30 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 animate-pulse">
             <div>
-              <h4 className="text-amber-400 font-semibold mb-1">Database Collection Empty</h4>
-              <p className="text-zinc-400 text-sm max-w-xl">
+              <h4 className="text-[#00ED64] font-semibold mb-1">Database Collection Empty</h4>
+              <p className="text-zinc-300 text-sm max-w-xl">
                 Your MongoDB cluster collection `presentation_projects` is currently empty. Seed it with sample projects first to make query demonstrations active.
               </p>
             </div>
             <button
               onClick={seedDatabase}
               disabled={loading}
-              className="px-6 py-3 bg-amber-500 text-black hover:bg-amber-400 font-medium text-sm rounded-xl transition-all shadow-lg hover:shadow-amber-500/20 active:scale-95 disabled:opacity-50"
+              className="px-6 py-3 bg-[#00ED64] text-[#001E2B] hover:bg-[#00ED64]/90 font-bold text-sm rounded-xl transition-all shadow-lg hover:shadow-[#00ED64]/20 active:scale-95 disabled:opacity-50"
             >
               Seed Presentation Data
             </button>
@@ -215,7 +223,7 @@ export default function MongodbPresentation() {
           
           {/* LEFT PANEL: SELECTOR & CONSOLE */}
           <div className="lg:col-span-5 flex flex-col gap-6">
-            <div className="p-6 bg-zinc-900/60 border border-zinc-800 rounded-2xl backdrop-blur-md">
+            <div className="p-6 bg-[#023430]/60 border border-[#00684A] rounded-2xl backdrop-blur-md">
               <h3 className="text-lg font-medium text-zinc-300 mb-4">Select Operator Demo</h3>
               <div className="flex flex-col gap-2">
                 {queryOptions.map((option) => (
@@ -227,8 +235,8 @@ export default function MongodbPresentation() {
                     }}
                     className={`p-4 rounded-xl text-left border transition-all duration-300 ${
                       selectedQuery.id === option.id
-                        ? 'bg-cyan-500/10 border-cyan-500/50 text-white'
-                        : 'bg-black/40 border-zinc-800 text-zinc-400 hover:border-zinc-700 hover:text-zinc-200'
+                        ? 'bg-[#00ED64]/10 border-[#00ED64]/50 text-white'
+                        : 'bg-[#001E2B]/40 border-[#00684A]/50 text-zinc-400 hover:border-[#00684A] hover:text-zinc-200'
                     }`}
                   >
                     <div className="font-semibold text-sm mb-1">{option.name}</div>
@@ -239,12 +247,12 @@ export default function MongodbPresentation() {
             </div>
 
             {/* Code Console */}
-            <div className="p-6 bg-zinc-950 border border-zinc-800 rounded-2xl font-mono text-xs overflow-hidden flex flex-col">
-              <div className="flex justify-between items-center pb-3 border-b border-zinc-900 mb-4 text-zinc-500">
+            <div className="p-6 bg-[#001E2B] border border-[#00684A] rounded-2xl font-mono text-xs overflow-hidden flex flex-col">
+              <div className="flex justify-between items-center pb-3 border-b border-[#00684A] mb-4 text-[#00ED64]/70">
                 <span>query_command.js</span>
-                <span className="flex h-2 w-2 rounded-full bg-cyan-500"></span>
+                <span className="flex h-2 w-2 rounded-full bg-[#00ED64]"></span>
               </div>
-              <pre className="text-cyan-400/90 whitespace-pre-wrap leading-relaxed overflow-x-auto select-all max-h-40">
+              <pre className="text-[#00ED64]/90 whitespace-pre-wrap leading-relaxed overflow-x-auto select-all max-h-40">
                 {selectedQuery.sampleCode}
               </pre>
             </div>
@@ -253,11 +261,11 @@ export default function MongodbPresentation() {
             <button
               onClick={runQuery}
               disabled={loading}
-              className="w-full py-4 bg-cyan-500 hover:bg-cyan-400 text-black font-semibold rounded-2xl shadow-lg hover:shadow-cyan-500/20 transition-all flex items-center justify-center gap-3 active:scale-98 disabled:opacity-50"
+              className="w-full py-4 bg-[#00ED64] hover:bg-[#00ED64]/90 text-[#001E2B] font-bold rounded-2xl shadow-lg hover:shadow-[#00ED64]/20 transition-all flex items-center justify-center gap-3 active:scale-98 disabled:opacity-50"
             >
               {loading ? (
                 <>
-                  <div className="h-5 w-5 border-2 border-black border-t-transparent rounded-full animate-spin"></div>
+                  <div className="h-5 w-5 border-2 border-[#001E2B] border-t-transparent rounded-full animate-spin"></div>
                   Querying MongoDB Atlas...
                 </>
               ) : (
@@ -273,7 +281,7 @@ export default function MongodbPresentation() {
               <button
                 onClick={seedDatabase}
                 disabled={loading}
-                className="w-full py-3 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-400 hover:text-white font-medium text-sm rounded-xl transition-all active:scale-98 disabled:opacity-50"
+                className="w-full py-3 bg-[#023430] hover:bg-[#00684A] border border-[#00684A] text-zinc-300 hover:text-white font-medium text-sm rounded-xl transition-all active:scale-98 disabled:opacity-50"
               >
                 Reset & Re-Seed Database
               </button>
@@ -284,14 +292,14 @@ export default function MongodbPresentation() {
           <div className="lg:col-span-7 flex flex-col gap-6">
             
             {/* Header Tabs */}
-            <div className="flex justify-between items-center bg-zinc-900/60 border border-zinc-800 rounded-2xl p-2 backdrop-blur-md">
+            <div className="flex justify-between items-center bg-[#023430]/60 border border-[#00684A] rounded-2xl p-2 backdrop-blur-md">
               <div className="flex gap-2">
                 <button
                   onClick={() => setResultsTab('visual')}
                   className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all ${
                     resultsTab === 'visual'
-                      ? 'bg-zinc-800 text-white'
-                      : 'text-zinc-400 hover:text-zinc-200'
+                      ? 'bg-[#00684A] text-white'
+                      : 'text-[#00ED64]/70 hover:text-[#00ED64]'
                   }`}
                 >
                   Visual Results
@@ -300,37 +308,37 @@ export default function MongodbPresentation() {
                   onClick={() => setResultsTab('json')}
                   className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all ${
                     resultsTab === 'json'
-                      ? 'bg-zinc-800 text-white'
-                      : 'text-zinc-400 hover:text-zinc-200'
+                      ? 'bg-[#00684A] text-white'
+                      : 'text-[#00ED64]/70 hover:text-[#00ED64]'
                   }`}
                 >
                   Raw JSON Payload
                 </button>
               </div>
-              <span className="text-xs text-zinc-500 px-4">Live MongoDB Returns</span>
+              <span className="text-xs text-[#00ED64]/70 px-4">Live MongoDB Returns</span>
             </div>
 
             {/* Output Display Container */}
-            <div className="flex-1 min-h-[400px] bg-zinc-950/80 border border-zinc-800 rounded-2xl p-6 backdrop-blur-md overflow-hidden flex flex-col justify-center">
+            <div className="flex-1 min-h-[400px] bg-[#001E2B]/80 border border-[#00684A] rounded-2xl p-6 backdrop-blur-md overflow-hidden flex flex-col justify-center">
               
               {loading && (
                 <div className="flex flex-col items-center justify-center py-20 gap-4">
-                  <div className="h-10 w-10 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin"></div>
-                  <p className="text-zinc-400 text-sm">Querying document clusters...</p>
+                  <div className="h-10 w-10 border-4 border-[#00ED64] border-t-transparent rounded-full animate-spin"></div>
+                  <p className="text-[#00ED64]/70 text-sm">Querying document clusters...</p>
                 </div>
               )}
 
               {!loading && !queryOutput && (
-                <div className="flex flex-col items-center justify-center text-center py-20 text-zinc-500 gap-3">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-zinc-700">
+                <div className="flex flex-col items-center justify-center text-center py-20 text-[#00ED64]/50 gap-3">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-[#00684A]">
                     <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
                     <line x1="9" y1="9" x2="15" y2="9"></line>
                     <line x1="9" y1="13" x2="15" y2="13"></line>
                     <line x1="9" y1="17" x2="15" y2="17"></line>
                   </svg>
                   <div>
-                    <h4 className="font-semibold text-zinc-400 mb-1">Live Database Terminal</h4>
-                    <p className="text-xs text-zinc-600 max-w-xs">Select an operator on the left and click &quot;Run MongoDB Query&quot; to fetch live results.</p>
+                    <h4 className="font-semibold text-[#00ED64]/70 mb-1">Live Database Terminal</h4>
+                    <p className="text-xs text-[#00ED64]/50 max-w-xs">Select an operator on the left and click &quot;Run MongoDB Query&quot; to fetch live results.</p>
                   </div>
                 </div>
               )}
@@ -351,15 +359,15 @@ export default function MongodbPresentation() {
                       {/* Count Badge (Special visualization for count query) */}
                       {selectedQuery.id === 'count' && (
                         <div className="flex flex-col items-center justify-center py-12">
-                          <div className="relative h-40 w-40 rounded-full bg-cyan-500/5 border-2 border-cyan-500/20 flex flex-col items-center justify-center shadow-[0_0_50px_rgba(6,182,212,0.05)]">
-                            <div className="absolute inset-0 bg-cyan-500/5 rounded-full blur-xl animate-pulse"></div>
-                            <div className="text-6xl font-bold font-handscript text-cyan-400">
+                          <div className="relative h-40 w-40 rounded-full bg-[#00ED64]/5 border-2 border-[#00ED64]/20 flex flex-col items-center justify-center shadow-[0_0_50px_rgba(0,237,100,0.05)]">
+                            <div className="absolute inset-0 bg-[#00ED64]/5 rounded-full blur-xl animate-pulse"></div>
+                            <div className="text-6xl font-bold font-handscript text-[#00ED64]">
                               {queryOutput.results?.count}
                             </div>
-                            <div className="text-xs text-zinc-500 uppercase tracking-widest mt-2">Documents</div>
+                            <div className="text-xs text-[#00ED64]/50 uppercase tracking-widest mt-2">Documents</div>
                           </div>
-                          <p className="text-zinc-500 text-xs mt-6 text-center max-w-sm">
-                            Operation executed: <code className="text-cyan-500">countDocuments({JSON.stringify(queryOutput.queryObject)})</code>
+                          <p className="text-[#00ED64]/70 text-xs mt-6 text-center max-w-sm">
+                            Operation executed: <code className="text-[#00ED64]">countDocuments({JSON.stringify(queryOutput.queryObject)})</code>
                           </p>
                         </div>
                       )}
@@ -375,13 +383,13 @@ export default function MongodbPresentation() {
                           {queryOutput.results.map((doc: any, index: number) => (
                             <div
                               key={doc._id || index}
-                              className="p-5 bg-zinc-900/40 border border-zinc-800 rounded-xl flex flex-col gap-3 transition-all hover:border-zinc-700"
+                              className="p-5 bg-[#023430]/40 border border-[#00684A] rounded-xl flex flex-col gap-3 transition-all hover:border-[#00ED64]/50"
                             >
                               <div className="flex justify-between items-start">
                                 <div>
                                   <h4 className="font-bold text-white text-base">{doc.name}</h4>
                                   {doc.category && (
-                                    <span className="inline-block px-2.5 py-0.5 mt-1.5 rounded-full text-xs font-semibold bg-zinc-800 text-zinc-400">
+                                    <span className="inline-block px-2.5 py-0.5 mt-1.5 rounded-full text-xs font-semibold bg-[#00684A] text-[#00ED64]">
                                       {doc.category}
                                     </span>
                                   )}
@@ -391,8 +399,8 @@ export default function MongodbPresentation() {
                                 {doc.stars !== undefined && (
                                   <div className={`px-3 py-1 rounded-lg text-xs font-bold flex items-center gap-1.5 ${
                                     selectedQuery.id === 'gte' && doc.stars >= 12
-                                      ? 'bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 shadow-[0_0_15px_rgba(6,182,212,0.1)]'
-                                      : 'bg-zinc-800 text-zinc-500'
+                                      ? 'bg-[#00ED64]/10 border border-[#00ED64]/30 text-[#00ED64] shadow-[0_0_15px_rgba(0,237,100,0.1)]'
+                                      : 'bg-[#001E2B] text-[#00ED64]/50 border border-[#00684A]'
                                   }`}>
                                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
                                     {doc.stars} Stars
@@ -406,7 +414,7 @@ export default function MongodbPresentation() {
                                   {doc.tags.map((tag: string, tIndex: number) => (
                                     <span
                                       key={tIndex}
-                                      className="px-2 py-0.5 text-2xs font-mono bg-zinc-950/80 rounded border border-zinc-900 text-zinc-500"
+                                      className="px-2 py-0.5 text-2xs font-mono bg-[#001E2B]/80 rounded border border-[#00684A] text-[#00ED64]/70"
                                     >
                                       {tag}
                                     </span>
@@ -418,10 +426,10 @@ export default function MongodbPresentation() {
                               {doc.team && (
                                 <div className={`p-3 rounded-lg border flex flex-col gap-1.5 ${
                                   selectedQuery.id === 'elemMatch'
-                                    ? 'bg-cyan-500/5 border-cyan-500/20'
-                                    : 'bg-black/30 border-zinc-900'
+                                    ? 'bg-[#00ED64]/5 border-[#00ED64]/20'
+                                    : 'bg-[#001E2B]/30 border-[#00684A]'
                                 }`}>
-                                  <div className="text-2xs text-zinc-500 uppercase tracking-widest font-semibold">Team Configuration</div>
+                                  <div className="text-2xs text-[#00ED64]/50 uppercase tracking-widest font-semibold">Team Configuration</div>
                                   <div className="flex flex-col gap-1.5">
                                     {doc.team.map((member: any, mIndex: number) => {
                                       const isMatch = selectedQuery.id === 'elemMatch' && member.role === 'developer' && member.experience >= 5;
@@ -429,7 +437,7 @@ export default function MongodbPresentation() {
                                         <div
                                           key={mIndex}
                                           className={`text-xs flex justify-between items-center p-1 rounded ${
-                                            isMatch ? 'bg-cyan-500/10 text-cyan-400 font-semibold px-2' : 'text-zinc-400'
+                                            isMatch ? 'bg-[#00ED64]/10 text-[#00ED64] font-semibold px-2' : 'text-[#00ED64]/70'
                                           }`}
                                         >
                                           <span className="capitalize">{member.role}</span>
@@ -450,11 +458,11 @@ export default function MongodbPresentation() {
                   {/* TAB 2: RAW JSON PAYLOAD */}
                   {resultsTab === 'json' && (
                     <div className="flex-1 flex flex-col overflow-hidden max-h-[500px] animate-in fade-in duration-300 font-mono text-xs">
-                      <div className="flex justify-between items-center pb-2 border-b border-zinc-900 mb-3 text-zinc-500">
+                      <div className="flex justify-between items-center pb-2 border-b border-[#00684A] mb-3 text-[#00ED64]/70">
                         <span>raw_results.json</span>
                         <span>{JSON.stringify(queryOutput.results).length} bytes</span>
                       </div>
-                      <pre className="flex-1 overflow-y-auto text-emerald-400/90 leading-relaxed bg-black/40 p-4 rounded-xl border border-zinc-900 select-all max-h-[400px]">
+                      <pre className="flex-1 overflow-y-auto text-[#00ED64]/90 leading-relaxed bg-[#001E2B]/40 p-4 rounded-xl border border-[#00684A] select-all max-h-[400px]">
                         {JSON.stringify(queryOutput.results, null, 2)}
                       </pre>
                     </div>
