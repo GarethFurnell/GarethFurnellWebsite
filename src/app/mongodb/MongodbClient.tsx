@@ -3,6 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import ImageGallery from '@/components/ImageGallery';
+import Accordion from '@/components/Accordion';
+import BirdSoundsGraph, { GraphNode, GraphLink } from '@/components/BirdSoundsGraph';
 
 const basePath = '';
 
@@ -98,6 +100,15 @@ export default function MongodbClient({ mongodbImages }: { mongodbImages: string
     error?: string;
   } | null>(null);
 
+  // Vector Search States
+  const [vsSearchQuery, setVsSearchQuery] = useState('');
+  const [vsResults, setVsResults] = useState<any[] | null>(null);
+  const [vsLoading, setVsLoading] = useState(false);
+  const [vsError, setVsError] = useState<string | null>(null);
+  const [graphData, setGraphData] = useState<{nodes: GraphNode[], links: GraphLink[]} | null>(null);
+  const [graphLoading, setGraphLoading] = useState(false);
+  const [selectedGraphNode, setSelectedGraphNode] = useState<any | null>(null);
+
   // Check database status on load
   const checkDatabase = async () => {
     try {
@@ -117,7 +128,72 @@ export default function MongodbClient({ mongodbImages }: { mongodbImages: string
 
   useEffect(() => {
     checkDatabase();
+    loadGraphData();
   }, []);
+
+  const loadGraphData = async () => {
+    setGraphLoading(true);
+    try {
+      const res = await fetch(`${basePath}/api/vector-search`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'graph_data' })
+      });
+      const data = await res.json();
+      if (data.status === 'success' && data.nodes.length > 0) {
+        setGraphData({ nodes: data.nodes, links: data.links });
+      }
+    } catch (err) {
+      console.error('Failed to load graph data', err);
+    } finally {
+      setGraphLoading(false);
+    }
+  };
+
+  const handleVectorSearch = async () => {
+    if (!vsSearchQuery.trim()) return;
+    setVsLoading(true);
+    setVsError(null);
+    try {
+      const res = await fetch(`${basePath}/api/vector-search`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'search', query: vsSearchQuery })
+      });
+      const data = await res.json();
+      if (data.status === 'success') {
+        setVsResults(data.results);
+      } else {
+        setVsError(data.error);
+      }
+    } catch (err: any) {
+      setVsError(err.message || 'Search failed');
+    } finally {
+      setVsLoading(false);
+    }
+  };
+
+  const seedVectorData = async () => {
+    setVsLoading(true);
+    setVsError(null);
+    try {
+      const res = await fetch(`${basePath}/api/vector-search`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'seed' })
+      });
+      const data = await res.json();
+      if (data.status === 'success') {
+        loadGraphData(); // Reload graph once seeded
+      } else {
+        setVsError(data.error);
+      }
+    } catch (err: any) {
+      setVsError(err.message || 'Seeding failed');
+    } finally {
+      setVsLoading(false);
+    }
+  };
 
   // Seed Database Handler
   const seedDatabase = async () => {
@@ -193,298 +269,386 @@ export default function MongodbClient({ mongodbImages }: { mongodbImages: string
         </div>
       </header>
 
-      <main className="relative w-full max-w-7xl mx-auto px-6 py-12 z-10">
+      <main className="relative w-full max-w-7xl mx-auto px-6 py-12 z-10 flex flex-col gap-6">
         
-        {/* Certifications Section */}
-        <div className="mb-20">
-          <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-white mb-6">
-            Certifications
-          </h2>
-          <ImageGallery images={mongodbImages} layout="grid" emptyMessage="Currently studying for the next one!" />
-        </div>
-
-        {/* Seed Database Warning Banner */}
-        {dbState?.isEmpty && (
-          <div className="mb-8 p-6 bg-[#00684A]/20 border border-[#00ED64]/30 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 animate-pulse">
-            <div>
-              <h4 className="text-[#00ED64] font-semibold mb-1">Database Collection Empty</h4>
-              <p className="text-zinc-300 text-sm max-w-xl">
-                Your MongoDB cluster collection `presentation_projects` is currently empty. Seed it with sample projects first to make query demonstrations active.
-              </p>
-            </div>
-            <button
-              onClick={seedDatabase}
-              disabled={loading}
-              className="px-6 py-3 bg-[#00ED64] text-[#001E2B] hover:bg-[#00ED64]/90 font-bold text-sm rounded-xl transition-all shadow-lg hover:shadow-[#00ED64]/20 active:scale-95 disabled:opacity-50"
-            >
-              Seed Presentation Data
-            </button>
+        {/* Accordion 1: Certifications */}
+        <Accordion title="Certifications" subtitle="My professional MongoDB certifications" defaultOpen={false}>
+          <div className="py-4">
+            <ImageGallery images={mongodbImages} layout="grid" emptyMessage="Currently studying for the next one!" />
           </div>
-        )}
+        </Accordion>
 
-        <div className="mb-12">
-          <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-white mb-4">
-            MongoDB Operators Live Console
-          </h2>
-          <p className="text-zinc-400 max-w-2xl text-lg">
-            An interactive playground running queries live on a MongoDB Atlas cluster. Inspect the query filters, run the operations, and view the raw returns.
-          </p>
-        </div>
-
-        {/* Dashboard Panels */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          
-          {/* LEFT PANEL: SELECTOR & CONSOLE */}
-          <div className="lg:col-span-5 flex flex-col gap-6">
-            <div className="p-6 bg-[#023430]/60 border border-[#00684A] rounded-2xl backdrop-blur-md">
-              <h3 className="text-lg font-medium text-zinc-300 mb-4">Select Operator Demo</h3>
-              <div className="flex flex-col gap-2">
-                {queryOptions.map((option) => (
-                  <button
-                    key={option.id}
-                    onClick={() => {
-                      setSelectedQuery(option);
-                      setQueryOutput(null);
-                    }}
-                    className={`p-4 rounded-xl text-left border transition-all duration-300 ${
-                      selectedQuery.id === option.id
-                        ? 'bg-[#00ED64]/10 border-[#00ED64]/50 text-white'
-                        : 'bg-[#001E2B]/40 border-[#00684A]/50 text-zinc-400 hover:border-[#00684A] hover:text-zinc-200'
-                    }`}
-                  >
-                    <div className="font-semibold text-sm mb-1">{option.name}</div>
-                    <div className="text-xs text-zinc-500 line-clamp-1">{option.description}</div>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Code Console */}
-            <div className="p-6 bg-[#001E2B] border border-[#00684A] rounded-2xl font-mono text-xs overflow-hidden flex flex-col">
-              <div className="flex justify-between items-center pb-3 border-b border-[#00684A] mb-4 text-[#00ED64]/70">
-                <span>query_command.js</span>
-                <span className="flex h-2 w-2 rounded-full bg-[#00ED64]"></span>
-              </div>
-              <pre className="text-[#00ED64]/90 whitespace-pre-wrap leading-relaxed overflow-x-auto select-all max-h-40">
-                {selectedQuery.sampleCode}
-              </pre>
-            </div>
-
-            {/* Run Button */}
-            <button
-              onClick={runQuery}
-              disabled={loading}
-              className="w-full py-4 bg-[#00ED64] hover:bg-[#00ED64]/90 text-[#001E2B] font-bold rounded-2xl shadow-lg hover:shadow-[#00ED64]/20 transition-all flex items-center justify-center gap-3 active:scale-98 disabled:opacity-50"
-            >
-              {loading ? (
-                <>
-                  <div className="h-5 w-5 border-2 border-[#001E2B] border-t-transparent rounded-full animate-spin"></div>
-                  Querying MongoDB Atlas...
-                </>
-              ) : (
-                <>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-                  Run MongoDB Query
-                </>
-              )}
-            </button>
-
-            {/* Optional Reset/Clear Button */}
-            {!dbState?.isEmpty && (
-              <button
-                onClick={seedDatabase}
-                disabled={loading}
-                className="w-full py-3 bg-[#023430] hover:bg-[#00684A] border border-[#00684A] text-zinc-300 hover:text-white font-medium text-sm rounded-xl transition-all active:scale-98 disabled:opacity-50"
-              >
-                Reset & Re-Seed Database
-              </button>
-            )}
-          </div>
-
-          {/* RIGHT PANEL: LIVE RESULTS */}
-          <div className="lg:col-span-7 flex flex-col gap-6">
-            
-            {/* Header Tabs */}
-            <div className="flex justify-between items-center bg-[#023430]/60 border border-[#00684A] rounded-2xl p-2 backdrop-blur-md">
-              <div className="flex gap-2">
-                <button
-                  onClick={() => setResultsTab('visual')}
-                  className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all ${
-                    resultsTab === 'visual'
-                      ? 'bg-[#00684A] text-white'
-                      : 'text-[#00ED64]/70 hover:text-[#00ED64]'
-                  }`}
-                >
-                  Visual Results
-                </button>
-                <button
-                  onClick={() => setResultsTab('json')}
-                  className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all ${
-                    resultsTab === 'json'
-                      ? 'bg-[#00684A] text-white'
-                      : 'text-[#00ED64]/70 hover:text-[#00ED64]'
-                  }`}
-                >
-                  Raw JSON Payload
-                </button>
-              </div>
-              <span className="text-xs text-[#00ED64]/70 px-4">Live MongoDB Returns</span>
-            </div>
-
-            {/* Output Display Container */}
-            <div className="flex-1 min-h-[400px] bg-[#001E2B]/80 border border-[#00684A] rounded-2xl p-6 backdrop-blur-md overflow-hidden flex flex-col justify-center">
-              
-              {loading && (
-                <div className="flex flex-col items-center justify-center py-20 gap-4">
-                  <div className="h-10 w-10 border-4 border-[#00ED64] border-t-transparent rounded-full animate-spin"></div>
-                  <p className="text-[#00ED64]/70 text-sm">Querying document clusters...</p>
+        {/* Accordion 2: Live Console */}
+        <Accordion title="Live Operators Console" subtitle="Interactive playground running queries live on a MongoDB Atlas cluster" defaultOpen={true}>
+          <div className="py-4">
+            {/* Seed Database Warning Banner */}
+            {dbState?.isEmpty && (
+              <div className="mb-8 p-6 bg-[#00684A]/20 border border-[#00ED64]/30 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 animate-pulse">
+                <div>
+                  <h4 className="text-[#00ED64] font-semibold mb-1">Database Collection Empty</h4>
+                  <p className="text-zinc-300 text-sm max-w-xl">
+                    Your MongoDB cluster collection `presentation_projects` is currently empty. Seed it with sample projects first to make query demonstrations active.
+                  </p>
                 </div>
-              )}
+                <button
+                  onClick={seedDatabase}
+                  disabled={loading}
+                  className="px-6 py-3 bg-[#00ED64] text-[#001E2B] hover:bg-[#00ED64]/90 font-bold text-sm rounded-xl transition-all shadow-lg hover:shadow-[#00ED64]/20 active:scale-95 disabled:opacity-50"
+                >
+                  Seed Presentation Data
+                </button>
+              </div>
+            )}
 
-              {!loading && !queryOutput && (
-                <div className="flex flex-col items-center justify-center text-center py-20 text-[#00ED64]/50 gap-3">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-[#00684A]">
-                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                    <line x1="9" y1="9" x2="15" y2="9"></line>
-                    <line x1="9" y1="13" x2="15" y2="13"></line>
-                    <line x1="9" y1="17" x2="15" y2="17"></line>
-                  </svg>
-                  <div>
-                    <h4 className="font-semibold text-[#00ED64]/70 mb-1">Live Database Terminal</h4>
-                    <p className="text-xs text-[#00ED64]/50 max-w-xs">Select an operator on the left and click &quot;Run MongoDB Query&quot; to fetch live results.</p>
+            {/* Dashboard Panels */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+              
+              {/* LEFT PANEL: SELECTOR & CONSOLE */}
+              <div className="lg:col-span-5 flex flex-col gap-6">
+                <div className="p-6 bg-[#023430]/60 border border-[#00684A] rounded-2xl backdrop-blur-md">
+                  <h3 className="text-lg font-medium text-zinc-300 mb-4">Select Operator Demo</h3>
+                  <div className="flex flex-col gap-2">
+                    {queryOptions.map((option) => (
+                      <button
+                        key={option.id}
+                        onClick={() => {
+                          setSelectedQuery(option);
+                          setQueryOutput(null);
+                        }}
+                        className={`p-4 rounded-xl text-left border transition-all duration-300 ${
+                          selectedQuery.id === option.id
+                            ? 'bg-[#00ED64]/10 border-[#00ED64]/50 text-white'
+                            : 'bg-[#001E2B]/40 border-[#00684A]/50 text-zinc-400 hover:border-[#00684A] hover:text-zinc-200'
+                        }`}
+                      >
+                        <div className="font-semibold text-sm mb-1">{option.name}</div>
+                        <div className="text-xs text-zinc-500 line-clamp-1">{option.description}</div>
+                      </button>
+                    ))}
                   </div>
                 </div>
-              )}
 
-              {!loading && queryOutput?.error && (
-                <div className="p-6 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-sm flex gap-3">
-                  <span className="font-bold">Error:</span>
-                  <span>{queryOutput.error}</span>
+                {/* Code Console */}
+                <div className="p-6 bg-[#001E2B] border border-[#00684A] rounded-2xl font-mono text-xs overflow-hidden flex flex-col">
+                  <div className="flex justify-between items-center pb-3 border-b border-[#00684A] mb-4 text-[#00ED64]/70">
+                    <span>query_command.js</span>
+                    <span className="flex h-2 w-2 rounded-full bg-[#00ED64]"></span>
+                  </div>
+                  <pre className="text-[#00ED64]/90 whitespace-pre-wrap leading-relaxed overflow-x-auto select-all max-h-40">
+                    {selectedQuery.sampleCode}
+                  </pre>
                 </div>
-              )}
 
-              {!loading && queryOutput && !queryOutput.error && (
-                <>
-                  {/* TAB 1: VISUAL CARD VIEWER */}
-                  {resultsTab === 'visual' && (
-                    <div className="flex flex-col gap-6 animate-in fade-in duration-300">
-                      
-                      {/* Count Badge (Special visualization for count query) */}
-                      {selectedQuery.id === 'count' && (
-                        <div className="flex flex-col items-center justify-center py-12">
-                          <div className="relative h-40 w-40 rounded-full bg-[#00ED64]/5 border-2 border-[#00ED64]/20 flex flex-col items-center justify-center shadow-[0_0_50px_rgba(0,237,100,0.05)]">
-                            <div className="absolute inset-0 bg-[#00ED64]/5 rounded-full blur-xl animate-pulse"></div>
-                            <div className="text-6xl font-bold font-handscript text-[#00ED64]">
-                              {queryOutput.results?.count}
-                            </div>
-                            <div className="text-xs text-[#00ED64]/50 uppercase tracking-widest mt-2">Documents</div>
-                          </div>
-                          <p className="text-[#00ED64]/70 text-xs mt-6 text-center max-w-sm">
-                            Operation executed: <code className="text-[#00ED64]">countDocuments({JSON.stringify(queryOutput.queryObject)})</code>
-                          </p>
-                        </div>
-                      )}
+                {/* Run Button */}
+                <button
+                  onClick={runQuery}
+                  disabled={loading}
+                  className="w-full py-4 bg-[#00ED64] hover:bg-[#00ED64]/90 text-[#001E2B] font-bold rounded-2xl shadow-lg hover:shadow-[#00ED64]/20 transition-all flex items-center justify-center gap-3 active:scale-98 disabled:opacity-50"
+                >
+                  {loading ? (
+                    <>
+                      <div className="h-5 w-5 border-2 border-[#001E2B] border-t-transparent rounded-full animate-spin"></div>
+                      Querying MongoDB Atlas...
+                    </>
+                  ) : (
+                    <>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                      Run MongoDB Query
+                    </>
+                  )}
+                </button>
 
-                      {/* Document Card List */}
-                      {selectedQuery.id !== 'count' && Array.isArray(queryOutput.results) && (
-                        <div className="flex flex-col gap-4">
-                          <div className="text-xs text-zinc-500 flex justify-between">
-                            <span>Documents Found: {queryOutput.results.length}</span>
-                            <span>Mapped Keys</span>
-                          </div>
+                {/* Optional Reset/Clear Button */}
+                {!dbState?.isEmpty && (
+                  <button
+                    onClick={seedDatabase}
+                    disabled={loading}
+                    className="w-full py-3 bg-[#023430] hover:bg-[#00684A] border border-[#00684A] text-zinc-300 hover:text-white font-medium text-sm rounded-xl transition-all active:scale-98 disabled:opacity-50"
+                  >
+                    Reset & Re-Seed Database
+                  </button>
+                )}
+              </div>
 
-                          {queryOutput.results.map((doc: any, index: number) => (
-                            <div
-                              key={doc._id || index}
-                              className="p-5 bg-[#023430]/40 border border-[#00684A] rounded-xl flex flex-col gap-3 transition-all hover:border-[#00ED64]/50"
-                            >
-                              <div className="flex justify-between items-start">
-                                <div>
-                                  <h4 className="font-bold text-white text-base">{doc.name}</h4>
-                                  {doc.category && (
-                                    <span className="inline-block px-2.5 py-0.5 mt-1.5 rounded-full text-xs font-semibold bg-[#00684A] text-[#00ED64]">
-                                      {doc.category}
-                                    </span>
-                                  )}
+              {/* RIGHT PANEL: LIVE RESULTS */}
+              <div className="lg:col-span-7 flex flex-col gap-6">
+                
+                {/* Header Tabs */}
+                <div className="flex justify-between items-center bg-[#023430]/60 border border-[#00684A] rounded-2xl p-2 backdrop-blur-md">
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => setResultsTab('visual')}
+                      className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all ${
+                        resultsTab === 'visual'
+                          ? 'bg-[#00684A] text-white'
+                          : 'text-[#00ED64]/70 hover:text-[#00ED64]'
+                      }`}
+                    >
+                      Visual Results
+                    </button>
+                    <button
+                      onClick={() => setResultsTab('json')}
+                      className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all ${
+                        resultsTab === 'json'
+                          ? 'bg-[#00684A] text-white'
+                          : 'text-[#00ED64]/70 hover:text-[#00ED64]'
+                      }`}
+                    >
+                      Raw JSON Payload
+                    </button>
+                  </div>
+                  <span className="text-xs text-[#00ED64]/70 px-4">Live MongoDB Returns</span>
+                </div>
+
+                {/* Output Display Container */}
+                <div className="flex-1 min-h-[400px] bg-[#001E2B]/80 border border-[#00684A] rounded-2xl p-6 backdrop-blur-md overflow-hidden flex flex-col justify-center">
+                  
+                  {loading && (
+                    <div className="flex flex-col items-center justify-center py-20 gap-4">
+                      <div className="h-10 w-10 border-4 border-[#00ED64] border-t-transparent rounded-full animate-spin"></div>
+                      <p className="text-[#00ED64]/70 text-sm">Querying document clusters...</p>
+                    </div>
+                  )}
+
+                  {!loading && !queryOutput && (
+                    <div className="flex flex-col items-center justify-center text-center py-20 text-[#00ED64]/50 gap-3">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-[#00684A]">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="9" y1="9" x2="15" y2="9"></line>
+                        <line x1="9" y1="13" x2="15" y2="13"></line>
+                        <line x1="9" y1="17" x2="15" y2="17"></line>
+                      </svg>
+                      <div>
+                        <h4 className="font-semibold text-[#00ED64]/70 mb-1">Live Database Terminal</h4>
+                        <p className="text-xs text-[#00ED64]/50 max-w-xs">Select an operator on the left and click &quot;Run MongoDB Query&quot; to fetch live results.</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {!loading && queryOutput?.error && (
+                    <div className="p-6 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-sm flex gap-3">
+                      <span className="font-bold">Error:</span>
+                      <span>{queryOutput.error}</span>
+                    </div>
+                  )}
+
+                  {!loading && queryOutput && !queryOutput.error && (
+                    <>
+                      {/* TAB 1: VISUAL CARD VIEWER */}
+                      {resultsTab === 'visual' && (
+                        <div className="flex flex-col gap-6 animate-in fade-in duration-300">
+                          
+                          {/* Count Badge (Special visualization for count query) */}
+                          {selectedQuery.id === 'count' && (
+                            <div className="flex flex-col items-center justify-center py-12">
+                              <div className="relative h-40 w-40 rounded-full bg-[#00ED64]/5 border-2 border-[#00ED64]/20 flex flex-col items-center justify-center shadow-[0_0_50px_rgba(0,237,100,0.05)]">
+                                <div className="absolute inset-0 bg-[#00ED64]/5 rounded-full blur-xl animate-pulse"></div>
+                                <div className="text-6xl font-bold font-handscript text-[#00ED64]">
+                                  {queryOutput.results?.count}
                                 </div>
-                                
-                                {/* Star Badge (Highlighter for GTE) */}
-                                {doc.stars !== undefined && (
-                                  <div className={`px-3 py-1 rounded-lg text-xs font-bold flex items-center gap-1.5 ${
-                                    selectedQuery.id === 'gte' && doc.stars >= 12
-                                      ? 'bg-[#00ED64]/10 border border-[#00ED64]/30 text-[#00ED64] shadow-[0_0_15px_rgba(0,237,100,0.1)]'
-                                      : 'bg-[#001E2B] text-[#00ED64]/50 border border-[#00684A]'
-                                  }`}>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-                                    {doc.stars} Stars
-                                  </div>
-                                )}
+                                <div className="text-xs text-[#00ED64]/50 uppercase tracking-widest mt-2">Documents</div>
+                              </div>
+                              <p className="text-[#00ED64]/70 text-xs mt-6 text-center max-w-sm">
+                                Operation executed: <code className="text-[#00ED64]">countDocuments({JSON.stringify(queryOutput.queryObject)})</code>
+                              </p>
+                            </div>
+                          )}
+
+                          {/* Document Card List */}
+                          {selectedQuery.id !== 'count' && Array.isArray(queryOutput.results) && (
+                            <div className="flex flex-col gap-4">
+                              <div className="text-xs text-zinc-500 flex justify-between">
+                                <span>Documents Found: {queryOutput.results.length}</span>
+                                <span>Mapped Keys</span>
                               </div>
 
-                              {/* Tags List */}
-                              {doc.tags && (
-                                <div className="flex flex-wrap gap-1.5">
-                                  {doc.tags.map((tag: string, tIndex: number) => (
-                                    <span
-                                      key={tIndex}
-                                      className="px-2 py-0.5 text-2xs font-mono bg-[#001E2B]/80 rounded border border-[#00684A] text-[#00ED64]/70"
-                                    >
-                                      {tag}
-                                    </span>
-                                  ))}
-                                </div>
-                              )}
-
-                              {/* Nested Team Array (Highlighter for ElemMatch) */}
-                              {doc.team && (
-                                <div className={`p-3 rounded-lg border flex flex-col gap-1.5 ${
-                                  selectedQuery.id === 'elemMatch'
-                                    ? 'bg-[#00ED64]/5 border-[#00ED64]/20'
-                                    : 'bg-[#001E2B]/30 border-[#00684A]'
-                                }`}>
-                                  <div className="text-2xs text-[#00ED64]/50 uppercase tracking-widest font-semibold">Team Configuration</div>
-                                  <div className="flex flex-col gap-1.5">
-                                    {doc.team.map((member: any, mIndex: number) => {
-                                      const isMatch = selectedQuery.id === 'elemMatch' && member.role === 'developer' && member.experience >= 5;
-                                      return (
-                                        <div
-                                          key={mIndex}
-                                          className={`text-xs flex justify-between items-center p-1 rounded ${
-                                            isMatch ? 'bg-[#00ED64]/10 text-[#00ED64] font-semibold px-2' : 'text-[#00ED64]/70'
-                                          }`}
-                                        >
-                                          <span className="capitalize">{member.role}</span>
-                                          <span>{member.experience} yrs exp {isMatch && '🔥'}</span>
-                                        </div>
-                                      );
-                                    })}
+                              {queryOutput.results.map((doc: any, index: number) => (
+                                <div
+                                  key={doc._id || index}
+                                  className="p-5 bg-[#023430]/40 border border-[#00684A] rounded-xl flex flex-col gap-3 transition-all hover:border-[#00ED64]/50"
+                                >
+                                  <div className="flex justify-between items-start">
+                                    <div>
+                                      <h4 className="font-bold text-white text-base">{doc.name}</h4>
+                                      {doc.category && (
+                                        <span className="inline-block px-2.5 py-0.5 mt-1.5 rounded-full text-xs font-semibold bg-[#00684A] text-[#00ED64]">
+                                          {doc.category}
+                                        </span>
+                                      )}
+                                    </div>
+                                    
+                                    {/* Star Badge (Highlighter for GTE) */}
+                                    {doc.stars !== undefined && (
+                                      <div className={`px-3 py-1 rounded-lg text-xs font-bold flex items-center gap-1.5 ${
+                                        selectedQuery.id === 'gte' && doc.stars >= 12
+                                          ? 'bg-[#00ED64]/10 border border-[#00ED64]/30 text-[#00ED64] shadow-[0_0_15px_rgba(0,237,100,0.1)]'
+                                          : 'bg-[#001E2B] text-[#00ED64]/50 border border-[#00684A]'
+                                      }`}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                                        {doc.stars} Stars
+                                      </div>
+                                    )}
                                   </div>
+
+                                  {/* Tags List */}
+                                  {doc.tags && (
+                                    <div className="flex flex-wrap gap-1.5">
+                                      {doc.tags.map((tag: string, tIndex: number) => (
+                                        <span
+                                          key={tIndex}
+                                          className="px-2 py-0.5 text-2xs font-mono bg-[#001E2B]/80 rounded border border-[#00684A] text-[#00ED64]/70"
+                                        >
+                                          {tag}
+                                        </span>
+                                      ))}
+                                    </div>
+                                  )}
+
+                                  {/* Nested Team Array (Highlighter for ElemMatch) */}
+                                  {doc.team && (
+                                    <div className={`p-3 rounded-lg border flex flex-col gap-1.5 ${
+                                      selectedQuery.id === 'elemMatch'
+                                        ? 'bg-[#00ED64]/5 border-[#00ED64]/20'
+                                        : 'bg-[#001E2B]/30 border-[#00684A]'
+                                    }`}>
+                                      <div className="text-2xs text-[#00ED64]/50 uppercase tracking-widest font-semibold">Team Configuration</div>
+                                      <div className="flex flex-col gap-1.5">
+                                        {doc.team.map((member: any, mIndex: number) => {
+                                          const isMatch = selectedQuery.id === 'elemMatch' && member.role === 'developer' && member.experience >= 5;
+                                          return (
+                                            <div
+                                              key={mIndex}
+                                              className={`text-xs flex justify-between items-center p-1 rounded ${
+                                                isMatch ? 'bg-[#00ED64]/10 text-[#00ED64] font-semibold px-2' : 'text-[#00ED64]/70'
+                                              }`}
+                                            >
+                                              <span className="capitalize">{member.role}</span>
+                                              <span>{member.experience} yrs exp {isMatch && '🔥'}</span>
+                                            </div>
+                                          );
+                                        })}
+                                      </div>
+                                    </div>
+                                  )}
                                 </div>
-                              )}
+                              ))}
                             </div>
-                          ))}
+                          )}
                         </div>
                       )}
-                    </div>
-                  )}
 
-                  {/* TAB 2: RAW JSON PAYLOAD */}
-                  {resultsTab === 'json' && (
-                    <div className="flex-1 flex flex-col overflow-hidden max-h-[500px] animate-in fade-in duration-300 font-mono text-xs">
-                      <div className="flex justify-between items-center pb-2 border-b border-[#00684A] mb-3 text-[#00ED64]/70">
-                        <span>raw_results.json</span>
-                        <span>{JSON.stringify(queryOutput.results).length} bytes</span>
-                      </div>
-                      <pre className="flex-1 overflow-y-auto text-[#00ED64]/90 leading-relaxed bg-[#001E2B]/40 p-4 rounded-xl border border-[#00684A] select-all max-h-[400px]">
-                        {JSON.stringify(queryOutput.results, null, 2)}
-                      </pre>
-                    </div>
+                      {/* TAB 2: RAW JSON PAYLOAD */}
+                      {resultsTab === 'json' && (
+                        <div className="flex-1 flex flex-col overflow-hidden max-h-[500px] animate-in fade-in duration-300 font-mono text-xs">
+                          <div className="flex justify-between items-center pb-2 border-b border-[#00684A] mb-3 text-[#00ED64]/70">
+                            <span>raw_results.json</span>
+                            <span>{JSON.stringify(queryOutput.results).length} bytes</span>
+                          </div>
+                          <pre className="flex-1 overflow-y-auto text-[#00ED64]/90 leading-relaxed bg-[#001E2B]/40 p-4 rounded-xl border border-[#00684A] select-all max-h-[400px]">
+                            {JSON.stringify(queryOutput.results, null, 2)}
+                          </pre>
+                        </div>
+                      )}
+                    </>
                   )}
-                </>
-              )}
+                </div>
+              </div>
             </div>
           </div>
-        </div>
+        </Accordion>
+
+        {/* Accordion 3: Vector Search & Graph */}
+        <Accordion title="Vector Search & AI Graph" subtitle="Explore high-dimensional vector embeddings with Voyage AI and Atlas Vector Search">
+          <div className="py-6 flex flex-col gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              <div className="lg:col-span-1 flex flex-col gap-4">
+                <h3 className="text-xl font-bold text-white mb-2">Semantic Bird Search</h3>
+                <p className="text-sm text-zinc-400 mb-4">
+                  Query the MongoDB Atlas Vector Store using Voyage AI embeddings. 
+                  Search for descriptive qualities of bird calls (e.g. &quot;majestic eagle&quot;).
+                </p>
+                <div className="flex gap-2">
+                  <input 
+                    type="text" 
+                    value={vsSearchQuery}
+                    onChange={(e) => setVsSearchQuery(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && handleVectorSearch()}
+                    placeholder="e.g. majestic eagle call" 
+                    className="flex-1 bg-[#001E2B] border border-[#00684A] rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#00ED64]" 
+                  />
+                  <button 
+                    onClick={handleVectorSearch}
+                    disabled={vsLoading}
+                    className="bg-[#00ED64] text-[#001E2B] px-4 py-3 rounded-xl font-bold hover:bg-[#00ED64]/90 transition-colors disabled:opacity-50"
+                  >
+                    {vsLoading ? '...' : 'Search'}
+                  </button>
+                </div>
+
+                {vsError && (
+                  <div className="text-red-400 text-xs mt-2 bg-red-400/10 p-3 rounded-lg border border-red-400/20">
+                    {vsError}
+                  </div>
+                )}
+
+                {!graphData && !graphLoading && (
+                  <button onClick={seedVectorData} disabled={vsLoading} className="mt-4 w-full bg-[#023430] border border-[#00684A] text-[#00ED64] px-4 py-3 rounded-xl font-bold hover:bg-[#00684A]/50 transition-colors">
+                    {vsLoading ? 'Seeding Data...' : 'Seed Data from Xeno-canto'}
+                  </button>
+                )}
+
+                {vsResults && (
+                  <div className="mt-6 flex flex-col gap-3 flex-1 overflow-y-auto max-h-[400px]">
+                    <h4 className="text-sm font-bold text-[#00ED64]">Top Matches</h4>
+                    {vsResults.map((res: any) => (
+                      <div key={res._id} className="p-4 bg-[#023430]/40 border border-[#00684A] rounded-xl hover:border-[#00ED64]/50 transition-colors">
+                        <div className="flex justify-between items-start mb-2">
+                          <div className="font-bold text-white text-sm">{res.name}</div>
+                          <div className="text-xs bg-[#00ED64]/10 text-[#00ED64] px-2 py-0.5 rounded border border-[#00ED64]/20">
+                            Score: {res.score.toFixed(3)}
+                          </div>
+                        </div>
+                        <div className="text-xs text-zinc-400 font-mono mb-1">{res.scientific_name} • {res.family}</div>
+                        <div className="text-xs text-zinc-500 line-clamp-2">{res.remarks || 'No remarks available.'}</div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {selectedGraphNode && !vsResults && (
+                  <div className="mt-8 p-6 bg-[#023430]/40 border border-[#00684A] rounded-xl animate-in fade-in">
+                     <h4 className="text-sm font-bold text-[#00ED64] mb-2">Selected Node</h4>
+                     <div className="text-white font-bold mb-1">{selectedGraphNode.name}</div>
+                     <div className="text-xs text-zinc-400 font-mono mb-3">{selectedGraphNode.family}</div>
+                     <p className="text-xs text-zinc-500">This node's color represents its taxonomy family. Nodes clustered closely together have high cosine similarity (&gt;0.65) in Voyage AI's 1024-dimensional embedding space.</p>
+                  </div>
+                )}
+              </div>
+              <div className="lg:col-span-2">
+                {graphLoading ? (
+                  <div className="w-full h-[600px] flex flex-col items-center justify-center text-[#00ED64]/50 border border-[#00684A] rounded-xl bg-[#001E2B]/50">
+                    <div className="h-8 w-8 border-2 border-[#00ED64] border-t-transparent rounded-full animate-spin mb-4"></div>
+                    Loading 3D Graph Model...
+                  </div>
+                ) : graphData ? (
+                  <BirdSoundsGraph 
+                    nodes={graphData.nodes}
+                    links={graphData.links}
+                    onNodeClick={setSelectedGraphNode}
+                  />
+                ) : (
+                  <div className="w-full h-[600px] flex flex-col items-center justify-center text-[#00ED64]/50 border border-[#00684A] rounded-xl bg-[#001E2B]/50">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" className="mb-4 text-[#00684A]">
+                      <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                    </svg>
+                    <p>No graph data. Click &quot;Seed Data&quot; to begin.</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </Accordion>
+
       </main>
     </div>
   );

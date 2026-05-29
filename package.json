@@ -10,10 +10,14 @@
     "deploy": "npm run build && gh-pages -d out -t"
   },
   "dependencies": {
+    "@types/three": "^0.184.1",
+    "lucide-react": "^1.17.0",
     "mongodb": "^7.2.0",
     "next": "latest",
     "react": "latest",
-    "react-dom": "latest"
+    "react-dom": "latest",
+    "react-force-graph-3d": "^1.29.1",
+    "three": "^0.184.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
