@@ -300,6 +300,52 @@ export default function MongodbClient({ mongodbImages }: { mongodbImages: string
               </div>
             )}
 
+            {/* Cheat Sheet Section for Presentation */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+              {/* Projections Card */}
+              <div className="p-5 bg-[#001E2B]/60 border border-[#00ED64]/20 rounded-2xl relative overflow-hidden group">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-[#00ED64]/5 rounded-full blur-2xl -mr-16 -mt-16 transition-transform group-hover:scale-150"></div>
+                <h4 className="text-lg font-bold text-[#00ED64] mb-3 flex items-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                  Projections (Inclusion & Exclusion)
+                </h4>
+                <ul className="text-sm text-zinc-300 space-y-2 relative z-10">
+                  <li><code className="text-[#00ED64] bg-[#00684A]/30 px-1.5 py-0.5 rounded mr-2 font-bold">1</code> Include <span className="text-zinc-500 text-xs ml-1">(unspecified fields are excluded)</span></li>
+                  <li><code className="text-[#00ED64] bg-[#00684A]/30 px-1.5 py-0.5 rounded mr-2 font-bold">0</code> Exclude <span className="text-zinc-500 text-xs ml-1">(unspecified fields are included)</span></li>
+                  <li className="text-[#00ED64]/70 text-xs italic pt-1">Note: Inclusion & exclusion cannot be combined in projections.</li>
+                  <li className="pt-3 border-t border-[#00684A]/30 mt-2">
+                    <span className="font-semibold text-white text-xs uppercase tracking-wider">_id Field Exception:</span>
+                    <ul className="list-disc pl-5 mt-1.5 space-y-1 text-xs text-zinc-400">
+                      <li>Included by default (no 1 necessary).</li>
+                      <li>May always be excluded, even with an inclusive projection.</li>
+                    </ul>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Comparison Operators Card */}
+              <div className="p-5 bg-[#001E2B]/60 border border-[#00ED64]/20 rounded-2xl relative overflow-hidden group">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-[#00ED64]/5 rounded-full blur-2xl -mr-16 -mt-16 transition-transform group-hover:scale-150"></div>
+                <h4 className="text-lg font-bold text-[#00ED64] mb-3 flex items-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                  Comparison Operators
+                </h4>
+                <div className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-3 text-sm text-zinc-300 relative z-10 items-center mt-4">
+                  <code className="text-[#001E2B] bg-[#00ED64] px-2 py-1 rounded font-bold text-center">$gt</code>
+                  <div><span className="text-[#00ED64] font-bold mr-2">&gt;</span> Greater than specified value</div>
+                  
+                  <code className="text-[#001E2B] bg-[#00ED64] px-2 py-1 rounded font-bold text-center">$lt</code>
+                  <div><span className="text-[#00ED64] font-bold mr-2">&lt;</span> Less than specified value</div>
+                  
+                  <code className="text-[#001E2B] bg-[#00ED64] px-2 py-1 rounded font-bold text-center">$gte</code>
+                  <div><span className="text-[#00ED64] font-bold mr-2">&gt;=</span> At least specified value</div>
+                  
+                  <code className="text-[#001E2B] bg-[#00ED64] px-2 py-1 rounded font-bold text-center">$lte</code>
+                  <div><span className="text-[#00ED64] font-bold mr-2">&lt;=</span> No more than specified value</div>
+                </div>
+              </div>
+            </div>
+
             {/* Dashboard Panels */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
               
