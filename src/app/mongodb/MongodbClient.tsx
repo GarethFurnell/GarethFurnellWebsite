@@ -591,7 +591,7 @@ export default function MongodbClient({ mongodbImages }: { mongodbImages: string
                   </div>
                 )}
 
-                {!graphData && !graphLoading && (
+                {!graphLoading && (
                   <button onClick={seedVectorData} disabled={vsLoading} className="mt-4 w-full bg-[#023430] border border-[#00684A] text-[#00ED64] px-4 py-3 rounded-xl font-bold hover:bg-[#00684A]/50 transition-colors">
                     {vsLoading ? 'Seeding Data...' : 'Seed Data from Xeno-canto'}
                   </button>
