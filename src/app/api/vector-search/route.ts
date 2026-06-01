@@ -56,7 +56,7 @@ export async function POST(request: Request) {
           throw new Error(`Xeno-canto API Error: ${data.message || data.error}`);
         }
         
-        const recordings = data.recordings?.slice(0, 50) || []; // Limit to 50 to avoid massive embedding cost/time
+        const recordings = data.recordings?.slice(0, 200) || []; // Increase to 200 for a richer graph and better search results
 
         if (recordings.length === 0) {
           throw new Error('No recordings found from Xeno-canto. The API might have returned an empty result for this query.');
@@ -133,17 +133,20 @@ export async function POST(request: Request) {
 
       case 'graph_data': {
         // Fetch a sample of documents to build the 3D graph
-        const docs = await collection.find({}).limit(50).project({ name: 1, family: 1, embedding: 1 }).toArray();
+        const docs = await collection.find({}).limit(200).project({ name: 1, family: 1, embedding: 1 }).toArray();
         
-        const nodes = docs.map((doc, i) => ({
-          id: doc._id.toString(),
-          name: doc.name,
-          family: doc.family,
-          val: 1,
-          // Generate a color based on the family to group them visually
-          color: `#${Math.floor(Math.abs(Math.sin(doc.family.length) * 16777215) % 16777215).toString(16).padStart(6, '0')}`,
-          embedding: doc.embedding
-        }));
+        const nodes = docs.map((doc, i) => {
+          const familyStr = doc.family || 'Unknown';
+          return {
+            id: doc._id.toString(),
+            name: doc.name,
+            family: familyStr,
+            val: 1,
+            // Generate a color based on the family to group them visually
+            color: `#${Math.floor(Math.abs(Math.sin(familyStr.length * 10) * 16777215) % 16777215).toString(16).padStart(6, '0')}`,
+            embedding: doc.embedding
+          };
+        });
 
         // Calculate similarities to create edges
         const links = [];
