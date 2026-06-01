@@ -46,10 +46,15 @@ export async function POST(request: Request) {
         // 1. Fetch bird sounds from Xeno-canto API v3
         const response = await fetch(`https://xeno-canto.org/api/3/recordings?query=eagle&key=${xcApiKey}`);
         const data = await response.json();
+        
+        if (data.error) {
+          throw new Error(`Xeno-canto API Error: ${data.message || data.error}`);
+        }
+        
         const recordings = data.recordings?.slice(0, 50) || []; // Limit to 50 to avoid massive embedding cost/time
 
         if (recordings.length === 0) {
-          throw new Error('No recordings found from Xeno-canto');
+          throw new Error('No recordings found from Xeno-canto. The API might have returned an empty result for this query.');
         }
 
         // 2. Prepare texts for embedding
