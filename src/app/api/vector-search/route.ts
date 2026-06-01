@@ -20,7 +20,7 @@ const generateEmbeddings = async (texts: string[]) => {
     },
     body: JSON.stringify({
       input: texts,
-      model: 'voyage-2' // Falling back to voyage-2 in case voyage-3 requires a paid tier
+      model: 'voyage-3' 
     })
   });
 
