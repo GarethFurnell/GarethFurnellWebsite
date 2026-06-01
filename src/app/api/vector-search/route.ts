@@ -38,8 +38,13 @@ export async function POST(request: Request) {
 
     switch (action) {
       case 'seed': {
-        // 1. Fetch bird sounds from Xeno-canto API (e.g., eagles and hawks)
-        const response = await fetch('https://xeno-canto.org/api/2/recordings?query=eagle+OR+hawk+OR+sparrow+OR+finch');
+        const xcApiKey = process.env.XENO_CANTO_API_KEY;
+        if (!xcApiKey) {
+          throw new Error('XENO_CANTO_API_KEY is not set in environment variables. Please create an account on Xeno-canto to get an API key.');
+        }
+
+        // 1. Fetch bird sounds from Xeno-canto API v3
+        const response = await fetch(`https://xeno-canto.org/api/3/recordings?query=eagle&key=${xcApiKey}`);
         const data = await response.json();
         const recordings = data.recordings?.slice(0, 50) || []; // Limit to 50 to avoid massive embedding cost/time
 
