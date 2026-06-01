@@ -44,7 +44,8 @@ export async function POST(request: Request) {
         }
 
         // 1. Fetch bird sounds from Xeno-canto API v3
-        const response = await fetch(`https://xeno-canto.org/api/3/recordings?query=eagle&key=${xcApiKey}`);
+        // API v3 requires explicit search tags. We'll search for top-quality bird recordings.
+        const response = await fetch(`https://xeno-canto.org/api/3/recordings?query=grp:birds+q:A&key=${xcApiKey}`);
         const data = await response.json();
         
         if (data.error) {
