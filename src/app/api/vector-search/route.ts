@@ -3,10 +3,13 @@ import clientPromise from '@/utils/mongodb';
 
 // Helper function to generate embeddings via Voyage API directly
 const generateEmbeddings = async (texts: string[]) => {
-  const apiKey = process.env.VOYAGE_API_KEY;
+  let apiKey = process.env.VOYAGE_API_KEY;
   if (!apiKey) {
     throw new Error('VOYAGE_API_KEY is not set in environment variables');
   }
+  
+  // Clean up any accidental quotes or whitespace from the .env file
+  apiKey = apiKey.trim().replace(/^["']|["']$/g, '');
 
   const response = await fetch('https://api.voyageai.com/v1/embeddings', {
     method: 'POST',
@@ -16,7 +19,7 @@ const generateEmbeddings = async (texts: string[]) => {
     },
     body: JSON.stringify({
       input: texts,
-      model: 'voyage-3'
+      model: 'voyage-2' // Falling back to voyage-2 in case voyage-3 requires a paid tier
     })
   });
 
