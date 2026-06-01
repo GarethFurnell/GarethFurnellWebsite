@@ -11,7 +11,8 @@ const generateEmbeddings = async (texts: string[]) => {
   // Clean up any accidental quotes or whitespace from the .env file
   apiKey = apiKey.trim().replace(/^["']|["']$/g, '');
 
-  const response = await fetch('https://api.voyageai.com/v1/embeddings', {
+  // We are using the MongoDB Atlas AI proxy as requested by the user
+  const response = await fetch('https://ai.mongodb.com/v1/embeddings', {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${apiKey}`,
