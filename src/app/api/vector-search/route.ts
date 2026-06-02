@@ -81,7 +81,7 @@ export async function POST(request: Request) {
           }
         }
         
-        const recordings = uniqueRecordings.slice(0, 500); // Grab up to 500 birds for the graph
+        const recordings = uniqueRecordings.slice(0, 1000); // Store up to 1000 birds in the database
 
         if (recordings.length === 0) {
           throw new Error('No recordings found from Xeno-canto. The API might have returned an empty result for this query.');
