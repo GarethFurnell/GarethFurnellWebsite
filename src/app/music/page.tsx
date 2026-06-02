@@ -15,9 +15,9 @@ export default function MusicPage() {
     },
     {
       id: 2,
-      title: 'Neon Days (Placeholder)',
-      description: 'Synthwave inspired by 80s aesthetics.',
-      audioSrc: '', // e.g., '/audio/neon-nights.mp3'
+      title: 'Dub Techno Track 1',
+      description: 'First attempt at a 909 dub techno track. using the analog synthesizer',
+      audioSrc: '/public/music/dub-techno-track1.mp3',
     }
   ];
 
