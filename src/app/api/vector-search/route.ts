@@ -11,26 +11,35 @@ const generateEmbeddings = async (texts: string[]) => {
   // Clean up any accidental quotes or whitespace from the .env file
   apiKey = apiKey.trim().replace(/^["']|["']$/g, '');
 
-  // We are using the MongoDB Atlas AI proxy as requested by the user
-  const response = await fetch('https://ai.mongodb.com/v1/embeddings', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${apiKey}`,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      input: texts,
-      model: 'voyage-3' 
-    })
-  });
+  const chunkSize = 100; // Voyage API restricts batch size, so we chunk the requests
+  const allEmbeddings = [];
 
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`Voyage API error: ${response.status} ${errorText}`);
+  for (let i = 0; i < texts.length; i += chunkSize) {
+    const chunk = texts.slice(i, i + chunkSize);
+    
+    // We are using the MongoDB Atlas AI proxy as requested by the user
+    const response = await fetch('https://ai.mongodb.com/v1/embeddings', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        input: chunk,
+        model: 'voyage-4' 
+      })
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Voyage API error: ${response.status} ${errorText}`);
+    }
+
+    const data = await response.json();
+    allEmbeddings.push(...data.data);
   }
 
-  const data = await response.json();
-  return data.data; // Array of objects containing { embedding: [...] }
+  return allEmbeddings; // Array of objects containing { embedding: [...] }
 };
 
 export async function POST(request: Request) {
@@ -48,15 +57,29 @@ export async function POST(request: Request) {
         }
 
         // 1. Fetch bird sounds from Xeno-canto API v3
-        // API v3 requires explicit search tags. We'll search for top-quality bird recordings.
-        const response = await fetch(`https://xeno-canto.org/api/3/recordings?query=grp:birds+q:A&key=${xcApiKey}`);
-        const data = await response.json();
+        // Fetch up to 3 pages to get a massive pool to filter unique species from
+        let allRawRecordings: any[] = [];
+        for (let page = 1; page <= 3; page++) {
+          const response = await fetch(`https://xeno-canto.org/api/3/recordings?query=grp:birds+q:A&page=${page}&key=${xcApiKey}`);
+          const data = await response.json();
+          if (data.error) throw new Error(`Xeno-canto API Error: ${data.message || data.error}`);
+          if (data.recordings) allRawRecordings = allRawRecordings.concat(data.recordings);
+        }
+
+        // Filter for unique bird species (remove mammals/foxes just in case)
+        const uniqueRecordings = [];
+        const seenSpecies = new Set();
         
-        if (data.error) {
-          throw new Error(`Xeno-canto API Error: ${data.message || data.error}`);
+        for (const rec of allRawRecordings) {
+          const speciesName = `${rec.gen} ${rec.sp}`;
+          // Filter to strictly ensure it's a bird and we haven't seen this species yet
+          if (!seenSpecies.has(speciesName) && rec.grp === 'birds' && rec.gen !== 'Vulpes') {
+            seenSpecies.add(speciesName);
+            uniqueRecordings.push(rec);
+          }
         }
         
-        const recordings = data.recordings?.slice(0, 200) || []; // Increase to 200 for a richer graph and better search results
+        const recordings = uniqueRecordings.slice(0, 1000); // Scale up to 1000 unique birds
 
         if (recordings.length === 0) {
           throw new Error('No recordings found from Xeno-canto. The API might have returned an empty result for this query.');
@@ -71,17 +94,32 @@ export async function POST(request: Request) {
         const embeddings = await generateEmbeddings(textsToEmbed);
 
         // 4. Construct MongoDB documents
-        const documents = recordings.map((rec: any, i: number) => ({
-          id: rec.id,
-          name: rec.en,
-          scientific_name: `${rec.gen} ${rec.sp}`,
-          family: rec.family,
-          sound_type: rec.type,
-          location: rec.cnt,
-          remarks: rec.rmk,
-          file_url: rec.file,
-          embedding: embeddings && embeddings[i] ? embeddings[i].embedding : []
-        }));
+        const documents = recordings.map((rec: any, i: number) => {
+          let coordinates = null;
+          if (rec.lat && rec.lng) {
+            const lat = parseFloat(rec.lat);
+            const lng = parseFloat(rec.lng);
+            if (!isNaN(lat) && !isNaN(lng)) {
+              coordinates = {
+                type: "Point",
+                coordinates: [lng, lat]
+              };
+            }
+          }
+
+          return {
+            id: rec.id,
+            name: rec.en,
+            scientific_name: `${rec.gen} ${rec.sp}`,
+            genus: rec.gen,
+            sound_type: rec.type,
+            country: rec.cnt,
+            location: coordinates,
+            remarks: rec.rmk,
+            file_url: rec.file,
+            embedding: embeddings && embeddings[i] ? embeddings[i].embedding : []
+          };
+        });
 
         // 5. Save to MongoDB
         await collection.deleteMany({});
@@ -133,17 +171,26 @@ export async function POST(request: Request) {
 
       case 'graph_data': {
         // Fetch a sample of documents to build the 3D graph
-        const docs = await collection.find({}).limit(200).project({ name: 1, family: 1, embedding: 1 }).toArray();
+        const docs = await collection.find({}).limit(1000).project({ name: 1, genus: 1, country: 1, location: 1, embedding: 1 }).toArray();
         
+        const brightPalette = [
+          '#00ED64', '#FF3366', '#00E5FF', '#FFEA00', 
+          '#B400FF', '#FF007F', '#00FF9D', '#FF6B00', '#3366FF'
+        ];
+
         const nodes = docs.map((doc, i) => {
-          const familyStr = doc.family || 'Unknown';
+          const genusStr = doc.genus || 'Unknown';
+          // Hash the family string to consistently select a highly visible neon color
+          const colorHash = Math.abs(genusStr.split('').reduce((acc: number, char: string) => acc + char.charCodeAt(0), 0));
+          
           return {
             id: doc._id.toString(),
             name: doc.name,
-            family: familyStr,
+            genus: genusStr,
+            country: doc.country,
+            location: doc.location,
             val: 1,
-            // Generate a color based on the family to group them visually
-            color: `#${Math.floor(Math.abs(Math.sin(familyStr.length * 10) * 16777215) % 16777215).toString(16).padStart(6, '0')}`,
+            color: brightPalette[colorHash % brightPalette.length],
             embedding: doc.embedding
           };
         });

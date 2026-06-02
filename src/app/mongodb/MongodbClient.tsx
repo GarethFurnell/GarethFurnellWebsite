@@ -665,8 +665,20 @@ export default function MongodbClient({ mongodbImages }: { mongodbImages: string
                   <div className="mt-8 p-6 bg-[#023430]/40 border border-[#00684A] rounded-xl animate-in fade-in">
                      <h4 className="text-sm font-bold text-[#00ED64] mb-2">Selected Node</h4>
                      <div className="text-white font-bold mb-1">{selectedGraphNode.name}</div>
-                     <div className="text-xs text-zinc-400 font-mono mb-3">{selectedGraphNode.family}</div>
-                     <p className="text-xs text-zinc-500">This node's color represents its taxonomy family. Nodes clustered closely together have high cosine similarity (&gt;0.65) in Voyage AI's 1024-dimensional embedding space.</p>
+                     <div className="text-xs text-[#00ED64] font-mono mb-2">Genus: {selectedGraphNode.genus || selectedGraphNode.family}</div>
+                     {selectedGraphNode.country && (
+                       <div className="text-xs text-zinc-300 mb-1 flex items-center gap-1.5">
+                         <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                         {selectedGraphNode.country}
+                       </div>
+                     )}
+                     {selectedGraphNode.location?.coordinates && (
+                       <div className="text-xs text-zinc-400 font-mono mb-3 flex items-center gap-1.5">
+                         <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon></svg>
+                         [{selectedGraphNode.location.coordinates[0].toFixed(4)}, {selectedGraphNode.location.coordinates[1].toFixed(4)}]
+                       </div>
+                     )}
+                     <p className="text-xs text-zinc-500 mt-2 border-t border-[#00684A] pt-2">This node's color represents its taxonomy genus. Nodes clustered closely together have high cosine similarity (&gt;0.65) in Voyage AI's 1024-dimensional embedding space.</p>
                   </div>
                 )}
               </div>
