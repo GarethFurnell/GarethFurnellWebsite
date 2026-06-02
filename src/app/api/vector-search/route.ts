@@ -98,9 +98,10 @@ export async function POST(request: Request) {
         // 4. Construct MongoDB documents
         const documents = recordings.map((rec: any, i: number) => {
           let coordinates = null;
-          if (rec.lat && rec.lng) {
+          // In API v3, 'lng' was renamed to 'lon'
+          if (rec.lat && rec.lon) {
             const lat = parseFloat(rec.lat);
-            const lng = parseFloat(rec.lng);
+            const lng = parseFloat(rec.lon);
             if (!isNaN(lat) && !isNaN(lng)) {
               coordinates = {
                 type: "Point",
