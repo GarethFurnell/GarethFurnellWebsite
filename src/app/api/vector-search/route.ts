@@ -51,12 +51,16 @@ export async function POST(request: Request) {
 
     switch (action) {
       case 'seed': {
+        const xcApiKey = process.env.XENO_CANTO_API_KEY;
+        if (!xcApiKey) {
+          throw new Error('XENO_CANTO_API_KEY is not set in environment variables. Please create an account on Xeno-canto to get an API key.');
+        }
+
         // 1. Fetch bird sounds from Xeno-canto API v3
         // Fetch up to 5 pages to get a massive pool of high-quality bird recordings
         let allRawRecordings: any[] = [];
         for (let page = 1; page <= 5; page++) {
-          // Xeno-canto is an open API and does not require API keys. 
-          const response = await fetch(`https://xeno-canto.org/api/3/recordings?query=grp:birds+q:A&page=${page}`);
+          const response = await fetch(`https://xeno-canto.org/api/3/recordings?query=grp:birds+q:A&page=${page}&key=${xcApiKey}`);
           const data = await response.json();
           if (data.error) throw new Error(`Xeno-canto API Error: ${data.message || data.error}`);
           if (data.recordings) allRawRecordings = allRawRecordings.concat(data.recordings);
