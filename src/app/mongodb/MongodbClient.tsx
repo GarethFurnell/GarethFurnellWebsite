@@ -20,26 +20,26 @@ const queryOptions: QueryOption[] = [
   {
     id: 'gte',
     name: 'Greater Than or Equal ($gte)',
-    description: 'Finds all projects with 12 or more stars.',
+    description: 'Finds all books with a price of 12 or more.',
     operator: '$gte',
-    sampleCode: `// Find documents where "stars" is >= 12
+    sampleCode: `// Find documents where "price" is >= 12
 const results = await db
-  .collection('presentation_projects')
-  .find({ stars: { $gte: 12 } })
+  .collection('presentation_books')
+  .find({ price: { $gte: 12 } })
   .toArray();`
   },
   {
     id: 'and',
     name: 'Logical AND ($and)',
-    description: 'Finds projects that are completed AND belong to "AI & Automation".',
+    description: 'Finds books that are in-stock AND belong to the "Technology" genre.',
     operator: '$and',
-    sampleCode: `// Combine filters: category matches AND status matches
+    sampleCode: `// Combine filters: genre matches AND status matches
 const results = await db
-  .collection('presentation_projects')
+  .collection('presentation_books')
   .find({
     $and: [
-      { category: "AI & Automation" },
-      { status: "completed" }
+      { genre: "Technology" },
+      { status: "in-stock" }
     ]
   })
   .toArray();`
@@ -47,16 +47,16 @@ const results = await db
   {
     id: 'elemMatch',
     name: 'Array Match ($elemMatch)',
-    description: 'Queries nested objects inside an array: Finds projects that have a developer with 5+ years of experience.',
+    description: 'Queries nested objects inside an array: Finds books that have a writer with 5+ awards.',
     operator: '$elemMatch',
     sampleCode: `// Matches if at least one array element satisfies all conditions
 const results = await db
-  .collection('presentation_projects')
+  .collection('presentation_books')
   .find({
-    team: {
+    authors: {
       $elemMatch: {
-        role: "developer",
-        experience: { $gte: 5 }
+        role: "writer",
+        awards: { $gte: 5 }
       }
     }
   })
@@ -65,26 +65,26 @@ const results = await db
   {
     id: 'sortLimitProj',
     name: 'Sort, Limit & Project',
-    description: 'Finds completed projects, projects only name/stars, sorts descending, and returns top 2 results.',
+    description: 'Finds in-stock books, projects only title/price, sorts descending, and returns top 2 results.',
     operator: 'sort/limit/project',
     sampleCode: `// Projection hides fields; sort & limit reduce output scope
 const results = await db
-  .collection('presentation_projects')
-  .find({ status: "completed" })
-  .project({ name: 1, stars: 1, _id: 0 })
-  .sort({ stars: -1 })
+  .collection('presentation_books')
+  .find({ status: "in-stock" })
+  .project({ title: 1, price: 1, _id: 0 })
+  .sort({ price: -1 })
   .limit(2)
   .toArray();`
   },
   {
     id: 'count',
     name: 'Count Documents',
-    description: 'Counts the total number of projects that are completed.',
+    description: 'Counts the total number of books that are in-stock.',
     operator: 'countDocuments',
     sampleCode: `// Returns the numeric count of matching documents
 const count = await db
-  .collection('presentation_projects')
-  .countDocuments({ status: "completed" });`
+  .collection('presentation_books')
+  .countDocuments({ status: "in-stock" });`
   }
 ];
 
@@ -287,7 +287,7 @@ export default function MongodbClient({ mongodbImages }: { mongodbImages: string
                 <div>
                   <h4 className="text-[#00ED64] font-semibold mb-1">Database Collection Empty</h4>
                   <p className="text-zinc-300 text-sm max-w-xl">
-                    Your MongoDB cluster collection `presentation_projects` is currently empty. Seed it with sample projects first to make query demonstrations active.
+                    Your MongoDB cluster collection `presentation_books` is currently empty. Seed it with sample books first to make query demonstrations active.
                   </p>
                 </div>
                 <button
@@ -375,12 +375,12 @@ export default function MongodbClient({ mongodbImages }: { mongodbImages: string
                 </div>
 
                 {/* Code Console */}
-                <div className="p-6 bg-[#001E2B] border border-[#00684A] rounded-2xl font-mono text-xs overflow-hidden flex flex-col">
-                  <div className="flex justify-between items-center pb-3 border-b border-[#00684A] mb-4 text-[#00ED64]/70">
+                <div className="p-6 bg-[#001E2B] border border-[#00684A] rounded-2xl font-mono text-base overflow-hidden flex flex-col">
+                  <div className="flex justify-between items-center pb-3 border-b border-[#00684A] mb-4 text-[#00ED64]/70 text-sm">
                     <span>query_command.js</span>
                     <span className="flex h-2 w-2 rounded-full bg-[#00ED64]"></span>
                   </div>
-                  <pre className="text-[#00ED64]/90 whitespace-pre-wrap leading-relaxed overflow-x-auto select-all max-h-40">
+                  <pre className="text-[#00ED64] whitespace-pre-wrap leading-relaxed overflow-x-auto select-all max-h-60">
                     {selectedQuery.sampleCode}
                   </pre>
                 </div>
@@ -515,23 +515,23 @@ export default function MongodbClient({ mongodbImages }: { mongodbImages: string
                                 >
                                   <div className="flex justify-between items-start">
                                     <div>
-                                      <h4 className="font-bold text-white text-base">{doc.name}</h4>
-                                      {doc.category && (
+                                      <h4 className="font-bold text-white text-base">{doc.title}</h4>
+                                      {doc.genre && (
                                         <span className="inline-block px-2.5 py-0.5 mt-1.5 rounded-full text-xs font-semibold bg-[#00684A] text-[#00ED64]">
-                                          {doc.category}
+                                          {doc.genre}
                                         </span>
                                       )}
                                     </div>
                                     
-                                    {/* Star Badge (Highlighter for GTE) */}
-                                    {doc.stars !== undefined && (
+                                    {/* Price Badge (Highlighter for GTE) */}
+                                    {doc.price !== undefined && (
                                       <div className={`px-3 py-1 rounded-lg text-xs font-bold flex items-center gap-1.5 ${
-                                        selectedQuery.id === 'gte' && doc.stars >= 12
+                                        selectedQuery.id === 'gte' && doc.price >= 12
                                           ? 'bg-[#00ED64]/10 border border-[#00ED64]/30 text-[#00ED64] shadow-[0_0_15px_rgba(0,237,100,0.1)]'
                                           : 'bg-[#001E2B] text-[#00ED64]/50 border border-[#00684A]'
                                       }`}>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-                                        {doc.stars} Stars
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.41 16.09V20h-2.67v-1.93c-1.71-.36-3.16-1.46-3.27-3.4h1.96c.1 1.05.82 1.87 2.65 1.87 1.96 0 2.4-.98 2.4-1.59 0-.83-.44-1.61-2.67-2.14-2.48-.6-4.18-1.62-4.18-3.67 0-1.72 1.39-2.84 3.11-3.21V4h2.67v1.95c1.86.45 2.79 1.86 2.85 3.39H14.3c-.05-1.11-.64-1.87-2.22-1.87-1.5 0-2.4.68-2.4 1.64 0 .84.65 1.39 2.67 1.91 2.95.73 4.18 1.94 4.18 3.93-.01 2.11-1.63 3.15-3.12 3.14z"></path></svg>
+                                        ${doc.price}
                                       </div>
                                     )}
                                   </div>
@@ -550,17 +550,17 @@ export default function MongodbClient({ mongodbImages }: { mongodbImages: string
                                     </div>
                                   )}
 
-                                  {/* Nested Team Array (Highlighter for ElemMatch) */}
-                                  {doc.team && (
+                                  {/* Nested Authors Array (Highlighter for ElemMatch) */}
+                                  {doc.authors && (
                                     <div className={`p-3 rounded-lg border flex flex-col gap-1.5 ${
                                       selectedQuery.id === 'elemMatch'
                                         ? 'bg-[#00ED64]/5 border-[#00ED64]/20'
                                         : 'bg-[#001E2B]/30 border-[#00684A]'
                                     }`}>
-                                      <div className="text-2xs text-[#00ED64]/50 uppercase tracking-widest font-semibold">Team Configuration</div>
+                                      <div className="text-2xs text-[#00ED64]/50 uppercase tracking-widest font-semibold">Authors</div>
                                       <div className="flex flex-col gap-1.5">
-                                        {doc.team.map((member: any, mIndex: number) => {
-                                          const isMatch = selectedQuery.id === 'elemMatch' && member.role === 'developer' && member.experience >= 5;
+                                        {doc.authors.map((member: any, mIndex: number) => {
+                                          const isMatch = selectedQuery.id === 'elemMatch' && member.role === 'writer' && member.awards >= 5;
                                           return (
                                             <div
                                               key={mIndex}
@@ -569,7 +569,7 @@ export default function MongodbClient({ mongodbImages }: { mongodbImages: string
                                               }`}
                                             >
                                               <span className="capitalize">{member.role}</span>
-                                              <span>{member.experience} yrs exp {isMatch && '🔥'}</span>
+                                              <span>{member.awards} awards {isMatch && '🏆'}</span>
                                             </div>
                                           );
                                         })}
@@ -585,12 +585,12 @@ export default function MongodbClient({ mongodbImages }: { mongodbImages: string
 
                       {/* TAB 2: RAW JSON PAYLOAD */}
                       {resultsTab === 'json' && (
-                        <div className="flex-1 flex flex-col overflow-hidden max-h-[500px] animate-in fade-in duration-300 font-mono text-xs">
-                          <div className="flex justify-between items-center pb-2 border-b border-[#00684A] mb-3 text-[#00ED64]/70">
+                        <div className="flex-1 flex flex-col overflow-hidden max-h-[500px] animate-in fade-in duration-300 font-mono text-base">
+                          <div className="flex justify-between items-center pb-2 border-b border-[#00684A] mb-3 text-[#00ED64]/70 text-sm">
                             <span>raw_results.json</span>
                             <span>{JSON.stringify(queryOutput.results).length} bytes</span>
                           </div>
-                          <pre className="flex-1 overflow-y-auto text-[#00ED64]/90 leading-relaxed bg-[#001E2B]/40 p-4 rounded-xl border border-[#00684A] select-all max-h-[400px]">
+                          <pre className="flex-1 overflow-y-auto text-[#00ED64] leading-relaxed bg-[#001E2B]/40 p-4 rounded-xl border border-[#00684A] select-all max-h-[400px]">
                             {JSON.stringify(queryOutput.results, null, 2)}
                           </pre>
                         </div>

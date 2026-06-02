@@ -4,56 +4,56 @@ import clientPromise from '@/utils/mongodb';
 // Mock data to seed the database
 const seedData = [
   {
-    name: "Portfolio AI Assistant",
-    stars: 15,
-    category: "AI & Automation",
-    status: "completed",
-    tags: ["React", "Next.js", "Gemini"],
-    team: [
-      { role: "developer", experience: 4 },
-      { role: "designer", experience: 2 }
+    title: "The Cosmos Explained",
+    price: 15,
+    genre: "Science",
+    status: "in-stock",
+    tags: ["space", "physics", "bestseller"],
+    authors: [
+      { role: "writer", awards: 4 },
+      { role: "illustrator", awards: 2 }
     ]
   },
   {
-    name: "Granular Ambient Synth",
-    stars: 8,
-    category: "Creative Engineering",
-    status: "completed",
-    tags: ["Web Audio API", "TypeScript", "Ableton"],
-    team: [
-      { role: "developer", experience: 5 }
+    title: "Advanced React Patterns",
+    price: 8,
+    genre: "Technology",
+    status: "in-stock",
+    tags: ["programming", "web", "frontend"],
+    authors: [
+      { role: "writer", awards: 5 }
     ]
   },
   {
-    name: "HNSW Graph Visualiser",
-    stars: 25,
-    category: "Vector Databases",
-    status: "in-progress",
-    tags: ["Three.js", "WebGL", "Rust", "HNSW"],
-    team: [
-      { role: "developer", experience: 6 },
-      { role: "scientist", experience: 4 }
+    title: "A History of Ancient Rome",
+    price: 25,
+    genre: "History",
+    status: "out-of-stock",
+    tags: ["ancient", "empire", "europe"],
+    authors: [
+      { role: "writer", awards: 6 },
+      { role: "editor", awards: 4 }
     ]
   },
   {
-    name: "GCP Serverless Pipe",
-    stars: 12,
-    category: "Cloud Systems",
-    status: "completed",
-    tags: ["Cloud Run", "Terraform", "Docker"],
-    team: [
-      { role: "engineer", experience: 3 }
+    title: "Learning Python",
+    price: 12,
+    genre: "Technology",
+    status: "in-stock",
+    tags: ["programming", "backend", "data"],
+    authors: [
+      { role: "writer", awards: 3 }
     ]
   },
   {
-    name: "MongoDB Dashboard",
-    stars: 5,
-    category: "Database Systems",
-    status: "in-progress",
-    tags: ["MongoDB", "Express", "Next.js"],
-    team: [
-      { role: "developer", experience: 2 },
-      { role: "designer", experience: 4 }
+    title: "Introduction to Biology",
+    price: 5,
+    genre: "Science",
+    status: "out-of-stock",
+    tags: ["nature", "animals", "plants"],
+    authors: [
+      { role: "writer", awards: 2 },
+      { role: "illustrator", awards: 4 }
     ]
   }
 ];
@@ -63,7 +63,7 @@ export async function POST(request: Request) {
     const { action } = await request.json();
     const client = await clientPromise;
     const db = client.db('gfweb');
-    const collectionName = 'presentation_projects';
+    const collectionName = 'presentation_books';
     const collection = db.collection(collectionName);
 
     let queryCode = '';
@@ -91,10 +91,10 @@ await db.collection('${collectionName}').insertMany(${JSON.stringify(seedData, n
         });
 
       case 'gte':
-        queryObject = { stars: { $gte: 12 } };
+        queryObject = { price: { $gte: 12 } };
         queryCode = `const results = await db
   .collection('${collectionName}')
-  .find({ stars: { $gte: 12 } })
+  .find({ price: { $gte: 12 } })
   .toArray();`;
         results = await collection.find(queryObject).toArray();
         break;
@@ -102,16 +102,16 @@ await db.collection('${collectionName}').insertMany(${JSON.stringify(seedData, n
       case 'and':
         queryObject = {
           $and: [
-            { category: "AI & Automation" },
-            { status: "completed" }
+            { genre: "Technology" },
+            { status: "in-stock" }
           ]
         };
         queryCode = `const results = await db
   .collection('${collectionName}')
   .find({
     $and: [
-      { category: "AI & Automation" },
-      { status: "completed" }
+      { genre: "Technology" },
+      { status: "in-stock" }
     ]
   })
   .toArray();`;
@@ -120,20 +120,20 @@ await db.collection('${collectionName}').insertMany(${JSON.stringify(seedData, n
 
       case 'elemMatch':
         queryObject = {
-          team: {
+          authors: {
             $elemMatch: {
-              role: "developer",
-              experience: { $gte: 5 }
+              role: "writer",
+              awards: { $gte: 5 }
             }
           }
         };
         queryCode = `const results = await db
   .collection('${collectionName}')
   .find({
-    team: {
+    authors: {
       $elemMatch: {
-        role: "developer",
-        experience: { $gte: 5 }
+        role: "writer",
+        awards: { $gte: 5 }
       }
     }
   })
@@ -142,27 +142,27 @@ await db.collection('${collectionName}').insertMany(${JSON.stringify(seedData, n
         break;
 
       case 'sortLimitProj':
-        queryObject = { status: "completed" };
+        queryObject = { status: "in-stock" };
         queryCode = `const results = await db
   .collection('${collectionName}')
-  .find({ status: "completed" })
-  .project({ name: 1, stars: 1, _id: 0 })
-  .sort({ stars: -1 })
+  .find({ status: "in-stock" })
+  .project({ title: 1, price: 1, _id: 0 })
+  .sort({ price: -1 })
   .limit(2)
   .toArray();`;
         results = await collection
           .find(queryObject)
-          .project({ name: 1, stars: 1, _id: 0 })
-          .sort({ stars: -1 })
+          .project({ title: 1, price: 1, _id: 0 })
+          .sort({ price: -1 })
           .limit(2)
           .toArray();
         break;
 
       case 'count':
-        queryObject = { status: "completed" };
+        queryObject = { status: "in-stock" };
         queryCode = `const count = await db
   .collection('${collectionName}')
-  .countDocuments({ status: "completed" });`;
+  .countDocuments({ status: "in-stock" });`;
         const count = await collection.countDocuments(queryObject);
         results = { count };
         break;
