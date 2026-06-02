@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 
 export const metadata = {
   title: 'Music | Gareth Furnell',
@@ -12,12 +13,14 @@ export default function MusicPage() {
       title: 'Project Beta (Placeholder)',
       description: 'An ambient exploration using granular synthesis.',
       audioSrc: '', // e.g., '/audio/project-alpha.mp3'
+      image: '/images/music/ambient.png'
     },
     {
       id: 2,
       title: 'Dub Techno Track 1',
       description: 'First attempt at a 909 dub techno track. using the analog synthesizer',
-      audioSrc: '/public/music/dub-techno-track1.mp3',
+      audioSrc: '/music/dub-techno-track1.mp3',
+      image: '/images/music/techno.png'
     }
   ];
 
@@ -40,29 +43,40 @@ export default function MusicPage() {
           </p>
         </div>
 
-        <div className="flex flex-col gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {tracks.map((track) => (
             <div
               key={track.id}
-              className="p-6 bg-zinc-900 border border-zinc-800 rounded-2xl flex flex-col gap-4 transition-all duration-300 hover:border-zinc-600"
+              className="relative group overflow-hidden bg-zinc-900/50 border border-zinc-800/80 rounded-3xl flex flex-col transition-all duration-500 hover:border-zinc-500/50 hover:bg-zinc-900 shadow-2xl shadow-black/50"
             >
-              <div>
-                <h3 className="text-xl font-medium text-zinc-100">{track.title}</h3>
-                <p className="text-zinc-400 mt-1">{track.description}</p>
+              <div className="relative w-full aspect-square overflow-hidden bg-black">
+                <Image
+                  src={track.image}
+                  alt={track.title}
+                  fill
+                  className="object-cover transition-transform duration-700 group-hover:scale-105 opacity-80 group-hover:opacity-100"
+                />
+                
+                <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 via-zinc-900/20 to-transparent opacity-90"></div>
+                
+                <div className="absolute bottom-0 left-0 p-6 w-full">
+                  <h3 className="text-2xl font-bold text-white mb-2 drop-shadow-md">{track.title}</h3>
+                  <p className="text-zinc-300 text-sm drop-shadow-md">{track.description}</p>
+                </div>
               </div>
 
-              <div className="w-full bg-black rounded-xl p-4 border border-zinc-800">
-                {/* Custom Audio Player Placeholder */}
+              <div className="p-6 bg-zinc-900/80 backdrop-blur-xl border-t border-zinc-800/80">
                 {track.audioSrc ? (
                   <audio
                     controls
-                    className="w-full h-10 custom-audio-player"
+                    controlsList="nodownload"
+                    className="w-full h-12 opacity-80 transition-opacity duration-300 group-hover:opacity-100"
                     src={track.audioSrc}
                   >
                     Your browser does not support the audio element.
                   </audio>
                 ) : (
-                  <div className="flex items-center justify-center h-10 text-zinc-500 text-sm italic">
+                  <div className="flex items-center justify-center h-12 bg-black/40 rounded-full border border-dashed border-zinc-700 text-zinc-500 text-sm font-medium">
                     Audio file pending upload...
                   </div>
                 )}
