@@ -81,7 +81,7 @@ export async function POST(request: Request) {
           }
         }
         
-        const recordings = uniqueRecordings.slice(0, 1000); // Grab up to 1000 birds for the graph
+        const recordings = uniqueRecordings.slice(0, 500); // Grab up to 500 birds for the graph
 
         if (recordings.length === 0) {
           throw new Error('No recordings found from Xeno-canto. The API might have returned an empty result for this query.');
@@ -174,7 +174,7 @@ export async function POST(request: Request) {
 
       case 'graph_data': {
         // Fetch a sample of documents to build the 3D graph
-        const docs = await collection.find({}).limit(1000).project({ name: 1, genus: 1, country: 1, location: 1, embedding: 1 }).toArray();
+        const docs = await collection.find({}).limit(500).project({ name: 1, genus: 1, country: 1, location: 1, embedding: 1 }).toArray();
         
         const brightPalette = [
           '#00ED64', '#FF3366', '#00E5FF', '#FFEA00', 
