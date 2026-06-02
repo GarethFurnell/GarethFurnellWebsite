@@ -51,35 +51,33 @@ export async function POST(request: Request) {
 
     switch (action) {
       case 'seed': {
-        const xcApiKey = process.env.XENO_CANTO_API_KEY;
-        if (!xcApiKey) {
-          throw new Error('XENO_CANTO_API_KEY is not set in environment variables. Please create an account on Xeno-canto to get an API key.');
-        }
-
         // 1. Fetch bird sounds from Xeno-canto API v3
-        // Fetch up to 3 pages to get a massive pool to filter unique species from
+        // Fetch up to 5 pages to get a massive pool of high-quality bird recordings
         let allRawRecordings: any[] = [];
-        for (let page = 1; page <= 3; page++) {
-          const response = await fetch(`https://xeno-canto.org/api/3/recordings?query=grp:birds+q:A&page=${page}&key=${xcApiKey}`);
+        for (let page = 1; page <= 5; page++) {
+          // Xeno-canto is an open API and does not require API keys. 
+          const response = await fetch(`https://xeno-canto.org/api/3/recordings?query=grp:birds+q:A&page=${page}`);
           const data = await response.json();
           if (data.error) throw new Error(`Xeno-canto API Error: ${data.message || data.error}`);
           if (data.recordings) allRawRecordings = allRawRecordings.concat(data.recordings);
         }
 
-        // Filter for unique bird species (remove mammals/foxes just in case)
+        // Filter for bird species (allow up to 15 recordings per species to build beautiful clusters)
         const uniqueRecordings = [];
-        const seenSpecies = new Set();
+        const speciesCount = new Map();
         
         for (const rec of allRawRecordings) {
           const speciesName = `${rec.gen} ${rec.sp}`;
-          // Filter to strictly ensure it's a bird and we haven't seen this species yet
-          if (!seenSpecies.has(speciesName) && rec.grp === 'birds' && rec.gen !== 'Vulpes') {
-            seenSpecies.add(speciesName);
+          const currentCount = speciesCount.get(speciesName) || 0;
+          
+          // Filter to strictly ensure it's a bird, remove weird anomalies like foxes, and cap at 15 per species
+          if (currentCount < 15 && rec.grp === 'birds' && rec.gen !== 'Vulpes') {
+            speciesCount.set(speciesName, currentCount + 1);
             uniqueRecordings.push(rec);
           }
         }
         
-        const recordings = uniqueRecordings.slice(0, 1000); // Scale up to 1000 unique birds
+        const recordings = uniqueRecordings.slice(0, 1000); // Grab up to 1000 birds for the graph
 
         if (recordings.length === 0) {
           throw new Error('No recordings found from Xeno-canto. The API might have returned an empty result for this query.');
