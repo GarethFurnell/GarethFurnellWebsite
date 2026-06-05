@@ -201,8 +201,14 @@ export async function POST(request: Request) {
         // Calculate similarities to create edges
         const links = [];
         
-        // Simple dot product function for cosine similarity (assuming normalized vectors)
-        const dotProduct = (a: number[], b: number[]) => a.reduce((sum, val, i) => sum + val * b[i], 0);
+        // Highly optimized dot product function (avoiding .reduce() which is very slow in tight V8 loops)
+        const dotProduct = (a: number[], b: number[]) => {
+          let sum = 0;
+          for (let k = 0; k < a.length; k++) {
+            sum += a[k] * b[k];
+          }
+          return sum;
+        };
 
         for (let i = 0; i < nodes.length; i++) {
           for (let j = i + 1; j < nodes.length; j++) {
