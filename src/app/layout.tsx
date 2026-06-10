@@ -41,6 +41,8 @@ export const metadata: Metadata = {
   }
 };
 
+import NetworkBackground from "@/components/NetworkBackground";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -49,6 +51,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} antialiased dark`} style={{ colorScheme: 'dark' }}>
       <body className="bg-black min-h-screen text-white font-sans selection:bg-zinc-800">
+        <NetworkBackground />
         {children}
       </body>
     </html>
