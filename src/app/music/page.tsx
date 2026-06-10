@@ -3,24 +3,26 @@ import Image from 'next/image';
 
 export const metadata = {
   title: 'Music | Gareth Furnell',
-  description: 'Ableton projects and original music.',
+  description: 'Ambient explorations, dub techno, and original music.',
 };
 
 export default function MusicPage() {
   const tracks = [
     {
       id: 1,
-      title: 'Project Beta (Placeholder)',
-      description: 'An ambient exploration using granular synthesis.',
+      title: 'Ambient Granular Exploration',
+      description: 'An atmospheric, generative ambient exploration using granular synthesis.',
       audioSrc: '', // e.g., '/audio/project-alpha.mp3'
-      image: '/images/music/ambient.png'
+      image: '/images/music/ambient.png',
+      bandcampLink: 'https://bandcamp.com' // Placeholder
     },
     {
       id: 2,
       title: 'Dub Techno Track 1',
-      description: 'First attempt at a 909 dub techno track. using the analog synthesizer',
+      description: 'First attempt at a 909 dub techno track using the analog synthesizer.',
       audioSrc: '/music/dub-techno-track1.mp3',
-      image: '/images/music/techno.png'
+      image: '/images/music/techno.png',
+      bandcampLink: 'https://bandcamp.com' // Placeholder
     }
   ];
 
@@ -36,10 +38,10 @@ export default function MusicPage() {
       <main className="w-full max-w-4xl mx-auto px-6 pb-24 animate-in fade-in slide-in-from-bottom-4 duration-700">
         <div className="mb-12">
           <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-white mb-4">
-            Ableton Projects
+            Ambient & Audio
           </h2>
           <p className="text-zinc-400 max-w-2xl text-lg">
-            A collection of my original music and audio experiments.
+            A collection of my original music, shifting focus towards deep ambient soundscapes and generative audio.
           </p>
         </div>
 
@@ -65,7 +67,7 @@ export default function MusicPage() {
                 </div>
               </div>
 
-              <div className="p-6 bg-zinc-900/80 backdrop-blur-xl border-t border-zinc-800/80">
+              <div className="p-6 bg-zinc-900/80 backdrop-blur-xl border-t border-zinc-800/80 flex flex-col gap-4">
                 {track.audioSrc ? (
                   <audio
                     controls
@@ -79,6 +81,20 @@ export default function MusicPage() {
                   <div className="flex items-center justify-center h-12 bg-black/40 rounded-full border border-dashed border-zinc-700 text-zinc-500 text-sm font-medium">
                     Audio file pending upload...
                   </div>
+                )}
+                
+                {track.bandcampLink && (
+                  <a
+                    href={track.bandcampLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2 w-full py-3 bg-[#629aa9]/10 text-[#629aa9] hover:bg-[#629aa9] hover:text-white border border-[#629aa9]/30 rounded-xl font-bold text-sm transition-colors"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M0 18.75l7.437-13.5H24l-7.438 13.5H0z"/>
+                    </svg>
+                    Support on Bandcamp — $1
+                  </a>
                 )}
               </div>
             </div>

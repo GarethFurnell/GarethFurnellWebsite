@@ -5,8 +5,36 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export const metadata: Metadata = {
-  title: "Gareth Furnell | Portfolio",
-  description: "Portfolio and projects of Gareth Furnell.",
+  metadataBase: new URL("https://garethfurnell.com"),
+  title: "Gareth Furnell | Creative Developer",
+  description: "Portfolio of Gareth Furnell, a Creative Developer specializing in Generative AI, 3D Vector Graphs, Cloud Architecture, and Web Experiences.",
+  keywords: ["Gareth Furnell", "Creative Developer", "Software Engineer", "MongoDB", "AI", "Vector Search", "Photography", "Ableton"],
+  openGraph: {
+    title: "Gareth Furnell | Creative Developer",
+    description: "Crafting innovative digital experiences through code, creativity, and emergence.",
+    url: "https://garethfurnell.com",
+    siteName: "Gareth Furnell Portfolio",
+    images: [
+      {
+        url: "/opengraph-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Gareth Furnell - Creative Developer & Technologist",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Gareth Furnell | Creative Developer",
+    description: "Crafting innovative digital experiences through code, creativity, and emergence.",
+    images: ["/opengraph-image.png"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+  }
 };
 
 export default function RootLayout({

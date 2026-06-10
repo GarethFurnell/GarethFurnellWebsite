@@ -85,6 +85,7 @@ export default function BirdSoundsGraph({ nodes, links, onNodeClick }: BirdSound
           linkColor={(link: any) => link.color || '#00684A'}
           linkWidth={(link: any) => link.value || 1}
           nodeResolution={16}
+          cooldownTime={3000} // Stop the physics engine after 3 seconds to save memory and CPU
           onNodeClick={(node: any) => {
             // Aim at node from outside it
             const distance = 40;

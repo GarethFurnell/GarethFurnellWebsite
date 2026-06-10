@@ -21,7 +21,7 @@ export default function Home() {
         <ul className="flex flex-col gap-2 mt-8">
           <ListItem
             title="MongoDB"
-            subtitle="Certifications & Live Operators Console"
+            subtitle="AI Vector Search & 3D Graph"
             href="/mongodb"
           />
           <ListItem
@@ -43,11 +43,6 @@ export default function Home() {
             title="Music"
             subtitle="Ableton Projects & Audio"
             href="/music"
-          />
-          <ListItem
-            title="Research"
-            subtitle="Vectors & Embeddings Visualisations"
-            href="/research"
           />
         </ul>
       </main>
