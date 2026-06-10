@@ -71,7 +71,7 @@ export default function ContactPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-black text-white font-sans selection:bg-zinc-800">
+    <div className="min-h-screen text-white font-sans selection:bg-zinc-800">
       <header className="w-full max-w-4xl mx-auto px-6 py-12 flex justify-between items-center">
         <Link href="/" className="text-xl font-semibold tracking-tight text-white hover:opacity-80 transition-opacity">
           ← Back

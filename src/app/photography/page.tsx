@@ -15,7 +15,7 @@ export default function PhotographyPage() {
   const emptyMsg = "Out in the field taking pictures or the negatives are currently being developed";
 
   return (
-    <div className="min-h-screen bg-black text-white font-sans selection:bg-zinc-800">
+    <div className="min-h-screen text-white font-sans selection:bg-zinc-800">
       <header className="w-full max-w-6xl mx-auto px-6 py-12 flex justify-between items-center">
         <Link href="/" className="text-xl font-semibold tracking-tight text-white hover:opacity-80 transition-opacity">
           ← Back

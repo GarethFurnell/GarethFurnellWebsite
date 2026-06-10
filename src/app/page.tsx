@@ -4,7 +4,7 @@ import InteractiveEye from '@/components/InteractiveEye';
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-black text-white selection:bg-zinc-800 selection:text-white flex flex-col font-sans">
+    <div className="min-h-screen text-white selection:bg-zinc-800 selection:text-white flex flex-col font-sans">
       <header className="w-full max-w-4xl mx-auto px-6 py-12 sm:py-20 flex justify-between items-center">
         <h1 className="text-2xl font-semibold tracking-tight text-white hover:opacity-80 transition-opacity cursor-pointer animate-pulse drop-shadow-[0_0_15px_rgba(255,255,255,0.7)]">
           gareth furnell

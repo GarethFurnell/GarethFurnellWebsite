@@ -11,7 +11,7 @@ export default function GooglePage() {
   const googleImages = getImages('certifications/google');
 
   return (
-    <div className="min-h-screen bg-black text-white font-sans selection:bg-blue-500/30">
+    <div className="min-h-screen text-white font-sans selection:bg-blue-500/30">
       <header className="w-full max-w-6xl mx-auto px-6 py-12 flex justify-between items-center">
         <Link href="/" className="text-xl font-semibold tracking-tight text-white hover:opacity-80 transition-opacity">
           ← Back to Home

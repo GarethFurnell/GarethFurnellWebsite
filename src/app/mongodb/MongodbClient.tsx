@@ -90,7 +90,7 @@ export default function MongodbClient({ mongodbImages }: { mongodbImages: string
   
   
   return (
-    <div className="min-h-screen bg-[#001E2B] text-white font-sans selection:bg-[#00684A]/50 relative overflow-hidden">
+    <div className="min-h-screen  text-white font-sans selection:bg-[#00684A]/50 relative overflow-hidden">
       {/* Immersive Brand Gradient Background */}
       <div className="absolute top-[-20%] left-[-10%] w-[120%] h-[120%] bg-[radial-gradient(ellipse_at_bottom_right,_var(--tw-gradient-stops))] from-[#00ED64]/15 via-[#00684A]/5 to-transparent pointer-events-none z-0"></div>
       
@@ -130,7 +130,7 @@ export default function MongodbClient({ mongodbImages }: { mongodbImages: string
                     onChange={(e) => setVsSearchQuery(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleVectorSearch()}
                     placeholder="e.g. majestic eagle call" 
-                    className="flex-1 bg-[#001E2B] border border-[#00684A] rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#00ED64]" 
+                    className="flex-1  border border-[#00684A] rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#00ED64]" 
                   />
                   <button 
                     onClick={handleVectorSearch}
@@ -194,7 +194,7 @@ export default function MongodbClient({ mongodbImages }: { mongodbImages: string
               </div>
               <div className="lg:col-span-2">
                 {graphLoading ? (
-                  <div className="w-full h-[600px] flex flex-col items-center justify-center text-[#00ED64]/50 border border-[#00684A] rounded-xl bg-[#001E2B]/50">
+                  <div className="w-full h-[600px] flex flex-col items-center justify-center text-[#00ED64]/50 border border-[#00684A] rounded-xl /50">
                     <div className="h-8 w-8 border-2 border-[#00ED64] border-t-transparent rounded-full animate-spin mb-4"></div>
                     Loading 3D Graph Model...
                   </div>
@@ -205,7 +205,7 @@ export default function MongodbClient({ mongodbImages }: { mongodbImages: string
                     onNodeClick={setSelectedGraphNode}
                   />
                 ) : (
-                  <div className="w-full h-[600px] flex flex-col items-center justify-center text-[#00ED64]/50 border border-[#00684A] rounded-xl bg-[#001E2B]/50">
+                  <div className="w-full h-[600px] flex flex-col items-center justify-center text-[#00ED64]/50 border border-[#00684A] rounded-xl /50">
                     <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" className="mb-4 text-[#00684A]">
                       <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
                     </svg>
