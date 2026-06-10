@@ -6,7 +6,7 @@ import HomeCarousel from '@/components/HomeCarousel';
 export default function Home() {
   return (
     <div className="min-h-screen text-white selection:bg-zinc-800 selection:text-white flex flex-col font-sans">
-      <header className="w-full max-w-4xl mx-auto px-6 py-12 sm:py-20 flex justify-between items-center">
+      <header className="w-full px-6 md:px-12 lg:px-24 py-12 sm:py-20 flex justify-between items-center">
         <h1 className="text-2xl font-semibold tracking-tight text-white hover:opacity-80 transition-opacity cursor-pointer animate-pulse drop-shadow-[0_0_15px_rgba(255,255,255,0.7)]">
           gareth furnell
         </h1>
@@ -17,12 +17,8 @@ export default function Home() {
         </nav>
       </header>
 
-      <main className="flex-1 w-full max-w-4xl mx-auto px-6 pb-24">
+      <main className="flex-1 w-full px-6 md:px-12 lg:px-24 pb-24">
         <InteractiveEye />
-        
-        <div className="mt-8">
-          <HomeCarousel />
-        </div>
 
         <ul className="flex flex-col gap-2 mt-8">
           <ListItem
@@ -50,6 +46,11 @@ export default function Home() {
               </svg>
             }
           />
+
+          <div className="my-10">
+            <HomeCarousel />
+          </div>
+
           <ListItem
             title="Photography"
             subtitle="Film Photos / 35mm"
@@ -73,7 +74,7 @@ export default function Home() {
         </ul>
       </main>
 
-      <footer className="w-full max-w-4xl mx-auto px-6 py-12 border-t border-zinc-900">
+      <footer className="w-full px-6 md:px-12 lg:px-24 py-12 border-t border-zinc-900">
         <p className="text-zinc-500 text-sm">
           Documenting & sharing my experiences on my creative and technical journey.
         </p>
