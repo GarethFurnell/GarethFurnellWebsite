@@ -35,6 +35,11 @@ export default function Home() {
             href="/photography"
           />
           <ListItem
+            title="Cinematography"
+            subtitle="Short Films & VFX"
+            href="/cinematography"
+          />
+          <ListItem
             title="AI"
             subtitle="Agentic Coding & Automation"
             href="/ai"
