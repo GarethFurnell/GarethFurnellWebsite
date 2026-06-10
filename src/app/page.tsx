@@ -6,12 +6,12 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-black text-white selection:bg-zinc-800 selection:text-white flex flex-col font-sans">
       <header className="w-full max-w-4xl mx-auto px-6 py-12 sm:py-20 flex justify-between items-center">
-        <h1 className="text-2xl font-semibold tracking-tight text-white hover:opacity-80 transition-opacity cursor-pointer">
+        <h1 className="text-2xl font-semibold tracking-tight text-white hover:opacity-80 transition-opacity cursor-pointer animate-pulse drop-shadow-[0_0_15px_rgba(255,255,255,0.7)]">
           gareth furnell
         </h1>
         <nav className="flex gap-6 text-sm font-medium text-zinc-400">
-          <Link href="#" className="hover:text-white transition-colors">Work</Link>
-          <Link href="#" className="hover:text-white transition-colors">About</Link>
+          <Link href="/work" className="hover:text-white hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.5)] transition-all">Work</Link>
+          <Link href="/about" className="hover:text-white hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.5)] transition-all">About</Link>
           <Link href="/contact" className="hover:text-white transition-colors">Contact</Link>
         </nav>
       </header>
