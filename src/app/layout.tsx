@@ -4,15 +4,19 @@ import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
+const baseUrl = process.env.VERCEL_URL 
+  ? `https://${process.env.VERCEL_URL}` 
+  : "http://localhost:3000";
+
 export const metadata: Metadata = {
-  metadataBase: new URL("https://garethfurnell.com"),
+  metadataBase: new URL(baseUrl),
   title: "Gareth Furnell | Creative Developer",
   description: "Portfolio of Gareth Furnell, a Creative Developer specializing in Generative AI, 3D Vector Graphs, Cloud Architecture, and Web Experiences.",
   keywords: ["Gareth Furnell", "Creative Developer", "Software Engineer", "MongoDB", "AI", "Vector Search", "Photography", "Ableton"],
   openGraph: {
     title: "Gareth Furnell | Creative Developer",
     description: "Crafting innovative digital experiences through code, creativity, and emergence.",
-    url: "https://garethfurnell.com",
+    url: baseUrl,
     siteName: "Gareth Furnell Portfolio",
     images: [
       {
