@@ -7,7 +7,7 @@ import Link from 'next/link';
 const images = [
   {
     id: 1,
-    src: '/images/photography/nature/000032.JPG',
+    src: '/images/photography/nature/000028.JPG',
     alt: 'Nature Photography',
   },
   {
@@ -45,7 +45,7 @@ export default function HomeCarousel() {
   return (
     <div className="relative w-full h-[400px] sm:h-[500px] rounded-3xl overflow-hidden group mb-12 shadow-[0_0_30px_rgba(0,0,0,0.5)] border border-zinc-800">
       {/* Images container */}
-      <div 
+      <div
         className="flex w-full h-full transition-transform duration-700 ease-in-out"
         style={{ transform: `translateX(-${currentIndex * 100}%)` }}
       >
@@ -65,7 +65,7 @@ export default function HomeCarousel() {
       </div>
 
       {/* Navigation Arrows */}
-      <button 
+      <button
         onClick={goToPrevious}
         className="absolute left-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-black/40 text-white backdrop-blur-md border border-white/10 opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-black/60 hover:scale-110"
         aria-label="Previous image"
@@ -75,7 +75,7 @@ export default function HomeCarousel() {
         </svg>
       </button>
 
-      <button 
+      <button
         onClick={goToNext}
         className="absolute right-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-black/40 text-white backdrop-blur-md border border-white/10 opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-black/60 hover:scale-110"
         aria-label="Next image"
@@ -87,7 +87,7 @@ export default function HomeCarousel() {
 
       {/* Centered Button to view photography */}
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2">
-        <Link 
+        <Link
           href="/photography"
           className="px-6 py-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-white font-medium text-sm transition-all duration-300 hover:bg-white hover:text-black hover:scale-105 shadow-[0_0_15px_rgba(255,255,255,0.1)]"
         >
@@ -101,9 +101,8 @@ export default function HomeCarousel() {
           <button
             key={index}
             onClick={() => setCurrentIndex(index)}
-            className={`w-2 h-2 rounded-full transition-all duration-300 ${
-              index === currentIndex ? 'bg-white w-4' : 'bg-white/40'
-            }`}
+            className={`w-2 h-2 rounded-full transition-all duration-300 ${index === currentIndex ? 'bg-white w-4' : 'bg-white/40'
+              }`}
             aria-label={`Go to slide ${index + 1}`}
           />
         ))}
