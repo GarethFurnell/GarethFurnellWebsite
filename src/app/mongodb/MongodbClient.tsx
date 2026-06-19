@@ -42,34 +42,22 @@ export default function MongodbClient({ mongodbImages }: { mongodbImages: string
       const birdName = selectedGraphNode.name;
 
       try {
-        // Fetch Wikipedia Image
-        const wikiRes = await fetch(`https://en.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(birdName)}&prop=pageimages&format=json&pithumbsize=400&origin=*`);
-        const wikiData = await wikiRes.json();
-        const pages = wikiData.query?.pages;
-        if (pages) {
-          const pageId = Object.keys(pages)[0];
-          if (pageId !== '-1' && pages[pageId].thumbnail) {
-            setSelectedBirdImage(pages[pageId].thumbnail.source);
-          }
+        const res = await fetch(`${basePath}/api/bird-media`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ birdName })
+        });
+        const data = await res.json();
+        
+        if (data.status === 'success') {
+          setSelectedBirdImage(data.image);
+          setSelectedBirdAudio(data.audio);
         }
       } catch (err) {
-        console.error('Wiki fetch error:', err);
+        console.error('Media proxy fetch error:', err);
+      } finally {
+        setMediaLoading(false);
       }
-
-      try {
-        // Fetch Xeno-canto Audio
-        // Note: Direct fetch might hit CORS issues depending on browser, but xeno-canto API sometimes allows it.
-        // If it fails, the user will just see no audio.
-        const xcRes = await fetch(`https://xeno-canto.org/api/2/recordings?query=${encodeURIComponent(birdName)}`);
-        const xcData = await xcRes.json();
-        if (xcData.recordings && xcData.recordings.length > 0) {
-          setSelectedBirdAudio(xcData.recordings[0].file);
-        }
-      } catch (err) {
-        console.error('Xeno-canto fetch error:', err);
-      }
-
-      setMediaLoading(false);
     };
 
     fetchMedia();
