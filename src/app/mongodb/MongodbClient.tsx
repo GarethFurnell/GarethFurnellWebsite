@@ -19,10 +19,61 @@ export default function MongodbClient({ mongodbImages }: { mongodbImages: string
   const [graphData, setGraphData] = useState<{nodes: GraphNode[], links: GraphLink[]} | null>(null);
   const [graphLoading, setGraphLoading] = useState(false);
   const [selectedGraphNode, setSelectedGraphNode] = useState<any | null>(null);
+  const [selectedBirdImage, setSelectedBirdImage] = useState<string | null>(null);
+  const [selectedBirdAudio, setSelectedBirdAudio] = useState<string | null>(null);
+  const [mediaLoading, setMediaLoading] = useState(false);
 
   useEffect(() => {
     loadGraphData();
   }, []);
+
+  useEffect(() => {
+    if (!selectedGraphNode) {
+      setSelectedBirdImage(null);
+      setSelectedBirdAudio(null);
+      return;
+    }
+
+    const fetchMedia = async () => {
+      setMediaLoading(true);
+      setSelectedBirdImage(null);
+      setSelectedBirdAudio(null);
+      
+      const birdName = selectedGraphNode.name;
+
+      try {
+        // Fetch Wikipedia Image
+        const wikiRes = await fetch(`https://en.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(birdName)}&prop=pageimages&format=json&pithumbsize=400&origin=*`);
+        const wikiData = await wikiRes.json();
+        const pages = wikiData.query?.pages;
+        if (pages) {
+          const pageId = Object.keys(pages)[0];
+          if (pageId !== '-1' && pages[pageId].thumbnail) {
+            setSelectedBirdImage(pages[pageId].thumbnail.source);
+          }
+        }
+      } catch (err) {
+        console.error('Wiki fetch error:', err);
+      }
+
+      try {
+        // Fetch Xeno-canto Audio
+        // Note: Direct fetch might hit CORS issues depending on browser, but xeno-canto API sometimes allows it.
+        // If it fails, the user will just see no audio.
+        const xcRes = await fetch(`https://xeno-canto.org/api/2/recordings?query=${encodeURIComponent(birdName)}`);
+        const xcData = await xcRes.json();
+        if (xcData.recordings && xcData.recordings.length > 0) {
+          setSelectedBirdAudio(xcData.recordings[0].file);
+        }
+      } catch (err) {
+        console.error('Xeno-canto fetch error:', err);
+      }
+
+      setMediaLoading(false);
+    };
+
+    fetchMedia();
+  }, [selectedGraphNode]);
   const loadGraphData = async () => {
     setGraphLoading(true);
     try {
@@ -94,15 +145,7 @@ export default function MongodbClient({ mongodbImages }: { mongodbImages: string
       {/* Immersive Brand Gradient Background */}
       <div className="absolute top-[-20%] left-[-10%] w-[120%] h-[120%] bg-[radial-gradient(ellipse_at_bottom_right,_var(--tw-gradient-stops))] from-[#00ED64]/15 via-[#00684A]/5 to-transparent pointer-events-none z-0"></div>
       
-      <header className="relative w-full max-w-7xl mx-auto px-6 py-12 flex justify-between items-center border-b border-[#00684A] z-10">
-        <Link href="/" className="text-xl font-semibold tracking-tight text-white hover:opacity-80 transition-opacity">
-          ← Back to Home
-        </Link>
-        <div className="flex items-center gap-4">
-          <h1 className="text-xl font-medium text-zinc-300">MongoDB</h1>
-          
-        </div>
-      </header>
+      
 
       <main className="relative w-full max-w-7xl mx-auto px-6 py-12 z-10 flex flex-col gap-6">
         
@@ -172,23 +215,50 @@ export default function MongodbClient({ mongodbImages }: { mongodbImages: string
                 )}
 
                 {selectedGraphNode && !vsResults && (
-                  <div className="mt-8 p-6 bg-[#023430]/40 border border-[#00684A] rounded-xl animate-in fade-in">
+                  <div className="mt-8 p-6 bg-[#023430]/40 border border-[#00684A] rounded-xl animate-in fade-in overflow-hidden flex flex-col">
                      <h4 className="text-sm font-bold text-[#00ED64] mb-2">Selected Node</h4>
-                     <div className="text-white font-bold mb-1">{selectedGraphNode.name}</div>
-                     <div className="text-xs text-[#00ED64] font-mono mb-2">Genus: {selectedGraphNode.genus || selectedGraphNode.family}</div>
-                     {selectedGraphNode.country && (
-                       <div className="text-xs text-zinc-300 mb-1 flex items-center gap-1.5">
-                         <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-                         {selectedGraphNode.country}
+                     <div className="text-white font-bold mb-1 text-xl">{selectedGraphNode.name}</div>
+                     <div className="text-xs text-[#00ED64] font-mono mb-4">Genus: {selectedGraphNode.genus || selectedGraphNode.family}</div>
+                     
+                     {/* Dynamic Bird Image */}
+                     {mediaLoading ? (
+                       <div className="w-full h-48 bg-[#001E2B]/50 rounded-lg animate-pulse mb-4 flex items-center justify-center border border-[#00684A]/50">
+                         <span className="text-[#00ED64]/50 text-xs font-mono">Fetching Media...</span>
+                       </div>
+                     ) : selectedBirdImage ? (
+                       <div className="w-full h-48 relative rounded-lg overflow-hidden mb-4 border border-[#00684A]">
+                         <img src={selectedBirdImage} alt={selectedGraphNode.name} className="w-full h-full object-cover" />
+                       </div>
+                     ) : (
+                       <div className="w-full h-24 bg-[#001E2B]/30 rounded-lg flex items-center justify-center mb-4 border border-[#00684A]/30">
+                         <span className="text-zinc-500 text-xs italic">No image found on Wikipedia</span>
                        </div>
                      )}
-                     {selectedGraphNode.location?.coordinates && (
-                       <div className="text-xs text-zinc-400 font-mono mb-3 flex items-center gap-1.5">
-                         <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon></svg>
-                         [{selectedGraphNode.location.coordinates[0].toFixed(4)}, {selectedGraphNode.location.coordinates[1].toFixed(4)}]
-                       </div>
+
+                     {/* Dynamic Bird Audio */}
+                     {!mediaLoading && selectedBirdAudio && (
+                        <div className="mb-4">
+                          <audio controls src={selectedBirdAudio} className="w-full h-10 outline-none rounded-lg" controlsList="nodownload">
+                            Your browser does not support the audio element.
+                          </audio>
+                          <span className="text-[10px] text-zinc-500 mt-1 block">Audio provided by Xeno-canto</span>
+                        </div>
                      )}
-                     <p className="text-xs text-zinc-500 mt-2 border-t border-[#00684A] pt-2">This node's color represents its taxonomy genus. Nodes clustered closely together have high cosine similarity (&gt;0.65) in Voyage AI's 1024-dimensional embedding space.</p>
+
+                     <div className="grid grid-cols-2 gap-2 mt-2">
+                       {selectedGraphNode.country && (
+                         <div className="text-xs text-zinc-300 flex items-center gap-1.5 bg-[#001E2B]/50 p-2 rounded-lg border border-[#00684A]/30">
+                           <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                           <span className="truncate">{selectedGraphNode.country}</span>
+                         </div>
+                       )}
+                       {selectedGraphNode.location?.coordinates && (
+                         <div className="text-xs text-zinc-400 font-mono flex items-center gap-1.5 bg-[#001E2B]/50 p-2 rounded-lg border border-[#00684A]/30">
+                           <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon></svg>
+                           [{selectedGraphNode.location.coordinates[0].toFixed(2)}, {selectedGraphNode.location.coordinates[1].toFixed(2)}]
+                         </div>
+                       )}
+                     </div>
                   </div>
                 )}
               </div>

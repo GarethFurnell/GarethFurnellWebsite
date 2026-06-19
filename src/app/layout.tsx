@@ -42,6 +42,8 @@ export const metadata: Metadata = {
 };
 
 import NetworkBackground from "@/components/NetworkBackground";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 export default function RootLayout({
   children,
@@ -50,9 +52,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${inter.variable} antialiased dark`} style={{ colorScheme: 'dark' }}>
-      <body className="bg-black min-h-screen text-white font-sans selection:bg-zinc-800">
+      <body className="bg-black text-white font-sans selection:bg-zinc-800 flex flex-col min-h-screen">
         <NetworkBackground />
-        {children}
+        <Header />
+        <div className="flex-1 flex flex-col w-full">
+          {children}
+        </div>
+        <Footer />
       </body>
     </html>
   );
