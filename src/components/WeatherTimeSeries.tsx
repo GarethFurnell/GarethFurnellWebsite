@@ -18,9 +18,9 @@ export default function WeatherTimeSeries() {
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Exact coordinates requested by the user
-  const lat = 24.820;
-  const lon = 10.064;
+  // Cape Town, South Africa
+  const lat = -33.9249;
+  const lon = 18.4241;
 
   useEffect(() => {
     const fetchWeatherData = async () => {
@@ -67,7 +67,7 @@ export default function WeatherTimeSeries() {
       <div className="grid grid-cols-1 lg:grid-cols-2 h-auto lg:h-[450px]">
         {/* Left Column: Recharts Time Series */}
         <div className="p-6 flex flex-col h-[400px] lg:h-full border-b lg:border-b-0 lg:border-r border-[#00684A]">
-          <h4 className="text-sm font-bold text-white mb-4">72-Hour Forecast (Sahara Desert Region)</h4>
+          <h4 className="text-sm font-bold text-white mb-4">72-Hour Forecast (Cape Town, South Africa)</h4>
           {loading ? (
              <div className="flex-1 flex items-center justify-center">
                <div className="h-8 w-8 border-2 border-[#00ED64] border-t-transparent rounded-full animate-spin"></div>
