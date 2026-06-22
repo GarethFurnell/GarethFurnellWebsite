@@ -17,6 +17,7 @@
     "react": "latest",
     "react-dom": "latest",
     "react-force-graph-3d": "^1.29.1",
+    "recharts": "^3.8.1",
     "three": "^0.184.0"
   },
   "devDependencies": {

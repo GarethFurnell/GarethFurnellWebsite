@@ -66,18 +66,23 @@ export async function POST(request: Request) {
           if (data.recordings) allRawRecordings = allRawRecordings.concat(data.recordings);
         }
 
-        // Filter for bird species (allow up to 15 recordings per species to build beautiful clusters)
+        // Filter for bird species: STRICT uniqueness (1 unique bird per species, and 1 bird per country)
         const uniqueRecordings = [];
-        const speciesCount = new Map();
+        const seenSpecies = new Set();
+        const seenCountries = new Set();
         
         for (const rec of allRawRecordings) {
           const speciesName = `${rec.gen} ${rec.sp}`;
-          const currentCount = speciesCount.get(speciesName) || 0;
           
-          // Filter to strictly ensure it's a bird, remove weird anomalies like foxes, and cap at 15 per species
-          if (currentCount < 15 && rec.grp === 'birds' && rec.gen !== 'Vulpes') {
-            speciesCount.set(speciesName, currentCount + 1);
-            uniqueRecordings.push(rec);
+          // Strict filtering: must be a bird, not a fox anomaly, and country must exist
+          if (rec.grp === 'birds' && rec.gen !== 'Vulpes' && rec.cnt) {
+            
+            // Check uniqueness constraints
+            if (!seenCountries.has(rec.cnt) && !seenSpecies.has(speciesName)) {
+              seenCountries.add(rec.cnt);
+              seenSpecies.add(speciesName);
+              uniqueRecordings.push(rec);
+            }
           }
         }
         

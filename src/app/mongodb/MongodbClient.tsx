@@ -5,6 +5,7 @@ import Link from 'next/link';
 import ImageGallery from '@/components/ImageGallery';
 import Accordion from '@/components/Accordion';
 import BirdSoundsGraph, { GraphNode, GraphLink } from '@/components/BirdSoundsGraph';
+import WeatherTimeSeries from '@/components/WeatherTimeSeries';
 
 const basePath = '';
 
@@ -135,7 +136,7 @@ export default function MongodbClient({ mongodbImages }: { mongodbImages: string
       
       
 
-      <main className="relative w-full max-w-7xl mx-auto px-6 py-12 z-10 flex flex-col gap-6">
+      <main className="relative w-full px-6 md:px-12 lg:px-24 py-12 z-10 flex flex-col gap-6">
         
         {/* Accordion 1: Certifications */}
         <Accordion title="Certifications" subtitle="My professional MongoDB certifications" defaultOpen={false}>
@@ -144,6 +145,7 @@ export default function MongodbClient({ mongodbImages }: { mongodbImages: string
           </div>
         </Accordion>
 
+        <WeatherTimeSeries />
         
         
           <div className="py-6 flex flex-col gap-6">
