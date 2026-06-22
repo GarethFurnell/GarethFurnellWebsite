@@ -35,10 +35,25 @@ export default function MongodbClient({ mongodbImages }: { mongodbImages: string
       return;
     }
 
+    // Since the Xeno-canto audio URL is already stored directly in the MongoDB vector node,
+    // we can instantly set the audio without making any network requests!
+    if (selectedGraphNode.file_url) {
+      const url = selectedGraphNode.file_url;
+      // Ensure the URL is https
+      if (url.startsWith('//')) {
+        setSelectedBirdAudio(`https:${url}`);
+      } else if (!url.startsWith('http')) {
+        setSelectedBirdAudio(`https://${url}`);
+      } else {
+        setSelectedBirdAudio(url);
+      }
+    } else {
+      setSelectedBirdAudio(null);
+    }
+
     const fetchMedia = async () => {
       setMediaLoading(true);
       setSelectedBirdImage(null);
-      setSelectedBirdAudio(null);
       
       const birdName = selectedGraphNode.name;
 
@@ -52,7 +67,6 @@ export default function MongodbClient({ mongodbImages }: { mongodbImages: string
         
         if (data.status === 'success') {
           setSelectedBirdImage(data.image);
-          setSelectedBirdAudio(data.audio);
         }
       } catch (err) {
         console.error('Media proxy fetch error:', err);
@@ -221,7 +235,7 @@ export default function MongodbClient({ mongodbImages }: { mongodbImages: string
                        </div>
                      ) : (
                        <div className="w-full h-24 bg-[#001E2B]/30 rounded-lg flex items-center justify-center mb-4 border border-[#00684A]/30">
-                         <span className="text-zinc-500 text-xs italic">No image found on Wikipedia</span>
+                         <span className="text-zinc-500 text-xs italic">No image found on iNaturalist</span>
                        </div>
                      )}
 

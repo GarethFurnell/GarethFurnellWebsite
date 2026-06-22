@@ -179,7 +179,7 @@ export async function POST(request: Request) {
 
       case 'graph_data': {
         // Fetch a sample of documents to build the 3D graph
-        const docs = await collection.find({}).limit(500).project({ name: 1, genus: 1, country: 1, location: 1, embedding: 1 }).toArray();
+        const docs = await collection.find({}).limit(500).project({ name: 1, genus: 1, country: 1, location: 1, embedding: 1, file_url: 1 }).toArray();
         
         const brightPalette = [
           '#00ED64', '#FF3366', '#00E5FF', '#FFEA00', 
@@ -197,6 +197,7 @@ export async function POST(request: Request) {
             genus: genusStr,
             country: doc.country,
             location: doc.location,
+            file_url: doc.file_url,
             val: 1,
             color: brightPalette[colorHash % brightPalette.length],
             embedding: doc.embedding
