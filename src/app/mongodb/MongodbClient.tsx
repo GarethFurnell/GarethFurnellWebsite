@@ -155,19 +155,21 @@ export default function MongodbClient({ mongodbImages }: { mongodbImages: string
         {/* Accordion 1: Certifications */}
         <Accordion title="Certifications" subtitle="My professional MongoDB certifications" defaultOpen={false}>
           <div className="py-4 flex flex-col items-center">
-            {mongodbImages.find(img => img.includes('0mongodb-certification-subject matter expert')) && (
-              <div className="mb-8 w-full max-w-sm">
+            {mongodbImages.find(img => img.includes('0mongodb')) && (
+              <div className="mb-8 w-full max-w-[280px]">
                 <ImageGallery 
-                  images={[mongodbImages.find(img => img.includes('0mongodb-certification-subject matter expert'))!]} 
+                  images={[mongodbImages.find(img => img.includes('0mongodb'))!]} 
                   layout="grid" 
+                  objectFit="contain"
                 />
               </div>
             )}
             <div className="w-full">
               <ImageGallery 
-                images={mongodbImages.filter(img => !img.includes('0mongodb-certification-subject matter expert'))} 
+                images={mongodbImages.filter(img => !img.includes('0mongodb'))} 
                 layout="grid" 
                 gridCols={4} 
+                objectFit="contain"
                 emptyMessage="Currently studying for the next one!" 
               />
             </div>

@@ -10,6 +10,7 @@ interface ImageGalleryProps {
   emptyMessage?: string;
   isPurchaseMode?: boolean;
   gridCols?: 3 | 4;
+  objectFit?: 'cover' | 'contain';
 }
 
 import { resolveImagePath } from '@/utils/resolveImagePath';
@@ -18,7 +19,7 @@ const getImagePath = (src: string) => {
   return resolveImagePath(src);
 };
 
-export default function ImageGallery({ images, layout, emptyMessage, isPurchaseMode = false, gridCols = 3 }: ImageGalleryProps) {
+export default function ImageGallery({ images, layout, emptyMessage, isPurchaseMode = false, gridCols = 3, objectFit = 'cover' }: ImageGalleryProps) {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [cartAdded, setCartAdded] = useState(false);
   const [selectedSize, setSelectedSize] = useState('8x10');
@@ -65,7 +66,7 @@ export default function ImageGallery({ images, layout, emptyMessage, isPurchaseM
                 src={getImagePath(src)}
                 alt={`Gallery image ${index + 1}`}
                 fill
-                className="object-cover transition-transform duration-700 group-hover:scale-105"
+                className={`object-${objectFit} transition-transform duration-700 group-hover:scale-105`}
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               />
             ) : (
