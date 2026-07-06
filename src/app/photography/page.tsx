@@ -1,6 +1,5 @@
-import Link from 'next/link';
 import { getImages } from '@/utils/getImages';
-import ImageGallery from '@/components/ImageGallery';
+import PhotographyClient from './PhotographyClient';
 
 export const metadata = {
   title: 'Photography | Gareth Furnell',
@@ -11,45 +10,17 @@ export default function PhotographyPage() {
   const golfImages = getImages('photography/golf');
   const motorcycleImages = getImages('photography/motorcycle');
   const natureImages = getImages('photography/nature');
-
-  const emptyMsg = "Out in the field taking pictures or the negatives are currently being developed";
+  const bwImages = getImages('photography/bw');
 
   return (
     <div className="min-h-screen text-white font-sans selection:bg-zinc-800">
-      
-
       <main className="w-full w-full px-6 md:px-12 lg:px-24 pb-24 animate-in fade-in slide-in-from-bottom-4 duration-700">
-        <div className="mb-16">
-          <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-white mb-4">
-            Film & 35mm
-          </h2>
-          <p className="text-zinc-400 max-w-2xl text-lg">
-            A curated selection of my film photography. Capturing moments and exploring visual aesthetics through the lens of a 35mm camera.
-          </p>
-        </div>
-
-        <div className="flex flex-col gap-24">
-          <section>
-            <h3 className="text-2xl font-medium tracking-tight text-white mb-8 border-b border-zinc-900 pb-4">
-              Golf
-            </h3>
-            <ImageGallery images={golfImages} layout="masonry" emptyMessage={emptyMsg} />
-          </section>
-
-          <section>
-            <h3 className="text-2xl font-medium tracking-tight text-white mb-8 border-b border-zinc-900 pb-4">
-              Motorcycles
-            </h3>
-            <ImageGallery images={motorcycleImages} layout="masonry" emptyMessage={emptyMsg} />
-          </section>
-
-          <section>
-            <h3 className="text-2xl font-medium tracking-tight text-white mb-8 border-b border-zinc-900 pb-4">
-              Nature
-            </h3>
-            <ImageGallery images={natureImages} layout="masonry" emptyMessage={emptyMsg} />
-          </section>
-        </div>
+        <PhotographyClient 
+          golfImages={golfImages}
+          motorcycleImages={motorcycleImages}
+          natureImages={natureImages}
+          bwImages={bwImages}
+        />
       </main>
     </div>
   );

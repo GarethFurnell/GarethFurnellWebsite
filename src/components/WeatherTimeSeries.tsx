@@ -144,7 +144,7 @@ export default function WeatherTimeSeries() {
         {/* Right Column: Earth Nullschool Iframe */}
         <div className="relative h-[400px] lg:h-full bg-black/50">
           <iframe 
-            src={`https://earth.nullschool.net/#current/wind/surface/level/overlay=precip_3hr/orthographic/loc=${lon},${lat}`}
+            src={`https://earth.nullschool.net/#current/wind/surface/level/overlay=precip_3hr/orthographic=20.00,-45.00,600`}
             title="Interactive Earth Map"
             className="w-full h-full border-0 absolute inset-0"
             allow="fullscreen"
