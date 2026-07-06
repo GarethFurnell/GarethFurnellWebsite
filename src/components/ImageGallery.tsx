@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
+import { useCart } from '@/context/CartContext';
 
 interface ImageGalleryProps {
   images: string[];
@@ -19,6 +20,8 @@ const getImagePath = (src: string) => {
 export default function ImageGallery({ images, layout, emptyMessage, isPurchaseMode = false }: ImageGalleryProps) {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [cartAdded, setCartAdded] = useState(false);
+  const [selectedSize, setSelectedSize] = useState('8x10');
+  const { addToCart } = useCart();
 
   // Close lightbox on escape key
   useEffect(() => {
@@ -110,10 +113,14 @@ export default function ImageGallery({ images, layout, emptyMessage, isPurchaseM
                   
                   <div className="mb-8">
                     <label className="block text-sm font-medium text-zinc-400 mb-2">Select Size</label>
-                    <select className="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-3 text-white focus:outline-none focus:border-green-500">
-                      <option>8" x 10" (Standard)</option>
-                      <option>11" x 14" (Medium)</option>
-                      <option>16" x 20" (Large)</option>
+                    <select 
+                      className="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-3 text-white focus:outline-none focus:border-green-500"
+                      onChange={(e) => setSelectedSize(e.target.value)}
+                      value={selectedSize}
+                    >
+                      <option value="8x10">8" x 10" (Standard)</option>
+                      <option value="11x14">11" x 14" (Medium)</option>
+                      <option value="16x20">16" x 20" (Large)</option>
                     </select>
                   </div>
 
@@ -123,7 +130,16 @@ export default function ImageGallery({ images, layout, emptyMessage, isPurchaseM
                   </div>
 
                   <button 
-                    onClick={() => { setCartAdded(true); setTimeout(() => setCartAdded(false), 3000); }}
+                    onClick={() => { 
+                      addToCart({
+                        id: `${selectedImage}-${selectedSize}-${Date.now()}`,
+                        image: selectedImage,
+                        size: selectedSize,
+                        price: 500
+                      });
+                      setCartAdded(true); 
+                      setTimeout(() => setCartAdded(false), 3000); 
+                    }}
                     className={`w-full py-4 rounded-xl font-bold transition-all shadow-lg ${cartAdded ? 'bg-green-600 text-white shadow-green-900/50' : 'bg-white text-black hover:bg-zinc-200'}`}
                   >
                     {cartAdded ? 'Added to Cart ✓' : 'Add to Cart'}

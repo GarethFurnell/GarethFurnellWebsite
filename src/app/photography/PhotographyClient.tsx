@@ -28,8 +28,8 @@ export default function PhotographyClient({ golfImages, motorcycleImages, nature
         
         {/* Purchase Prints Toggle UI */}
         <div className="flex items-center gap-4 bg-zinc-900/50 p-2 rounded-full border border-zinc-800 backdrop-blur-md">
-          <span className={`text-sm font-medium px-4 py-2 rounded-full transition-colors cursor-pointer ${!isPurchaseMode ? 'bg-zinc-800 text-white' : 'text-zinc-400 hover:text-white'}`} onClick={() => setIsPurchaseMode(false)}>Gallery Mode</span>
-          <span className={`text-sm font-medium px-4 py-2 rounded-full transition-colors cursor-pointer ${isPurchaseMode ? 'bg-green-600 text-white shadow-[0_0_15px_rgba(22,163,74,0.5)]' : 'text-zinc-400 hover:text-white'}`} onClick={() => setIsPurchaseMode(true)}>Purchase Prints</span>
+          <span className={`text-sm font-medium px-4 py-2 rounded-full transition-colors cursor-pointer whitespace-nowrap text-center ${!isPurchaseMode ? 'bg-zinc-800 text-white' : 'text-zinc-400 hover:text-white'}`} onClick={() => setIsPurchaseMode(false)}>Gallery Mode</span>
+          <span className={`text-sm font-medium px-4 py-2 rounded-full transition-colors cursor-pointer whitespace-nowrap text-center ${isPurchaseMode ? 'bg-green-600 text-white shadow-[0_0_15px_rgba(22,163,74,0.5)]' : 'text-zinc-400 hover:text-white'}`} onClick={() => setIsPurchaseMode(true)}>Purchase Prints</span>
         </div>
       </div>
 
