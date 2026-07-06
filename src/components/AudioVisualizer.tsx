@@ -19,7 +19,7 @@ export default function AudioVisualizer({ audioId }: AudioVisualizerProps) {
     // 1. Setup Three.js Scene
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 1000);
-    camera.position.z = 6;
+    camera.position.z = 7; // Moved back slightly to fit the heart shape
 
     const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     
@@ -30,7 +30,7 @@ export default function AudioVisualizer({ audioId }: AudioVisualizerProps) {
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     containerRef.current.appendChild(renderer.domElement);
 
-    // 2. Create the Sphere (Highly intricate geometry)
+    // 2. Create the Sphere & Morph it into a Biological Heart
     const geometry = new THREE.IcosahedronGeometry(2.0, 16); 
     const material = new THREE.MeshBasicMaterial({
       color: 0x00ED64, // Brand green
@@ -41,8 +41,44 @@ export default function AudioVisualizer({ audioId }: AudioVisualizerProps) {
     const sphere = new THREE.Mesh(geometry, material);
     scene.add(sphere);
 
-    // Save original vertices for distortion
-    const originalPositions = Array.from(geometry.attributes.position.array);
+    // Pre-calculate the biological heart shape as the base
+    const positionAttribute = geometry.attributes.position;
+    const originalPositions = new Float32Array(positionAttribute.count * 3);
+    
+    for (let i = 0; i < positionAttribute.count; i++) {
+      const ix = i * 3;
+      const iy = i * 3 + 1;
+      const iz = i * 3 + 2;
+
+      let ox = positionAttribute.array[ix];
+      let oy = positionAttribute.array[iy];
+      let oz = positionAttribute.array[iz];
+
+      // Heart Morph Math (Biological Organ style)
+      // Normalizing first
+      const length = Math.sqrt(ox*ox + oy*oy + oz*oz);
+      let nx = ox / length;
+      let ny = oy / length;
+      let nz = oz / length;
+
+      if (ny < 0) {
+        // Taper and stretch the bottom into the apex of the heart
+        nx *= (1.0 + ny * 0.6); 
+        nz *= (1.0 + ny * 0.6);
+        ny *= 1.3; 
+      } else {
+        // Widen the top and create the dual-lobed structure (atria)
+        nx *= 1.1;
+        nz *= 0.8; // Flatten slightly front-to-back
+        ny += Math.abs(nx) * 0.6; // Pull the top sides up
+      }
+
+      // Re-scale to desired size
+      const scale = 1.8;
+      originalPositions[ix] = nx * scale;
+      originalPositions[iy] = ny * scale;
+      originalPositions[iz] = nz * scale;
+    }
 
     // 3. Setup Audio Context variables
     let audioContext: AudioContext | null = null;
@@ -87,8 +123,7 @@ export default function AudioVisualizer({ audioId }: AudioVisualizerProps) {
       animationId = requestAnimationFrame(animate);
       timeRef.current += 0.01;
 
-      // Slow idle rotation
-      sphere.rotation.x += 0.001;
+      // Slow idle rotation - imitating a slow tumble/spin
       sphere.rotation.y += 0.002;
 
       if (analyser && dataArray) {
@@ -96,24 +131,26 @@ export default function AudioVisualizer({ audioId }: AudioVisualizerProps) {
         
         // Calculate average bass (lower frequencies)
         const bassAvg = Array.from(dataArray.slice(0, 15)).reduce((a, b) => a + b, 0) / 15;
+        const bassIntensity = bassAvg / 255; // 0.0 to 1.0
         
-        // Scale sphere based on heavy bass
-        const scale = 1 + (bassAvg / 255) * 0.3;
+        // Scale heart based on heavy bass (simulating a heartbeat pulse)
+        // Add an aggressive jump for the beat
+        const pulse = Math.pow(bassIntensity, 4) * 0.4;
+        const scale = 1 + (bassIntensity * 0.1) + pulse;
         sphere.scale.set(scale, scale, scale);
 
-        // Intricate vertex distortion
-        const positionAttribute = geometry.attributes.position;
+        // Intricate vertex distortion & pumping
         for (let i = 0; i < positionAttribute.count; i++) {
           const ix = i * 3;
           const iy = i * 3 + 1;
           const iz = i * 3 + 2;
 
-          // Map vertex to a frequency bin (spread across the array)
+          // Map vertex to a frequency bin
           const freqIndex = (i * 3) % dataArray.length;
           const rawFreq = dataArray[freqIndex] / 255;
           
-          // Exponential distortion for spikes
-          const offset = Math.pow(rawFreq, 3) * 1.5;
+          // Exponential distortion for organic spikes/vibrations
+          const offset = Math.pow(rawFreq, 3) * 1.2 * bassIntensity;
           
           const ox = originalPositions[ix];
           const oy = originalPositions[iy];
@@ -124,8 +161,8 @@ export default function AudioVisualizer({ audioId }: AudioVisualizerProps) {
           const ny = oy / length;
           const nz = oz / length;
 
-          // Add a gentle time-based sine wave breathing effect
-          const breathing = Math.sin(timeRef.current + length) * 0.05;
+          // Add a rapid heartbeat flutter based on time and audio
+          const breathing = Math.sin(timeRef.current * 5 + length) * 0.05 * bassIntensity;
 
           positionAttribute.setXYZ(
             i, 
@@ -136,16 +173,17 @@ export default function AudioVisualizer({ audioId }: AudioVisualizerProps) {
         }
         positionAttribute.needsUpdate = true;
 
-        // Change color dynamically based on mids/highs
-        const midAvg = Array.from(dataArray.slice(30, 100)).reduce((a, b) => a + b, 0) / 70;
-        const hue = (0.33 + (midAvg / 255) * 0.3) % 1.0; 
+        // Color Logic: Transition to Crimson Red on High Bass
+        // Brand Green is Hue: 0.33, Red is Hue: 0.0 (or 1.0)
+        // We use Math.pow to ensure it stays green until bass gets REALLY high
+        const redShift = Math.pow(bassIntensity, 2.5); // Fast curve to 1.0 on peak
+        const hue = 0.33 - (redShift * 0.33); // Shifts from 0.33 down to 0.0
         
-        // Brighten opacity on loud hits
-        material.opacity = 0.3 + (bassAvg / 255) * 0.5;
-        material.color.setHSL(hue, 1, 0.6);
+        // Brighten and increase opacity on loud hits
+        material.opacity = 0.3 + (bassIntensity * 0.6);
+        material.color.setHSL(Math.max(0, hue), 1, 0.5 + (redShift * 0.1));
       } else {
-        // Idle breathing when no music
-        const positionAttribute = geometry.attributes.position;
+        // Idle biological breathing when no music
         for (let i = 0; i < positionAttribute.count; i++) {
           const ix = i * 3;
           const iy = i * 3 + 1;
@@ -160,7 +198,8 @@ export default function AudioVisualizer({ audioId }: AudioVisualizerProps) {
           const ny = oy / length;
           const nz = oz / length;
 
-          const breathing = Math.sin(timeRef.current + (nx * 5)) * 0.1;
+          // Slow resting heartbeat
+          const breathing = Math.sin(timeRef.current * 2 + (nx * 5)) * 0.05;
 
           positionAttribute.setXYZ(
             i, 
