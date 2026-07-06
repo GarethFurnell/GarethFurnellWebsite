@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
 interface AudioVisualizerProps {
@@ -10,6 +10,7 @@ interface AudioVisualizerProps {
 export default function AudioVisualizer({ audioId }: AudioVisualizerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const initializedRef = useRef(false);
+  const timeRef = useRef(0);
 
   useEffect(() => {
     const audioElement = document.getElementById(audioId) as HTMLAudioElement;
@@ -18,24 +19,24 @@ export default function AudioVisualizer({ audioId }: AudioVisualizerProps) {
     // 1. Setup Three.js Scene
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 1000);
-    camera.position.z = 5;
+    camera.position.z = 6;
 
     const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     
-    // We want the canvas to perfectly fit the container
-    const width = containerRef.current.clientWidth;
-    const height = containerRef.current.clientHeight;
+    // We want the canvas to perfectly fit the screen
+    const width = window.innerWidth;
+    const height = window.innerHeight;
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     containerRef.current.appendChild(renderer.domElement);
 
-    // 2. Create the Sphere (Icosahedron for cool low-poly distortion effects)
-    const geometry = new THREE.IcosahedronGeometry(1.5, 4); 
+    // 2. Create the Sphere (Highly intricate geometry)
+    const geometry = new THREE.IcosahedronGeometry(2.0, 16); 
     const material = new THREE.MeshBasicMaterial({
       color: 0x00ED64, // Brand green
       wireframe: true,
       transparent: true,
-      opacity: 0.8
+      opacity: 0.4
     });
     const sphere = new THREE.Mesh(geometry, material);
     scene.add(sphere);
@@ -43,7 +44,7 @@ export default function AudioVisualizer({ audioId }: AudioVisualizerProps) {
     // Save original vertices for distortion
     const originalPositions = Array.from(geometry.attributes.position.array);
 
-    // 3. Setup Audio Context variables (but don't initialize yet due to autoplay policies)
+    // 3. Setup Audio Context variables
     let audioContext: AudioContext | null = null;
     let analyser: AnalyserNode | null = null;
     let dataArray: Uint8Array | null = null;
@@ -53,18 +54,14 @@ export default function AudioVisualizer({ audioId }: AudioVisualizerProps) {
       if (initializedRef.current) return;
       initializedRef.current = true;
 
-      // Ensure we have window.AudioContext
       const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
       audioContext = new AudioCtx();
       analyser = audioContext.createAnalyser();
-      analyser.fftSize = 256;
+      analyser.fftSize = 512;
       
       const bufferLength = analyser.frequencyBinCount;
       dataArray = new Uint8Array(bufferLength);
 
-      // Connect audio element to analyser
-      // IMPORTANT: If source already exists for this audio element from a previous mount, this will throw.
-      // So we wrap it in a try-catch.
       try {
         source = audioContext.createMediaElementSource(audioElement);
         source.connect(analyser);
@@ -74,7 +71,6 @@ export default function AudioVisualizer({ audioId }: AudioVisualizerProps) {
       }
     };
 
-    // Listen for play to initialize audio context
     const handlePlay = () => {
       if (!initializedRef.current) {
         initAudio();
@@ -89,30 +85,35 @@ export default function AudioVisualizer({ audioId }: AudioVisualizerProps) {
     let animationId: number;
     const animate = () => {
       animationId = requestAnimationFrame(animate);
+      timeRef.current += 0.01;
 
-      // Rotate sphere
-      sphere.rotation.x += 0.002;
-      sphere.rotation.y += 0.003;
+      // Slow idle rotation
+      sphere.rotation.x += 0.001;
+      sphere.rotation.y += 0.002;
 
       if (analyser && dataArray) {
         analyser.getByteFrequencyData(dataArray as any);
         
         // Calculate average bass (lower frequencies)
-        const bassAvg = Array.from(dataArray.slice(0, 10)).reduce((a, b) => a + b, 0) / 10;
+        const bassAvg = Array.from(dataArray.slice(0, 15)).reduce((a, b) => a + b, 0) / 15;
         
-        // Scale sphere based on bass
-        const scale = 1 + (bassAvg / 255) * 0.4;
+        // Scale sphere based on heavy bass
+        const scale = 1 + (bassAvg / 255) * 0.3;
         sphere.scale.set(scale, scale, scale);
 
-        // Distort vertices based on higher frequencies
+        // Intricate vertex distortion
         const positionAttribute = geometry.attributes.position;
         for (let i = 0; i < positionAttribute.count; i++) {
           const ix = i * 3;
           const iy = i * 3 + 1;
           const iz = i * 3 + 2;
 
-          const freqIndex = i % dataArray.length;
-          const offset = (dataArray[freqIndex] / 255) * 0.3;
+          // Map vertex to a frequency bin (spread across the array)
+          const freqIndex = (i * 3) % dataArray.length;
+          const rawFreq = dataArray[freqIndex] / 255;
+          
+          // Exponential distortion for spikes
+          const offset = Math.pow(rawFreq, 3) * 1.5;
           
           const ox = originalPositions[ix];
           const oy = originalPositions[iy];
@@ -123,19 +124,52 @@ export default function AudioVisualizer({ audioId }: AudioVisualizerProps) {
           const ny = oy / length;
           const nz = oz / length;
 
+          // Add a gentle time-based sine wave breathing effect
+          const breathing = Math.sin(timeRef.current + length) * 0.05;
+
           positionAttribute.setXYZ(
             i, 
-            ox + nx * offset, 
-            oy + ny * offset, 
-            oz + nz * offset
+            ox + nx * (offset + breathing), 
+            oy + ny * (offset + breathing), 
+            oz + nz * (offset + breathing)
           );
         }
         positionAttribute.needsUpdate = true;
 
-        // Change color dynamically based on mids
-        const midAvg = Array.from(dataArray.slice(20, 60)).reduce((a, b) => a + b, 0) / 40;
-        const hue = (0.33 + (midAvg / 255) * 0.2) % 1.0; 
-        material.color.setHSL(hue, 1, 0.5);
+        // Change color dynamically based on mids/highs
+        const midAvg = Array.from(dataArray.slice(30, 100)).reduce((a, b) => a + b, 0) / 70;
+        const hue = (0.33 + (midAvg / 255) * 0.3) % 1.0; 
+        
+        // Brighten opacity on loud hits
+        material.opacity = 0.3 + (bassAvg / 255) * 0.5;
+        material.color.setHSL(hue, 1, 0.6);
+      } else {
+        // Idle breathing when no music
+        const positionAttribute = geometry.attributes.position;
+        for (let i = 0; i < positionAttribute.count; i++) {
+          const ix = i * 3;
+          const iy = i * 3 + 1;
+          const iz = i * 3 + 2;
+          
+          const ox = originalPositions[ix];
+          const oy = originalPositions[iy];
+          const oz = originalPositions[iz];
+
+          const length = Math.sqrt(ox*ox + oy*oy + oz*oz);
+          const nx = ox / length;
+          const ny = oy / length;
+          const nz = oz / length;
+
+          const breathing = Math.sin(timeRef.current + (nx * 5)) * 0.1;
+
+          positionAttribute.setXYZ(
+            i, 
+            ox + nx * breathing, 
+            oy + ny * breathing, 
+            oz + nz * breathing
+          );
+        }
+        positionAttribute.needsUpdate = true;
       }
 
       renderer.render(scene, camera);
@@ -144,9 +178,8 @@ export default function AudioVisualizer({ audioId }: AudioVisualizerProps) {
 
     // 5. Handle Resize
     const handleResize = () => {
-      if (!containerRef.current) return;
-      const w = containerRef.current.clientWidth;
-      const h = containerRef.current.clientHeight;
+      const w = window.innerWidth;
+      const h = window.innerHeight;
       renderer.setSize(w, h);
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
@@ -170,7 +203,7 @@ export default function AudioVisualizer({ audioId }: AudioVisualizerProps) {
   return (
     <div 
       ref={containerRef} 
-      className="absolute inset-0 w-full h-full pointer-events-none z-10 mix-blend-screen transition-opacity duration-700 opacity-90"
+      className="fixed inset-0 w-screen h-screen pointer-events-none z-0 mix-blend-screen opacity-70"
     />
   );
 }
