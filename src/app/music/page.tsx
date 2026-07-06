@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import AudioVisualizer from '@/components/AudioVisualizer';
 
 export const metadata = {
   title: 'Music | Gareth Furnell',
@@ -28,8 +29,6 @@ export default function MusicPage() {
 
   return (
     <div className="min-h-screen text-white font-sans selection:bg-zinc-800">
-      
-
       <main className="w-full w-full px-6 md:px-12 lg:px-24 pb-24 animate-in fade-in slide-in-from-bottom-4 duration-700">
         <div className="mb-12">
           <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-white mb-4">
@@ -54,21 +53,27 @@ export default function MusicPage() {
                   className="object-cover transition-transform duration-700 group-hover:scale-105 opacity-80 group-hover:opacity-100"
                 />
                 
-                <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 via-zinc-900/20 to-transparent opacity-90"></div>
+                {track.audioSrc && (
+                  <AudioVisualizer audioId={`audio-${track.id}`} />
+                )}
+
+                <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 via-zinc-900/20 to-transparent opacity-90 pointer-events-none z-20"></div>
                 
-                <div className="absolute bottom-0 left-0 p-6 w-full">
+                <div className="absolute bottom-0 left-0 p-6 w-full pointer-events-none z-30">
                   <h3 className="text-2xl font-bold text-white mb-2 drop-shadow-md">{track.title}</h3>
                   <p className="text-zinc-300 text-sm drop-shadow-md">{track.description}</p>
                 </div>
               </div>
 
-              <div className="p-6 bg-zinc-900/80 backdrop-blur-xl border-t border-zinc-800/80 flex flex-col gap-4">
+              <div className="p-6 bg-zinc-900/80 backdrop-blur-xl border-t border-zinc-800/80 flex flex-col gap-4 relative z-30">
                 {track.audioSrc ? (
                   <audio
+                    id={`audio-${track.id}`}
                     controls
                     controlsList="nodownload"
                     className="w-full h-12 opacity-80 transition-opacity duration-300 group-hover:opacity-100"
                     src={track.audioSrc}
+                    crossOrigin="anonymous"
                   >
                     Your browser does not support the audio element.
                   </audio>
