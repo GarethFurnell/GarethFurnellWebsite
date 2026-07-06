@@ -17,8 +17,8 @@ const images = [
   },
   {
     id: 3,
-    src: '/images/photography/motorcycle/000030.jpg',
-    alt: 'Motorcycle Photography',
+    src: '/images/photography/nature/000032.JPG',
+    alt: 'Black and White Photography',
   },
 ];
 
@@ -55,7 +55,7 @@ export default function HomeCarousel() {
               src={image.src}
               alt={image.alt}
               fill
-              className="object-cover"
+              className={`object-cover ${image.id === 3 ? 'grayscale' : ''}`}
               priority={image.id === 1}
             />
             {/* Subtle dark gradient overlay to make text readable */}

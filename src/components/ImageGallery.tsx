@@ -9,6 +9,7 @@ interface ImageGalleryProps {
   layout: 'grid' | 'masonry';
   emptyMessage?: string;
   isPurchaseMode?: boolean;
+  gridCols?: 3 | 4;
 }
 
 import { resolveImagePath } from '@/utils/resolveImagePath';
@@ -17,7 +18,7 @@ const getImagePath = (src: string) => {
   return resolveImagePath(src);
 };
 
-export default function ImageGallery({ images, layout, emptyMessage, isPurchaseMode = false }: ImageGalleryProps) {
+export default function ImageGallery({ images, layout, emptyMessage, isPurchaseMode = false, gridCols = 3 }: ImageGalleryProps) {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [cartAdded, setCartAdded] = useState(false);
   const [selectedSize, setSelectedSize] = useState('8x10');
@@ -40,12 +41,16 @@ export default function ImageGallery({ images, layout, emptyMessage, isPurchaseM
     );
   }
 
+  const gridClass = gridCols === 4 
+    ? "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6"
+    : "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6";
+
   return (
     <>
       <div
         className={
           layout === 'grid'
-            ? "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"
+            ? gridClass
             : "columns-1 sm:columns-2 md:columns-3 gap-6 space-y-6"
         }
       >
