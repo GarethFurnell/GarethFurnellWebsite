@@ -156,12 +156,15 @@ export default function MongodbClient({ mongodbImages }: { mongodbImages: string
         <Accordion title="Certifications" subtitle="My professional MongoDB certifications" defaultOpen={false}>
           <div className="py-4 flex flex-col items-center">
             {mongodbImages.find(img => img.includes('0mongodb')) && (
-              <div className="mb-8 w-full max-w-[280px]">
-                <ImageGallery 
-                  images={[mongodbImages.find(img => img.includes('0mongodb'))!]} 
-                  layout="grid" 
-                  objectFit="contain"
-                />
+              <div className="mb-8 w-full sm:w-1/2 md:w-1/4 px-3 flex justify-center">
+                <div className="w-full">
+                  <ImageGallery 
+                    images={[mongodbImages.find(img => img.includes('0mongodb'))!]} 
+                    layout="grid" 
+                    gridCols={1}
+                    objectFit="contain"
+                  />
+                </div>
               </div>
             )}
             <div className="w-full">

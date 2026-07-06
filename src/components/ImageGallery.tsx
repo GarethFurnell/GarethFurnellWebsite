@@ -9,7 +9,7 @@ interface ImageGalleryProps {
   layout: 'grid' | 'masonry';
   emptyMessage?: string;
   isPurchaseMode?: boolean;
-  gridCols?: 3 | 4;
+  gridCols?: 1 | 3 | 4;
   objectFit?: 'cover' | 'contain';
 }
 
@@ -42,9 +42,11 @@ export default function ImageGallery({ images, layout, emptyMessage, isPurchaseM
     );
   }
 
-  const gridClass = gridCols === 4 
-    ? "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6"
-    : "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6";
+  const gridClass = gridCols === 1
+    ? "grid grid-cols-1 gap-6"
+    : gridCols === 4 
+      ? "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6"
+      : "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6";
 
   return (
     <>
