@@ -19,7 +19,7 @@ export default function AudioVisualizer({ audioId }: AudioVisualizerProps) {
     // 1. Setup Three.js Scene
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 1000);
-    camera.position.z = 7; // Moved back slightly to fit the heart shape
+    camera.position.z = 8; // Moved back to prevent clipping with header/footer
 
     const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     
@@ -31,7 +31,8 @@ export default function AudioVisualizer({ audioId }: AudioVisualizerProps) {
     containerRef.current.appendChild(renderer.domElement);
 
     // 2. Create the Sphere & Morph it into a Biological Heart
-    const geometry = new THREE.IcosahedronGeometry(2.0, 16); 
+    // Detail 24 provides a very dense, fleshy mesh
+    const geometry = new THREE.IcosahedronGeometry(2.0, 24); 
     const material = new THREE.MeshBasicMaterial({
       color: 0x00ED64, // Brand green
       wireframe: true,
@@ -54,27 +55,33 @@ export default function AudioVisualizer({ audioId }: AudioVisualizerProps) {
       let oy = positionAttribute.array[iy];
       let oz = positionAttribute.array[iz];
 
-      // Heart Morph Math (Biological Organ style)
-      // Normalizing first
+      // Heart Morph Math (Anatomical Organ style)
       const length = Math.sqrt(ox*ox + oy*oy + oz*oz);
       let nx = ox / length;
       let ny = oy / length;
       let nz = oz / length;
 
       if (ny < 0) {
-        // Taper and stretch the bottom into the apex of the heart
-        nx *= (1.0 + ny * 0.6); 
-        nz *= (1.0 + ny * 0.6);
-        ny *= 1.3; 
+        // Taper the ventricles into the apex
+        nx *= (1.0 + ny * 0.8); 
+        nz *= (1.0 + ny * 0.5); // Flatten the back
+        ny *= 1.4; // Elongate the bottom
+        // Twist apex to the left (anatomical orientation)
+        nx -= ny * 0.3; 
       } else {
-        // Widen the top and create the dual-lobed structure (atria)
+        // Atria and vessels at the top
         nx *= 1.1;
-        nz *= 0.8; // Flatten slightly front-to-back
-        ny += Math.abs(nx) * 0.6; // Pull the top sides up
+        nz *= 0.8;
+        
+        // Right atrium bulge
+        if (nx > 0) nx += Math.pow(ny, 2) * 0.5;
+        
+        // Aorta / Pulmonary artery cluster bulge on the top left
+        if (nx < 0) ny += Math.abs(nx) * 0.9;
       }
 
-      // Re-scale to desired size
-      const scale = 1.8;
+      // Re-scale to desired size (smaller so it fits the screen center)
+      const scale = 1.1;
       originalPositions[ix] = nx * scale;
       originalPositions[iy] = ny * scale;
       originalPositions[iz] = nz * scale;
@@ -134,7 +141,6 @@ export default function AudioVisualizer({ audioId }: AudioVisualizerProps) {
         const bassIntensity = bassAvg / 255; // 0.0 to 1.0
         
         // Scale heart based on heavy bass (simulating a heartbeat pulse)
-        // Add an aggressive jump for the beat
         const pulse = Math.pow(bassIntensity, 4) * 0.4;
         const scale = 1 + (bassIntensity * 0.1) + pulse;
         sphere.scale.set(scale, scale, scale);
@@ -150,7 +156,7 @@ export default function AudioVisualizer({ audioId }: AudioVisualizerProps) {
           const rawFreq = dataArray[freqIndex] / 255;
           
           // Exponential distortion for organic spikes/vibrations
-          const offset = Math.pow(rawFreq, 3) * 1.2 * bassIntensity;
+          const offset = Math.pow(rawFreq, 3) * 1.5 * bassIntensity;
           
           const ox = originalPositions[ix];
           const oy = originalPositions[iy];
@@ -162,7 +168,7 @@ export default function AudioVisualizer({ audioId }: AudioVisualizerProps) {
           const nz = oz / length;
 
           // Add a rapid heartbeat flutter based on time and audio
-          const breathing = Math.sin(timeRef.current * 5 + length) * 0.05 * bassIntensity;
+          const breathing = Math.sin(timeRef.current * 8 + length * 2) * 0.06 * bassIntensity;
 
           positionAttribute.setXYZ(
             i, 
@@ -174,14 +180,16 @@ export default function AudioVisualizer({ audioId }: AudioVisualizerProps) {
         positionAttribute.needsUpdate = true;
 
         // Color Logic: Transition to Crimson Red on High Bass
-        // Brand Green is Hue: 0.33, Red is Hue: 0.0 (or 1.0)
-        // We use Math.pow to ensure it stays green until bass gets REALLY high
-        const redShift = Math.pow(bassIntensity, 2.5); // Fast curve to 1.0 on peak
-        const hue = 0.33 - (redShift * 0.33); // Shifts from 0.33 down to 0.0
+        // Increase sensitivity: multiply bassIntensity by 1.8 so it reaches 1.0 much faster
+        const effectiveBass = Math.min(1.0, bassIntensity * 1.8);
+        const redShift = Math.pow(effectiveBass, 2.0); // Fast curve to 1.0
+        
+        // Shifts from 0.33 (Green) down to 0.0 (Red)
+        const hue = 0.33 - (redShift * 0.33); 
         
         // Brighten and increase opacity on loud hits
-        material.opacity = 0.3 + (bassIntensity * 0.6);
-        material.color.setHSL(Math.max(0, hue), 1, 0.5 + (redShift * 0.1));
+        material.opacity = 0.2 + (effectiveBass * 0.6);
+        material.color.setHSL(Math.max(0, hue), 1, 0.4 + (redShift * 0.2));
       } else {
         // Idle biological breathing when no music
         for (let i = 0; i < positionAttribute.count; i++) {
