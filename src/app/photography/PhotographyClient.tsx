@@ -34,6 +34,14 @@ export default function PhotographyClient({ golfImages, motorcycleImages, nature
       </div>
 
       <div className="flex flex-col gap-24">
+        {/* Black & White Section */}
+        <section>
+          <h3 className="text-2xl font-medium tracking-tight text-white mb-8 border-b border-zinc-900 pb-4">
+            Black & White
+          </h3>
+          <ImageGallery images={bwImages} layout="masonry" emptyMessage={emptyMsg} isPurchaseMode={isPurchaseMode} />
+        </section>
+
         <section>
           <h3 className="text-2xl font-medium tracking-tight text-white mb-8 border-b border-zinc-900 pb-4">
             Golf
@@ -43,24 +51,16 @@ export default function PhotographyClient({ golfImages, motorcycleImages, nature
 
         <section>
           <h3 className="text-2xl font-medium tracking-tight text-white mb-8 border-b border-zinc-900 pb-4">
-            Motorcycles
-          </h3>
-          <ImageGallery images={motorcycleImages} layout="masonry" emptyMessage={emptyMsg} isPurchaseMode={isPurchaseMode} />
-        </section>
-
-        <section>
-          <h3 className="text-2xl font-medium tracking-tight text-white mb-8 border-b border-zinc-900 pb-4">
             Nature
           </h3>
           <ImageGallery images={natureImages} layout="masonry" emptyMessage={emptyMsg} isPurchaseMode={isPurchaseMode} />
         </section>
-        
-        {/* New Black & White Section */}
+
         <section>
           <h3 className="text-2xl font-medium tracking-tight text-white mb-8 border-b border-zinc-900 pb-4">
-            Black & White
+            Motorcycles
           </h3>
-          <ImageGallery images={bwImages} layout="masonry" emptyMessage={emptyMsg} isPurchaseMode={isPurchaseMode} />
+          <ImageGallery images={motorcycleImages} layout="masonry" emptyMessage={emptyMsg} isPurchaseMode={isPurchaseMode} />
         </section>
       </div>
     </>
