@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 interface AudioVisualizerProps {
   audioId: string;
@@ -19,75 +20,70 @@ export default function AudioVisualizer({ audioId }: AudioVisualizerProps) {
     // 1. Setup Three.js Scene
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 1000);
-    camera.position.z = 8; // Moved back to prevent clipping with header/footer
+    camera.position.z = 8; 
 
     const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     
-    // We want the canvas to perfectly fit the screen
     const width = window.innerWidth;
     const height = window.innerHeight;
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     containerRef.current.appendChild(renderer.domElement);
 
-    // 2. Create the Sphere & Morph it into a Biological Heart
-    // Detail 24 provides a very dense, fleshy mesh
-    const geometry = new THREE.IcosahedronGeometry(2.0, 24); 
-    const material = new THREE.MeshBasicMaterial({
-      color: 0x00ED64, // Brand green
-      wireframe: true,
-      transparent: true,
-      opacity: 0.4
-    });
-    const sphere = new THREE.Mesh(geometry, material);
-    scene.add(sphere);
-
-    // Pre-calculate the biological heart shape as the base
-    const positionAttribute = geometry.attributes.position;
-    const originalPositions = new Float32Array(positionAttribute.count * 3);
+    // 2. Load the Realistic 3D Heart Model
+    let wrapperGroup: THREE.Group | null = null;
+    const meshes: { mesh: THREE.Mesh, originalPositions: Float32Array }[] = [];
     
-    for (let i = 0; i < positionAttribute.count; i++) {
-      const ix = i * 3;
-      const iy = i * 3 + 1;
-      const iz = i * 3 + 2;
+    const loader = new GLTFLoader();
+    loader.load('/models/heart.glb', (gltf) => {
+      const loadedGroup = gltf.scene;
+      
+      // Traverse and extract meshes
+      loadedGroup.traverse((child) => {
+        if (child instanceof THREE.Mesh) {
+          // Override material with our reactive wireframe
+          child.material = new THREE.MeshBasicMaterial({
+            color: 0x00ED64, // Brand green
+            wireframe: true,
+            transparent: true,
+            opacity: 0.4
+          });
+          
+          const posAttr = child.geometry.attributes.position;
+          // Store original positions for distortion
+          const orig = new Float32Array(posAttr.count * 3);
+          for (let i = 0; i < posAttr.count * 3; i++) {
+            orig[i] = posAttr.array[i];
+          }
+          meshes.push({ mesh: child, originalPositions: orig });
+        }
+      });
+      
+      // Auto-center the model regardless of its native origin
+      const box = new THREE.Box3().setFromObject(loadedGroup);
+      const center = box.getCenter(new THREE.Vector3());
+      loadedGroup.position.sub(center);
+      
+      // Auto-scale the model to roughly 4.0 units max dimension
+      const size = box.getSize(new THREE.Vector3());
+      const maxDim = Math.max(size.x, size.y, size.z);
+      const targetDim = 4.0;
+      const baseScale = targetDim / maxDim;
+      loadedGroup.scale.set(baseScale, baseScale, baseScale);
 
-      let ox = positionAttribute.array[ix];
-      let oy = positionAttribute.array[iy];
-      let oz = positionAttribute.array[iz];
+      // Wrap in a parent group for easy animation scaling/rotation
+      wrapperGroup = new THREE.Group();
+      wrapperGroup.add(loadedGroup);
+      
+      // Add a slight anatomical tilt
+      wrapperGroup.rotation.x = 0.2; 
+      
+      scene.add(wrapperGroup);
+    }, undefined, (error) => {
+      console.error('Error loading 3D model:', error);
+    });
 
-      // Heart Morph Math (Anatomical Organ style)
-      const length = Math.sqrt(ox*ox + oy*oy + oz*oz);
-      let nx = ox / length;
-      let ny = oy / length;
-      let nz = oz / length;
-
-      if (ny < 0) {
-        // Taper the ventricles into the apex
-        nx *= (1.0 + ny * 0.8); 
-        nz *= (1.0 + ny * 0.5); // Flatten the back
-        ny *= 1.4; // Elongate the bottom
-        // Twist apex to the left (anatomical orientation)
-        nx -= ny * 0.3; 
-      } else {
-        // Atria and vessels at the top
-        nx *= 1.1;
-        nz *= 0.8;
-        
-        // Right atrium bulge
-        if (nx > 0) nx += Math.pow(ny, 2) * 0.5;
-        
-        // Aorta / Pulmonary artery cluster bulge on the top left
-        if (nx < 0) ny += Math.abs(nx) * 0.9;
-      }
-
-      // Re-scale to desired size (smaller so it fits the screen center)
-      const scale = 1.1;
-      originalPositions[ix] = nx * scale;
-      originalPositions[iy] = ny * scale;
-      originalPositions[iz] = nz * scale;
-    }
-
-    // 3. Setup Audio Context variables
+    // 3. Setup Audio Context
     let audioContext: AudioContext | null = null;
     let analyser: AnalyserNode | null = null;
     let dataArray: Uint8Array | null = null;
@@ -130,93 +126,102 @@ export default function AudioVisualizer({ audioId }: AudioVisualizerProps) {
       animationId = requestAnimationFrame(animate);
       timeRef.current += 0.01;
 
-      // Slow idle rotation - imitating a slow tumble/spin
-      sphere.rotation.y += 0.002;
+      if (wrapperGroup) {
+        // Slow idle tumble
+        wrapperGroup.rotation.y += 0.002;
+      }
 
-      if (analyser && dataArray) {
+      if (analyser && dataArray && wrapperGroup) {
         analyser.getByteFrequencyData(dataArray as any);
         
-        // Calculate average bass (lower frequencies)
+        // Calculate average bass
         const bassAvg = Array.from(dataArray.slice(0, 15)).reduce((a, b) => a + b, 0) / 15;
-        const bassIntensity = bassAvg / 255; // 0.0 to 1.0
+        const bassIntensity = bassAvg / 255; 
         
-        // Scale heart based on heavy bass (simulating a heartbeat pulse)
+        // Aggressive pulse for the entire group
         const pulse = Math.pow(bassIntensity, 4) * 0.4;
-        const scale = 1 + (bassIntensity * 0.1) + pulse;
-        sphere.scale.set(scale, scale, scale);
+        const groupScale = 1 + (bassIntensity * 0.1) + pulse;
+        wrapperGroup.scale.set(groupScale, groupScale, groupScale);
 
-        // Intricate vertex distortion & pumping
-        for (let i = 0; i < positionAttribute.count; i++) {
-          const ix = i * 3;
-          const iy = i * 3 + 1;
-          const iz = i * 3 + 2;
-
-          // Map vertex to a frequency bin
-          const freqIndex = (i * 3) % dataArray.length;
-          const rawFreq = dataArray[freqIndex] / 255;
-          
-          // Exponential distortion for organic spikes/vibrations
-          const offset = Math.pow(rawFreq, 3) * 1.5 * bassIntensity;
-          
-          const ox = originalPositions[ix];
-          const oy = originalPositions[iy];
-          const oz = originalPositions[iz];
-
-          const length = Math.sqrt(ox*ox + oy*oy + oz*oz);
-          const nx = ox / length;
-          const ny = oy / length;
-          const nz = oz / length;
-
-          // Add a rapid heartbeat flutter based on time and audio
-          const breathing = Math.sin(timeRef.current * 8 + length * 2) * 0.06 * bassIntensity;
-
-          positionAttribute.setXYZ(
-            i, 
-            ox + nx * (offset + breathing), 
-            oy + ny * (offset + breathing), 
-            oz + nz * (offset + breathing)
-          );
-        }
-        positionAttribute.needsUpdate = true;
-
-        // Color Logic: Transition to Crimson Red on High Bass
-        // Increase sensitivity: multiply bassIntensity by 1.8 so it reaches 1.0 much faster
+        // Color Logic: Transition to Crimson Red
         const effectiveBass = Math.min(1.0, bassIntensity * 1.8);
-        const redShift = Math.pow(effectiveBass, 2.0); // Fast curve to 1.0
-        
-        // Shifts from 0.33 (Green) down to 0.0 (Red)
-        const hue = 0.33 - (redShift * 0.33); 
-        
-        // Brighten and increase opacity on loud hits
-        material.opacity = 0.2 + (effectiveBass * 0.6);
-        material.color.setHSL(Math.max(0, hue), 1, 0.4 + (redShift * 0.2));
-      } else {
-        // Idle biological breathing when no music
-        for (let i = 0; i < positionAttribute.count; i++) {
-          const ix = i * 3;
-          const iy = i * 3 + 1;
-          const iz = i * 3 + 2;
+        const redShift = Math.pow(effectiveBass, 2.0); 
+        const hue = Math.max(0, 0.33 - (redShift * 0.33)); 
+
+        // Intricate vertex distortion for every mesh in the model
+        meshes.forEach(({ mesh, originalPositions }) => {
+          const positionAttribute = mesh.geometry.attributes.position;
           
-          const ox = originalPositions[ix];
-          const oy = originalPositions[iy];
-          const oz = originalPositions[iz];
+          for (let i = 0; i < positionAttribute.count; i++) {
+            const ix = i * 3;
+            const iy = i * 3 + 1;
+            const iz = i * 3 + 2;
 
-          const length = Math.sqrt(ox*ox + oy*oy + oz*oz);
-          const nx = ox / length;
-          const ny = oy / length;
-          const nz = oz / length;
+            const freqIndex = (i * 3) % dataArray!.length;
+            const rawFreq = dataArray![freqIndex] / 255;
+            
+            // The organic spike offset
+            const offset = Math.pow(rawFreq, 3) * 0.8 * bassIntensity; 
+            
+            const ox = originalPositions[ix];
+            const oy = originalPositions[iy];
+            const oz = originalPositions[iz];
 
-          // Slow resting heartbeat
-          const breathing = Math.sin(timeRef.current * 2 + (nx * 5)) * 0.05;
+            // Calculate local normal direction to explode outwards
+            const length = Math.sqrt(ox*ox + oy*oy + oz*oz) || 1; // Prevent div by 0
+            const nx = ox / length;
+            const ny = oy / length;
+            const nz = oz / length;
 
-          positionAttribute.setXYZ(
-            i, 
-            ox + nx * breathing, 
-            oy + ny * breathing, 
-            oz + nz * breathing
-          );
-        }
-        positionAttribute.needsUpdate = true;
+            // Heartbeat flutter
+            const breathing = Math.sin(timeRef.current * 8 + length * 2) * 0.04 * bassIntensity;
+
+            positionAttribute.setXYZ(
+              i, 
+              ox + nx * (offset + breathing), 
+              oy + ny * (offset + breathing), 
+              oz + nz * (offset + breathing)
+            );
+          }
+          positionAttribute.needsUpdate = true;
+
+          // Apply color update
+          if (mesh.material instanceof THREE.MeshBasicMaterial) {
+            mesh.material.opacity = 0.2 + (effectiveBass * 0.6);
+            mesh.material.color.setHSL(hue, 1, 0.4 + (redShift * 0.2));
+          }
+        });
+
+      } else if (wrapperGroup) {
+        // Idle breathing when no music
+        meshes.forEach(({ mesh, originalPositions }) => {
+          const positionAttribute = mesh.geometry.attributes.position;
+          
+          for (let i = 0; i < positionAttribute.count; i++) {
+            const ix = i * 3;
+            const iy = i * 3 + 1;
+            const iz = i * 3 + 2;
+            
+            const ox = originalPositions[ix];
+            const oy = originalPositions[iy];
+            const oz = originalPositions[iz];
+
+            const length = Math.sqrt(ox*ox + oy*oy + oz*oz) || 1;
+            const nx = ox / length;
+            const ny = oy / length;
+            const nz = oz / length;
+
+            const breathing = Math.sin(timeRef.current * 2 + (nx * 5)) * 0.03;
+
+            positionAttribute.setXYZ(
+              i, 
+              ox + nx * breathing, 
+              oy + ny * breathing, 
+              oz + nz * breathing
+            );
+          }
+          positionAttribute.needsUpdate = true;
+        });
       }
 
       renderer.render(scene, camera);
@@ -241,8 +246,15 @@ export default function AudioVisualizer({ audioId }: AudioVisualizerProps) {
       if (containerRef.current && renderer.domElement) {
         containerRef.current.removeChild(renderer.domElement);
       }
-      geometry.dispose();
-      material.dispose();
+      // Note: Full memory cleanup for imported scenes requires traversing and disposing all geometry/materials.
+      if (wrapperGroup) {
+        wrapperGroup.traverse((child) => {
+          if (child instanceof THREE.Mesh) {
+            child.geometry.dispose();
+            if (child.material) child.material.dispose();
+          }
+        });
+      }
       renderer.dispose();
     };
   }, [audioId]);
