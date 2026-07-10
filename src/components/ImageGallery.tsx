@@ -25,14 +25,63 @@ export default function ImageGallery({ images, layout, emptyMessage, isPurchaseM
   const [selectedSize, setSelectedSize] = useState('8x10');
   const { addToCart } = useCart();
 
-  // Close lightbox on escape key
+  // Swipe detection state
+  const [touchStartX, setTouchStartX] = useState<number | null>(null);
+  const [touchEndX, setTouchEndX] = useState<number | null>(null);
+
+  // Close lightbox on escape key, navigate on arrows
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setSelectedImage(null);
+      if (e.key === 'Escape') {
+        setSelectedImage(null);
+      } else if (e.key === 'ArrowRight') {
+        setSelectedImage(prev => {
+          if (!prev) return null;
+          const idx = images.indexOf(prev);
+          return images[idx < images.length - 1 ? idx + 1 : 0];
+        });
+      } else if (e.key === 'ArrowLeft') {
+        setSelectedImage(prev => {
+          if (!prev) return null;
+          const idx = images.indexOf(prev);
+          return images[idx > 0 ? idx - 1 : images.length - 1];
+        });
+      }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  }, [images]);
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    setTouchEndX(null);
+    setTouchStartX(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    setTouchEndX(e.targetTouches[0].clientX);
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStartX || !touchEndX) return;
+    const distance = touchStartX - touchEndX;
+    const isLeftSwipe = distance > 50;
+    const isRightSwipe = distance < -50;
+    
+    if (isLeftSwipe) {
+      setSelectedImage(prev => {
+        if (!prev) return null;
+        const idx = images.indexOf(prev);
+        return images[idx < images.length - 1 ? idx + 1 : 0];
+      });
+    }
+    if (isRightSwipe) {
+      setSelectedImage(prev => {
+        if (!prev) return null;
+        const idx = images.indexOf(prev);
+        return images[idx > 0 ? idx - 1 : images.length - 1];
+      });
+    }
+  };
 
   if (images.length === 0) {
     return (
@@ -95,6 +144,9 @@ export default function ImageGallery({ images, layout, emptyMessage, isPurchaseM
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-xl p-4 sm:p-8 animate-in fade-in duration-300"
           onClick={() => setSelectedImage(null)}
+          onTouchStart={onTouchStart}
+          onTouchMove={onTouchMove}
+          onTouchEnd={onTouchEnd}
         >
           <div className="relative w-full h-full max-w-7xl max-h-[90vh] flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
             <button

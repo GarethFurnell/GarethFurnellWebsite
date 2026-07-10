@@ -11,41 +11,6 @@ const tracks = [
     type: 'Latest Release • EP',
     audioSrc: '/music/dub-techno-track1.mp3', 
     image: '/images/music/ambient.png',
-  },
-  {
-    id: 2,
-    title: 'Lost Tales, Vol. 1',
-    type: '2025 • EP',
-    audioSrc: '/music/dub-techno-track1.mp3',
-    image: '/images/music/techno.png',
-  },
-  {
-    id: 3,
-    title: 'Zephyr',
-    type: '2022 • Album',
-    audioSrc: '/music/dub-techno-track1.mp3',
-    image: '/images/music/ambient.png',
-  },
-  {
-    id: 4,
-    title: 'Old One',
-    type: '2024 • Single',
-    audioSrc: '/music/dub-techno-track1.mp3',
-    image: '/images/music/techno.png',
-  },
-  {
-    id: 5,
-    title: 'Wildflower',
-    type: '2026 • Single',
-    audioSrc: '/music/dub-techno-track1.mp3',
-    image: '/images/music/ambient.png',
-  },
-  {
-    id: 6,
-    title: 'Nightfall',
-    type: '2023 • Single',
-    audioSrc: '/music/dub-techno-track1.mp3',
-    image: '/images/music/techno.png',
   }
 ];
 
