@@ -101,8 +101,8 @@ export default function ClaimsManagement() {
                     <td className="px-6 py-4 font-medium text-white whitespace-nowrap">{claim.claimId}</td>
                     <td className="px-6 py-4 font-mono text-xs text-zinc-500">{claim.userId}</td>
                     <td className="px-6 py-4">{claim.type}</td>
-                    <td className="px-6 py-4 text-green-400 font-medium">${claim.amount.toLocaleString()}</td>
-                    <td className="px-6 py-4">
+                    <td className="px-6 py-4 text-green-400 font-medium">R {claim.amount.toLocaleString()}</td>
+                    <td className="px-6 py-4 whitespace-nowrap">
                       <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${
                         claim.status === 'Flagged for Review' ? 'bg-amber-900/50 text-amber-400 border border-amber-800' :
                         claim.status === 'Approved' ? 'bg-green-900/50 text-green-400 border border-green-800' :
@@ -152,7 +152,7 @@ export default function ClaimsManagement() {
                 </div>
                 <div>
                   <p className="text-xs text-zinc-500 uppercase tracking-wider mb-1">Amount</p>
-                  <p className="text-sm font-medium text-green-400">${selectedClaim.amount.toLocaleString()}</p>
+                  <p className="text-sm font-medium text-green-400">R {selectedClaim.amount.toLocaleString()}</p>
                 </div>
                 <div>
                   <p className="text-xs text-zinc-500 uppercase tracking-wider mb-1">Date Filed</p>
@@ -184,7 +184,7 @@ export default function ClaimsManagement() {
                       <p className="text-xs text-zinc-500">{new Date(historyClaim.dateFiled).toLocaleDateString()}</p>
                     </div>
                     <div className="text-right">
-                      <p className="text-sm text-green-400">${historyClaim.amount.toLocaleString()}</p>
+                      <p className="text-sm text-green-400">R {historyClaim.amount.toLocaleString()}</p>
                       <p className={`text-[10px] uppercase font-bold ${historyClaim.status === 'Flagged for Review' ? 'text-amber-500' : 'text-zinc-500'}`}>{historyClaim.status}</p>
                     </div>
                   </div>

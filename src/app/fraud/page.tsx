@@ -87,7 +87,7 @@ export default function FraudDashboard() {
           </div>
           <div className="bg-zinc-900/50 border border-zinc-800 p-6 rounded-xl md:col-span-3">
             <h3 className="text-sm font-medium text-zinc-400 mb-2">Total Value at Risk</h3>
-            <p className="text-4xl font-bold text-green-500">${metrics.totalValue.toLocaleString()}</p>
+            <p className="text-4xl font-bold text-green-500">R {metrics.totalValue.toLocaleString()}</p>
           </div>
         </div>
       ) : null}

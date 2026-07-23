@@ -86,7 +86,7 @@ export default function PhotoValidation() {
                         <h3 className="text-lg font-bold text-white">{claim.claimId}</h3>
                         <p className="font-mono text-xs text-zinc-500">{claim.userId}</p>
                       </div>
-                      <span className="text-green-400 font-medium">${claim.amount.toLocaleString()}</span>
+                      <span className="text-green-400 font-medium">R {claim.amount.toLocaleString()}</span>
                     </div>
 
                     <div className="bg-black/50 p-3 rounded-lg border border-zinc-800 text-sm">
@@ -160,7 +160,7 @@ export default function PhotoValidation() {
                       <p className="text-xs text-zinc-500">{new Date(historyClaim.dateFiled).toLocaleDateString()}</p>
                     </div>
                     <div className="text-right">
-                      <p className="text-sm text-green-400">${historyClaim.amount.toLocaleString()}</p>
+                      <p className="text-sm text-green-400">R {historyClaim.amount.toLocaleString()}</p>
                       <p className={`text-[10px] uppercase font-bold ${historyClaim.status === 'Flagged for Review' ? 'text-amber-500' : 'text-zinc-500'}`}>{historyClaim.status}</p>
                     </div>
                   </div>

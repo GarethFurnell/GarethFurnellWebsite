@@ -23,7 +23,8 @@ export const generateMockFraudData = async () => {
     const dateFiledMs = Date.now() - Math.floor(Math.random() * 30 * 24 * 60 * 60 * 1000);
     const dateFiled = new Date(dateFiledMs).toISOString();
     
-    const requiresPhotoValidation = isFlagged && Math.random() > 0.3;
+    // Allow both flagged (more likely) and normal claims to require photo validation
+    const requiresPhotoValidation = isFlagged ? Math.random() > 0.3 : Math.random() > 0.6;
     const photoUrl = requiresPhotoValidation ? '/images/placeholder-damage.jpg' : null;
 
     let imageMetadata = null;
@@ -46,7 +47,7 @@ export const generateMockFraudData = async () => {
       userId: userIds[Math.floor(Math.random() * userIds.length)],
       dateFiled,
       type: types[Math.floor(Math.random() * types.length)],
-      amount: Math.floor(Math.random() * 50000) + 500,
+      amount: Math.floor(Math.random() * 850000) + 8500,
       status: status,
       riskScore: isFlagged ? Math.floor(Math.random() * 20) + 80 : Math.floor(Math.random() * 60) + 10,
       requiresPhotoValidation,
