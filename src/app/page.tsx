@@ -11,6 +11,24 @@ export default function Home() {
       <main className="flex-1 w-full px-6 md:px-12 lg:px-24 pb-24">
         <InteractiveEye />
 
+        {/* Featured Fraud UI Banner */}
+        <Link href="/fraud" className="block mt-12 mb-4 group relative overflow-hidden rounded-2xl border border-amber-900/30 bg-gradient-to-r from-amber-950/40 to-black hover:border-amber-700/50 transition-all duration-500">
+          <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay pointer-events-none"></div>
+          <div className="absolute -inset-x-full top-0 h-px bg-gradient-to-r from-transparent via-amber-500/50 to-transparent group-hover:animate-[shimmer_2s_infinite]"></div>
+          <div className="relative p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+            <div>
+              <span className="inline-block px-3 py-1 bg-amber-900/50 text-amber-400 text-xs font-bold uppercase tracking-wider rounded-full mb-3 border border-amber-800/50">New Feature Proof-of-Concept</span>
+              <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">Fraud Mock UI</h2>
+              <p className="text-zinc-400 max-w-xl text-sm sm:text-base">A complete dashboard and claims management system visualizing simulated fraud data from a live MongoDB cluster.</p>
+            </div>
+            <div className="shrink-0">
+              <div className="flex items-center justify-center w-12 h-12 rounded-full bg-amber-500 text-black group-hover:scale-110 group-hover:shadow-[0_0_20px_rgba(245,158,11,0.4)] transition-all duration-300">
+                <svg className="w-5 h-5 translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" /></svg>
+              </div>
+            </div>
+          </div>
+        </Link>
+
         <ul className="flex flex-col gap-2 mt-8">
           <ListItem
             title="MongoDB"
