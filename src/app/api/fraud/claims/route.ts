@@ -5,14 +5,18 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const statusFilter = searchParams.get('status');
+    const userIdFilter = searchParams.get('userId');
     const sortOrder = searchParams.get('sort') || 'desc';
 
     const client = await clientPromise;
     const db = client.db('fraud_mock_db');
     
-    let query = {};
+    let query: any = {};
     if (statusFilter && statusFilter !== 'All') {
-      query = { status: statusFilter };
+      query.status = statusFilter;
+    }
+    if (userIdFilter) {
+      query.userId = userIdFilter;
     }
 
     const sortOption = sortOrder === 'asc' ? { riskScore: 1 } : { riskScore: -1 };
