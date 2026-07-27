@@ -72,22 +72,68 @@ export default function FraudDashboard() {
           <p>{error}</p>
         </div>
       ) : metrics ? (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-zinc-900/50 border border-zinc-800 p-6 rounded-xl">
-            <h3 className="text-sm font-medium text-zinc-400 mb-2">Total Claims Processed</h3>
-            <p className="text-4xl font-bold">{metrics.totalClaims}</p>
+        <div className="flex flex-col gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div className="bg-zinc-900/50 border border-zinc-800 p-6 rounded-xl">
+              <h3 className="text-sm font-medium text-zinc-400 mb-2">Total Claims</h3>
+              <p className="text-3xl font-bold">{metrics.totalClaims}</p>
+            </div>
+            <div className="bg-zinc-900/50 border border-zinc-800 p-6 rounded-xl">
+              <h3 className="text-sm font-medium text-zinc-400 mb-2">Flagged</h3>
+              <p className="text-3xl font-bold text-amber-500">{metrics.flaggedClaims}</p>
+            </div>
+            <div className="bg-zinc-900/50 border border-zinc-800 p-6 rounded-xl">
+              <h3 className="text-sm font-medium text-zinc-400 mb-2">Fraud Rate</h3>
+              <p className="text-3xl font-bold text-red-500">{metrics.fraudRate}</p>
+            </div>
+            <div className="bg-zinc-900/50 border border-zinc-800 p-6 rounded-xl">
+              <h3 className="text-sm font-medium text-zinc-400 mb-2">Most Common</h3>
+              <p className="text-lg font-bold text-zinc-200 mt-2 leading-tight">{metrics.mostCommonType || 'N/A'}</p>
+            </div>
+            <div className="bg-zinc-900/50 border border-zinc-800 p-6 rounded-xl md:col-span-4">
+              <h3 className="text-sm font-medium text-zinc-400 mb-2">Total Value at Risk</h3>
+              <p className="text-4xl font-bold text-green-500">R {metrics.totalValue.toLocaleString()}</p>
+            </div>
           </div>
-          <div className="bg-zinc-900/50 border border-zinc-800 p-6 rounded-xl">
-            <h3 className="text-sm font-medium text-zinc-400 mb-2">Flagged for Review</h3>
-            <p className="text-4xl font-bold text-amber-500">{metrics.flaggedClaims}</p>
-          </div>
-          <div className="bg-zinc-900/50 border border-zinc-800 p-6 rounded-xl">
-            <h3 className="text-sm font-medium text-zinc-400 mb-2">Fraud Rate</h3>
-            <p className="text-4xl font-bold text-red-500">{metrics.fraudRate}</p>
-          </div>
-          <div className="bg-zinc-900/50 border border-zinc-800 p-6 rounded-xl md:col-span-3">
-            <h3 className="text-sm font-medium text-zinc-400 mb-2">Total Value at Risk</h3>
-            <p className="text-4xl font-bold text-green-500">R {metrics.totalValue.toLocaleString()}</p>
+
+          <div className="bg-zinc-950 border border-zinc-800 rounded-2xl p-8 shadow-inner mt-4">
+            <h2 className="text-2xl font-bold mb-4 flex items-center gap-3">
+              <svg className="w-6 h-6 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+              Risk Score Algorithm Documentation
+            </h2>
+            <p className="text-zinc-400 mb-6 max-w-3xl leading-relaxed">
+              The automated fraud detection system assigns a Risk Score from 0 to 100 to every incoming grocery claim. Any score over 75 automatically flags the claim for manual analyst review. Scores are calculated using the following primary heuristics:
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="bg-zinc-900/30 p-5 rounded-xl border border-zinc-800/50">
+                <div className="flex items-center justify-between mb-2">
+                  <h4 className="font-bold text-white text-lg">Repeat Offender Penalty</h4>
+                  <span className="text-red-400 font-mono text-sm font-bold">+30 pts</span>
+                </div>
+                <p className="text-sm text-zinc-400">If the user (identified by `userId`) has submitted 3 or more claims within a rolling 30-day window. Retail fraud heavily indexes on account abuse.</p>
+              </div>
+              <div className="bg-zinc-900/30 p-5 rounded-xl border border-zinc-800/50">
+                <div className="flex items-center justify-between mb-2">
+                  <h4 className="font-bold text-white text-lg">EXIF Date Discrepancy</h4>
+                  <span className="text-red-400 font-mono text-sm font-bold">+40 pts</span>
+                </div>
+                <p className="text-sm text-zinc-400">If the provided photo's internal EXIF `dateTaken` metadata indicates the photo was taken prior to the order being placed. A classic indicator of recycled images.</p>
+              </div>
+              <div className="bg-zinc-900/30 p-5 rounded-xl border border-zinc-800/50">
+                <div className="flex items-center justify-between mb-2">
+                  <h4 className="font-bold text-white text-lg">High Value Spike</h4>
+                  <span className="text-amber-500 font-mono text-sm font-bold">+20 pts</span>
+                </div>
+                <p className="text-sm text-zinc-400">If the requested refund amount is greater than 3x the user's historical average basket size. Scammers often test with small items before hitting high-ticket goods.</p>
+              </div>
+              <div className="bg-zinc-900/30 p-5 rounded-xl border border-zinc-800/50">
+                <div className="flex items-center justify-between mb-2">
+                  <h4 className="font-bold text-white text-lg">Image Hash Re-use</h4>
+                  <span className="text-red-400 font-mono text-sm font-bold">+50 pts</span>
+                </div>
+                <p className="text-sm text-zinc-400">If the cryptographic hash of the uploaded image exactly matches a hash already in our database from a previous, unrelated claim by any user.</p>
+              </div>
+            </div>
           </div>
         </div>
       ) : null}

@@ -65,13 +65,14 @@ export default function PhotoValidation() {
               
               // Calculate difference in days. If the photo is more than 3 days older than the claim, flag it red.
               const isDiscrepancy = takenDate && ((filedDate.getTime() - takenDate.getTime()) / (1000 * 3600 * 24)) > 3;
+              const isDuplicateHash = claim.imageMetadata?.imageHash === 'duplicate-hash-8f43';
 
               return (
                 <div key={claim._id} className="bg-zinc-900/40 border border-zinc-800 rounded-xl overflow-hidden flex flex-col">
                   <div className="relative w-full h-48 bg-zinc-950">
                     {claim.photoUrl ? (
                       <div className="absolute inset-0 flex items-center justify-center text-zinc-500 border-b border-zinc-800 bg-zinc-900">
-                        <span className="text-sm">Mock Damage Image</span>
+                        <span className="text-sm">Mock Grocery Image</span>
                       </div>
                     ) : (
                       <div className="absolute inset-0 flex items-center justify-center text-zinc-600">No Image Provided</div>
@@ -88,6 +89,8 @@ export default function PhotoValidation() {
                       </div>
                       <span className="text-green-400 font-medium">R {claim.amount.toLocaleString()}</span>
                     </div>
+                    
+                    <p className="text-sm text-zinc-400 line-clamp-2"><span className="text-zinc-500">Issue:</span> {claim.description}</p>
 
                     <div className="bg-black/50 p-3 rounded-lg border border-zinc-800 text-sm">
                       <div className="grid grid-cols-2 gap-2 mb-2 pb-2 border-b border-zinc-800/50">
@@ -103,9 +106,15 @@ export default function PhotoValidation() {
                         </div>
                       </div>
                       {isDiscrepancy && (
+                        <div className="text-xs text-red-400 flex items-center gap-1 mt-1 mb-1">
+                          <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                          <span>Critical: Photo taken significantly before order date.</span>
+                        </div>
+                      )}
+                      {isDuplicateHash && (
                         <div className="text-xs text-red-400 flex items-center gap-1 mt-1">
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
-                          <span>Critical: Photo taken significantly before claim date.</span>
+                          <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+                          <span>Critical: Image hash matches a previously submitted photo.</span>
                         </div>
                       )}
                     </div>

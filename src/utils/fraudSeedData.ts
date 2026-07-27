@@ -9,7 +9,7 @@ export const generateMockFraudData = async () => {
   await db.collection('metrics').deleteMany({});
 
   const statuses = ['Pending', 'Approved', 'Rejected', 'Flagged for Review'];
-  const types = ['Auto Damage', 'Property', 'Medical', 'Theft'];
+  const types = ['Missing Item', 'Spoiled Produce', 'Empty Delivery Box', 'Incorrect Item', 'Expired Product'];
   const claims = [];
 
   // Pool of 10 users
@@ -38,32 +38,49 @@ export const generateMockFraudData = async () => {
       imageMetadata = {
         dateTaken: new Date(dateFiledMs - timeOffset).toISOString(),
         deviceModel: Math.random() > 0.5 ? 'iPhone 13 Pro' : 'Samsung Galaxy S22',
-        location: 'Exif Data Present'
+        location: 'Exif Data Present',
+        imageHash: isFlagged && Math.random() > 0.5 ? 'duplicate-hash-8f43' : `unique-hash-${Math.floor(Math.random() * 10000)}`
       };
     }
+
+    const type = types[Math.floor(Math.random() * types.length)];
+    let description = '';
+    if (type === 'Spoiled Produce') description = 'The avocados were completely rotten when I opened the bag.';
+    if (type === 'Missing Item') description = 'I paid for 3 packs of chicken breasts but none were in the bag.';
+    if (type === 'Empty Delivery Box') description = 'The driver handed me a sealed box but it was completely empty inside.';
+    if (type === 'Incorrect Item') description = 'I ordered oat milk but received full cream dairy milk.';
+    if (type === 'Expired Product') description = 'The yogurt delivered expired 4 days ago.';
 
     claims.push({
       claimId: `CLM-${1000 + i}`,
       userId: userIds[Math.floor(Math.random() * userIds.length)],
       dateFiled,
-      type: types[Math.floor(Math.random() * types.length)],
-      amount: Math.floor(Math.random() * 850000) + 8500,
+      type,
+      amount: Math.floor(Math.random() * 4900) + 100, // R100 to R5000
       status: status,
       riskScore: isFlagged ? Math.floor(Math.random() * 20) + 80 : Math.floor(Math.random() * 60) + 10,
       requiresPhotoValidation,
       photoUrl,
       imageMetadata,
-      description: 'Standard claim filing. Further details attached in documentation.',
+      description,
     });
   }
 
   await db.collection('claims').insertMany(claims);
+
+  // Compute most common type
+  const typeCounts = claims.reduce((acc, curr) => {
+    acc[curr.type] = (acc[curr.type] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>);
+  const mostCommonType = Object.keys(typeCounts).reduce((a, b) => typeCounts[a] > typeCounts[b] ? a : b);
 
   const metrics = {
     totalClaims: 50,
     flaggedClaims: claims.filter(c => c.status === 'Flagged for Review').length,
     totalValue: claims.reduce((acc, curr) => acc + curr.amount, 0),
     fraudRate: (claims.filter(c => c.status === 'Flagged for Review').length / 50 * 100).toFixed(1) + '%',
+    mostCommonType,
     lastUpdated: new Date().toISOString()
   };
 
