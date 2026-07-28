@@ -133,6 +133,20 @@ export default function FraudDashboard() {
                 </div>
                 <p className="text-sm text-zinc-400">If the cryptographic hash of the uploaded image exactly matches a hash already in our database from a previous, unrelated claim by any user.</p>
               </div>
+              <div className="bg-zinc-900/30 p-5 rounded-xl border border-zinc-800/50">
+                <div className="flex items-center justify-between mb-2">
+                  <h4 className="font-bold text-white text-lg">Velocity of Claims</h4>
+                  <span className="text-red-400 font-mono text-sm font-bold">+35 pts</span>
+                </div>
+                <p className="text-sm text-zinc-400">If a single account attempts to file multiple claims across different devices within minutes of each other, signaling automated fraud farm activity.</p>
+              </div>
+              <div className="bg-zinc-900/30 p-5 rounded-xl border border-zinc-800/50">
+                <div className="flex items-center justify-between mb-2">
+                  <h4 className="font-bold text-white text-lg">Geolocation Mismatch</h4>
+                  <span className="text-amber-500 font-mono text-sm font-bold">+25 pts</span>
+                </div>
+                <p className="text-sm text-zinc-400">If the GPS coordinates of the device submitting the claim do not match the delivery address on record, or if the user is masking their IP address via a known proxy/VPN.</p>
+              </div>
             </div>
           </div>
         </div>

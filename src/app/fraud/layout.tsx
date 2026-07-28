@@ -4,7 +4,7 @@ export default function FraudLayout({ children }: { children: React.ReactNode })
   return (
     <div className="flex flex-col md:flex-row min-h-[calc(100vh-100px)] text-white w-full max-w-7xl mx-auto px-4 md:px-12 py-8">
       {/* Sidebar Navigation */}
-      <aside className="w-full md:w-64 shrink-0 mb-8 md:mb-0 md:mr-12">
+      <aside className="w-full md:w-56 shrink-0 mb-8 md:mb-0 md:mr-8">
         <div className="sticky top-24">
           <h2 className="text-2xl font-bold tracking-tight mb-6">Fraud Center</h2>
           <nav className="flex flex-col gap-2">

@@ -50,7 +50,7 @@ export default function ClaimsManagement() {
   return (
     <div className="relative flex animate-in fade-in slide-in-from-bottom-4 duration-500 overflow-hidden">
       {/* Main Table Area */}
-      <div className={`flex flex-col gap-6 w-full transition-all duration-300 ${selectedClaim ? 'lg:pr-96' : ''}`}>
+      <div className={`flex flex-col gap-6 w-full transition-all duration-300 ${selectedClaim ? 'lg:pr-80' : ''}`}>
         <div className="flex justify-between items-end">
           <div>
             <h1 className="text-3xl font-bold mb-2">Claims Management</h1>
@@ -130,7 +130,7 @@ export default function ClaimsManagement() {
 
       {/* Slide-out Sidebar */}
       <div 
-        className={`fixed top-0 right-0 w-96 h-full bg-zinc-950 border-l border-zinc-800 p-6 shadow-2xl transition-transform duration-300 z-50 overflow-y-auto ${selectedClaim ? 'translate-x-0' : 'translate-x-full'}`}
+        className={`fixed top-0 right-0 w-80 h-full bg-zinc-950 border-l border-zinc-800 p-6 shadow-2xl transition-transform duration-300 z-50 overflow-y-auto ${selectedClaim ? 'translate-x-0' : 'translate-x-full'}`}
       >
         {selectedClaim && (
           <div>
