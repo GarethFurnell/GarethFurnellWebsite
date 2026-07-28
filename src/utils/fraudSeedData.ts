@@ -15,6 +15,17 @@ export const generateMockFraudData = async () => {
   // Pool of 10 users
   const userIds = Array.from({ length: 10 }, (_, i) => `USR-10${i}`);
 
+  // Pools for simulating fraud rings (cross-account links)
+  const addresses = ['123 Main St, Cape Town', '45 Loop St, Cape Town', '88 Long St, Cape Town', '12 Kloof St, Cape Town', '99 Beach Rd, Cape Town'];
+  const cards = ['hash-card-9923', 'hash-card-1144', 'hash-card-8812', 'hash-card-4433', 'hash-card-0019'];
+  const locations = [
+    [-33.882, 18.572],
+    [-33.891, 18.560],
+    [-33.910, 18.421],
+    [-33.924, 18.415],
+    [-33.931, 18.402]
+  ];
+
   for (let i = 1; i <= 50; i++) {
     const isFlagged = Math.random() > 0.7;
     const status = isFlagged ? 'Flagged for Review' : statuses[Math.floor(Math.random() * 3)];
@@ -63,6 +74,10 @@ export const generateMockFraudData = async () => {
       photoUrl,
       imageMetadata,
       description,
+      deliveryAddress: addresses[Math.floor(Math.random() * addresses.length)],
+      cardHash: cards[Math.floor(Math.random() * cards.length)],
+      location: locations[Math.floor(Math.random() * locations.length)],
+      totalSpendToDate: Math.floor(Math.random() * 50000) + 2000,
     });
   }
 
