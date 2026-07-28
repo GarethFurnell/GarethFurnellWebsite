@@ -241,16 +241,6 @@ export default function PhotoValidation() {
                     ></textarea>
                   </div>
 
-                  {/* Attached Media under notes */}
-                  {selectedClaim.photoUrl && (
-                    <div className="mt-2 mb-4">
-                      <label className="text-sm font-medium text-white mb-2 block">Attached Media</label>
-                      <div className="relative w-full h-32 bg-zinc-900 border border-zinc-800 rounded-lg overflow-hidden flex items-center justify-center">
-                        <span className="text-sm text-zinc-500">Mock Grocery Image</span>
-                      </div>
-                    </div>
-                  )}
-
                   <div className="sticky bottom-0 bg-zinc-950 pt-4 pb-2 border-t border-zinc-800 mt-auto z-10 -mx-4 px-4">
                     <label className="text-sm font-medium text-white mb-2 block">Outcome Reason</label>
                     <select 
