@@ -68,9 +68,9 @@ export default function ClaimsManagement() {
   };
 
   return (
-    <div className="relative flex animate-in fade-in slide-in-from-bottom-4 duration-500 overflow-hidden">
+    <div className="relative flex items-start gap-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
       {/* Main Table Area */}
-      <div className={`flex flex-col gap-6 w-full transition-all duration-300 ${selectedClaim ? 'lg:pr-96' : ''}`}>
+      <div className="flex-1 flex flex-col gap-6 min-w-0 transition-all duration-300">
         <div className="flex justify-between items-end">
           <div>
             <h1 className="text-3xl font-bold mb-2">Claims Management</h1>
@@ -148,11 +148,9 @@ export default function ClaimsManagement() {
         </div>
       </div>
 
-      {/* Slide-out Sidebar */}
-      <div 
-        className={`fixed top-0 right-0 w-96 h-full bg-zinc-950 border-l border-zinc-800 p-4 shadow-2xl transition-transform duration-300 z-50 overflow-y-auto flex flex-col ${selectedClaim ? 'translate-x-0' : 'translate-x-full'}`}
-      >
-        {selectedClaim && (
+      {/* Inline Sticky Sidebar */}
+      {selectedClaim && (
+        <div className="sticky top-6 shrink-0 w-80 bg-zinc-950 border border-zinc-800 rounded-2xl p-4 shadow-2xl h-[calc(100vh-120px)] overflow-y-auto flex flex-col z-10">
           <div className="flex-1 flex flex-col">
             <div className="flex justify-between items-start mb-4">
               <div>
@@ -233,7 +231,7 @@ export default function ClaimsManagement() {
                     ></textarea>
                   </div>
 
-                  <div className="sticky bottom-0 bg-zinc-950 pt-4 pb-2 border-t border-zinc-800 mt-auto z-10 -mx-4 px-4">
+                  <div className="mt-auto pt-4 border-t border-zinc-800">
                     <label className="text-sm font-medium text-white mb-2 block">Outcome Reason</label>
                     <select 
                       className="w-full bg-zinc-900 border border-zinc-700 text-white text-sm rounded-lg focus:ring-amber-500 focus:border-amber-500 p-2.5 mb-4"
@@ -313,15 +311,7 @@ export default function ClaimsManagement() {
               </div>
             )}
           </div>
-        )}
-      </div>
-      
-      {/* Sidebar Backdrop Overlay */}
-      {selectedClaim && (
-        <div 
-          className="fixed inset-0 bg-black/20 backdrop-blur-[2px] z-40 transition-opacity duration-300 lg:hidden"
-          onClick={() => setSelectedClaim(null)}
-        ></div>
+        </div>
       )}
     </div>
   );
