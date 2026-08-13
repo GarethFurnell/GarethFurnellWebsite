@@ -92,23 +92,31 @@ export default function PhotoValidation() {
                 <div key={claim._id} className="bg-zinc-900/40 border border-zinc-800 rounded-xl overflow-hidden flex flex-col">
                   <div className="relative w-full h-48 bg-zinc-950">
                     {claim.photoUrl ? (
-                      <div className="absolute inset-0 flex items-center justify-center text-zinc-500 border-b border-zinc-800 bg-zinc-900">
-                        <span className="text-sm">Mock Grocery Image</span>
-                      </div>
+                      <Image 
+                        src={claim.photoUrl} 
+                        alt={claim.productName || 'Claim evidence'} 
+                        fill 
+                        className="object-cover border-b border-zinc-800"
+                        unoptimized
+                      />
                     ) : (
                       <div className="absolute inset-0 flex items-center justify-center text-zinc-600">No Image Provided</div>
                     )}
-                    <div className="absolute top-3 right-3 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded shadow-lg">
+                    <div className="absolute top-3 right-3 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded shadow-lg z-10">
                       Risk Score: {claim.riskScore}
                     </div>
                   </div>
                   <div className="p-5 flex-1 flex flex-col gap-4">
                     <div className="flex justify-between items-start">
                       <div>
-                        <h3 className="text-lg font-bold text-white">{claim.claimId}</h3>
-                        <p className="font-mono text-xs text-zinc-500">{claim.userId}</p>
+                        <h3 className="text-lg font-bold text-white leading-tight">{claim.productName || claim.type}</h3>
+                        <div className="flex gap-2 items-center mt-1">
+                          <p className="font-mono text-xs text-zinc-500">{claim.claimId}</p>
+                          <span className="text-zinc-600 text-xs">&middot;</span>
+                          <p className="font-mono text-xs text-zinc-500">{claim.userId}</p>
+                        </div>
                       </div>
-                      <span className="text-green-400 font-medium">R {claim.amount.toLocaleString()}</span>
+                      <span className="text-green-400 font-medium shrink-0">R {claim.amount.toLocaleString()}</span>
                     </div>
                     
                     <p className="text-sm text-zinc-400 line-clamp-2"><span className="text-zinc-500">Issue:</span> {claim.description}</p>

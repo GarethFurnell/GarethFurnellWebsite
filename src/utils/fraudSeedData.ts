@@ -34,9 +34,35 @@ export const generateMockFraudData = async () => {
     const dateFiledMs = Date.now() - Math.floor(Math.random() * 30 * 24 * 60 * 60 * 1000);
     const dateFiled = new Date(dateFiledMs).toISOString();
     
-    // Allow both flagged (more likely) and normal claims to require photo validation
+    const type = types[Math.floor(Math.random() * types.length)];
     const requiresPhotoValidation = isFlagged ? Math.random() > 0.3 : Math.random() > 0.6;
-    const photoUrl = requiresPhotoValidation ? '/images/placeholder-damage.jpg' : null;
+    let description = '';
+    let productName = '';
+    let assignedPhoto = null;
+    
+    if (type === 'Spoiled Produce') { 
+      description = 'The avocados were completely rotten when I opened the bag.'; 
+      productName = 'Avocados (3-pack)'; 
+      assignedPhoto = '/images/demo1.jpg';
+    } else if (type === 'Missing Item') { 
+      description = 'I paid for 3 packs of chicken breasts but none were in the bag.'; 
+      productName = 'Chicken Breasts 500g';
+      assignedPhoto = '/images/demo2.jpg';
+    } else if (type === 'Empty Delivery Box') { 
+      description = 'The driver handed me a sealed box but it was completely empty inside.'; 
+      productName = 'Delivery Package';
+      assignedPhoto = '/images/demo3.jpg';
+    } else if (type === 'Incorrect Item') { 
+      description = 'I ordered oat milk but received full cream dairy milk.'; 
+      productName = 'Oat Milk 1L';
+      assignedPhoto = '/images/demo4.jpg';
+    } else if (type === 'Expired Product') { 
+      description = 'The yogurt delivered expired 4 days ago.'; 
+      productName = 'Greek Yogurt 500g';
+      assignedPhoto = '/images/demo5.jpg';
+    }
+
+    const photoUrl = requiresPhotoValidation ? assignedPhoto : null;
 
     let imageMetadata = null;
     if (photoUrl) {
@@ -54,14 +80,6 @@ export const generateMockFraudData = async () => {
       };
     }
 
-    const type = types[Math.floor(Math.random() * types.length)];
-    let description = '';
-    if (type === 'Spoiled Produce') description = 'The avocados were completely rotten when I opened the bag.';
-    if (type === 'Missing Item') description = 'I paid for 3 packs of chicken breasts but none were in the bag.';
-    if (type === 'Empty Delivery Box') description = 'The driver handed me a sealed box but it was completely empty inside.';
-    if (type === 'Incorrect Item') description = 'I ordered oat milk but received full cream dairy milk.';
-    if (type === 'Expired Product') description = 'The yogurt delivered expired 4 days ago.';
-
     claims.push({
       claimId: `CLM-${1000 + i}`,
       userId: userIds[Math.floor(Math.random() * userIds.length)],
@@ -73,6 +91,7 @@ export const generateMockFraudData = async () => {
       requiresPhotoValidation,
       photoUrl,
       imageMetadata,
+      productName,
       description,
       deliveryAddress: addresses[Math.floor(Math.random() * addresses.length)],
       cardHash: cards[Math.floor(Math.random() * cards.length)],
