@@ -2,7 +2,7 @@ import { getImages } from '@/utils/getImages';
 import PhotographyClient from './PhotographyClient';
 
 export const metadata = {
-  title: 'Photography | Gareth Furnell',
+  title: 'Photography | Gareth F',
   description: 'Film Photos and 35mm Snapshots',
 };
 
