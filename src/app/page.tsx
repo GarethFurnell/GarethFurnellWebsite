@@ -1,17 +1,13 @@
-import Link from 'next/link';
 import ListItem from '@/components/ListItem';
 import InteractiveEye from '@/components/InteractiveEye';
-import HomeCarousel from '@/components/HomeCarousel';
 
 export default function Home() {
   return (
     <div className="min-h-screen text-white selection:bg-zinc-800 selection:text-white flex flex-col font-sans">
-      
-
-      <main className="flex-1 w-full px-6 md:px-12 lg:px-24 pb-24">
+      <main className="flex-1 w-full px-6 md:px-12 lg:px-24 pb-16 flex flex-col justify-center">
         <InteractiveEye />
 
-        <ul className="flex flex-col gap-2 mt-8">
+        <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-5 mt-4 sm:mt-6">
           <ListItem
             title="MongoDB"
             subtitle="AI Vector Search & 3D Graph"
@@ -37,11 +33,6 @@ export default function Home() {
               </svg>
             }
           />
-
-          <div className="my-10">
-            <HomeCarousel />
-          </div>
-
           <ListItem
             title="Photography"
             subtitle="Film Photos / 35mm"
