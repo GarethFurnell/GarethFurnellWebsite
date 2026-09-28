@@ -36,6 +36,26 @@ export interface AsteroidBody {
   isPotentiallyHazardous: boolean;
   angleDeg: number; // Initial position on orbital radar (0 - 360)
   orbitRadius: number; // Scaled radius for radar rendering
+  inclinationDeg: number; // 3D orbital plane inclination tilt
+}
+
+export interface HeatRegion {
+  name: string;
+  xPct: number; // 0-100 on world map (longitude normalized)
+  yPct: number; // 0-100 on world map (latitude normalized)
+  anomalyC: number; // Temperature anomaly in °C
+  intensity: 'critical' | 'severe' | 'moderate' | 'cooling';
+}
+
+export interface YearlyClimateRecord {
+  year: number;
+  phase: string;
+  ensoState: 'Super El Niño' | 'El Niño' | 'Neutral' | 'La Niña' | 'Triple-Dip La Niña' | 'BigQuery ML Forecast';
+  oniIndex: number; // Oceanic Niño Index in °C
+  globalMeanAnomalyC: number;
+  headlineEvent: string;
+  bulletin: string;
+  regions: HeatRegion[];
 }
 
 export const elNinoExplanation = {
@@ -65,6 +85,30 @@ export const elNinoExplanation = {
 };
 
 export const elNinoLocations: LocationImpact[] = [
+  {
+    id: "bangkok-thailand",
+    name: "Bangkok & Northern Thailand",
+    country: "Thailand",
+    region: "Southeast Asia / Chao Phraya Basin",
+    tempAnomalyC: 2.1,
+    precipAnomalyPct: 78,
+    status: "Extreme Rainfall & Floods",
+    summary: "Catastrophic monsoon deluge and severe river overflow across Chiang Mai, Chiang Rai, and the Chao Phraya river basin, with Bangkok flood defense gates and pumps operating at emergency thresholds.",
+    teleconnectionInsight: "During late-phase Super El Niño to rapid ENSO transitions, anomalous sea-surface temperatures in the South China Sea and Andaman Sea supercharge monsoon troughs and tropical depressions, channeling continuous moisture plumes into mainland Southeast Asia.",
+    coordinates: [13.7563, 100.5018],
+    historicalData: [
+      { date: "2023-Q1", historicalAnomaly: 0.8, forecastAnomaly: null, confidenceLower: null, confidenceUpper: null, precipAnomalyPct: 15 },
+      { date: "2023-Q2", historicalAnomaly: 1.3, forecastAnomaly: null, confidenceLower: null, confidenceUpper: null, precipAnomalyPct: 25 },
+      { date: "2023-Q3", historicalAnomaly: 1.7, forecastAnomaly: null, confidenceLower: null, confidenceUpper: null, precipAnomalyPct: 40 },
+      { date: "2023-Q4", historicalAnomaly: 1.9, forecastAnomaly: null, confidenceLower: null, confidenceUpper: null, precipAnomalyPct: 55 },
+      { date: "2024-Q1", historicalAnomaly: 2.1, forecastAnomaly: 2.1, confidenceLower: 1.8, confidenceUpper: 2.4, precipAnomalyPct: 78 },
+      { date: "2024-Q2", historicalAnomaly: null, forecastAnomaly: 2.4, confidenceLower: 2.0, confidenceUpper: 2.8, precipAnomalyPct: 92 },
+      { date: "2024-Q3", historicalAnomaly: null, forecastAnomaly: 2.2, confidenceLower: 1.7, confidenceUpper: 2.7, precipAnomalyPct: 84 },
+      { date: "2024-Q4", historicalAnomaly: null, forecastAnomaly: 1.6, confidenceLower: 1.1, confidenceUpper: 2.1, precipAnomalyPct: 45 },
+      { date: "2025-Q1", historicalAnomaly: null, forecastAnomaly: 1.0, confidenceLower: 0.5, confidenceUpper: 1.5, precipAnomalyPct: 20 },
+      { date: "2025-Q2", historicalAnomaly: null, forecastAnomaly: 0.6, confidenceLower: 0.1, confidenceUpper: 1.1, precipAnomalyPct: 8 }
+    ]
+  },
   {
     id: "tokyo-japan",
     name: "Tokyo",
@@ -276,7 +320,8 @@ export const nasaAsteroids: AsteroidBody[] = [
     hazardScore: 94,
     isPotentiallyHazardous: true,
     angleDeg: 45,
-    orbitRadius: 42
+    orbitRadius: 42,
+    inclinationDeg: 3.33
   },
   {
     id: "101955-bennu",
@@ -292,7 +337,8 @@ export const nasaAsteroids: AsteroidBody[] = [
     hazardScore: 88,
     isPotentiallyHazardous: true,
     angleDeg: 135,
-    orbitRadius: 95
+    orbitRadius: 95,
+    inclinationDeg: 6.03
   },
   {
     id: "2024-bx1",
@@ -308,7 +354,8 @@ export const nasaAsteroids: AsteroidBody[] = [
     hazardScore: 12,
     isPotentiallyHazardous: false,
     angleDeg: 280,
-    orbitRadius: 28
+    orbitRadius: 28,
+    inclinationDeg: 7.28
   },
   {
     id: "433-eros",
@@ -324,7 +371,8 @@ export const nasaAsteroids: AsteroidBody[] = [
     hazardScore: 8,
     isPotentiallyHazardous: false,
     angleDeg: 200,
-    orbitRadius: 180
+    orbitRadius: 180,
+    inclinationDeg: 10.83
   },
   {
     id: "3122-florence",
@@ -340,7 +388,8 @@ export const nasaAsteroids: AsteroidBody[] = [
     hazardScore: 42,
     isPotentiallyHazardous: true,
     angleDeg: 310,
-    orbitRadius: 150
+    orbitRadius: 150,
+    inclinationDeg: 22.14
   },
   {
     id: "3200-phaethon",
@@ -356,7 +405,8 @@ export const nasaAsteroids: AsteroidBody[] = [
     hazardScore: 61,
     isPotentiallyHazardous: true,
     angleDeg: 75,
-    orbitRadius: 210
+    orbitRadius: 210,
+    inclinationDeg: 22.25
   },
   {
     id: "2023-dw",
@@ -372,7 +422,196 @@ export const nasaAsteroids: AsteroidBody[] = [
     hazardScore: 78,
     isPotentiallyHazardous: true,
     angleDeg: 165,
-    orbitRadius: 105
+    orbitRadius: 105,
+    inclinationDeg: 5.86
+  }
+];
+
+export const yearlyClimateRecords: YearlyClimateRecord[] = [
+  {
+    year: 2015,
+    phase: "Godzilla Super El Niño Initiation",
+    ensoState: "Super El Niño",
+    oniIndex: 2.6,
+    globalMeanAnomalyC: 0.93,
+    headlineEvent: "Massive thermal surge across equatorial Pacific; historical deluge in coastal Peru.",
+    bulletin: "Weakening of the trade winds allowed an extraordinary Kelvin wave to warm the Niño 3.4 region to +2.6°C, rivaling the 1997 event.",
+    regions: [
+      { name: "Equatorial Pacific", xPct: 20, yPct: 52, anomalyC: 3.2, intensity: "critical" },
+      { name: "Southeast Asia", xPct: 76, yPct: 56, anomalyC: 1.8, intensity: "severe" },
+      { name: "East Asia", xPct: 82, yPct: 40, anomalyC: 1.2, intensity: "moderate" },
+      { name: "South America (Pacific)", xPct: 32, yPct: 62, anomalyC: 2.9, intensity: "critical" },
+      { name: "Southern Africa", xPct: 55, yPct: 75, anomalyC: 1.5, intensity: "severe" },
+      { name: "North America (West)", xPct: 18, yPct: 38, anomalyC: 1.6, intensity: "severe" }
+    ]
+  },
+  {
+    year: 2016,
+    phase: "Super El Niño Peak & Global Record Warmth",
+    ensoState: "Super El Niño",
+    oniIndex: 2.2,
+    globalMeanAnomalyC: 1.02,
+    headlineEvent: "Hottest year on modern planetary record to date; unprecedented Great Barrier Reef bleaching.",
+    bulletin: "Atmospheric energy discharge reached planetary maximum before oceanic Kelvin wave dissipation in late spring.",
+    regions: [
+      { name: "Equatorial Pacific", xPct: 20, yPct: 52, anomalyC: 2.7, intensity: "critical" },
+      { name: "Southeast Asia", xPct: 76, yPct: 56, anomalyC: 2.1, intensity: "critical" },
+      { name: "East Asia", xPct: 82, yPct: 40, anomalyC: 1.6, intensity: "severe" },
+      { name: "South America (Pacific)", xPct: 32, yPct: 62, anomalyC: 2.3, intensity: "critical" },
+      { name: "Southern Africa", xPct: 55, yPct: 75, anomalyC: 1.7, intensity: "severe" },
+      { name: "North America (West)", xPct: 18, yPct: 38, anomalyC: 1.4, intensity: "moderate" }
+    ]
+  },
+  {
+    year: 2017,
+    phase: "Post-El Niño Neutral Transition",
+    ensoState: "Neutral",
+    oniIndex: -0.1,
+    globalMeanAnomalyC: 0.92,
+    headlineEvent: "Brief coastal Peruvian warming followed by baseline atmospheric stabilization.",
+    bulletin: "Trade winds temporarily re-established, though background ocean heat content remained well above pre-industrial norms.",
+    regions: [
+      { name: "Equatorial Pacific", xPct: 20, yPct: 52, anomalyC: 0.2, intensity: "moderate" },
+      { name: "Southeast Asia", xPct: 76, yPct: 56, anomalyC: 0.8, intensity: "moderate" },
+      { name: "East Asia", xPct: 82, yPct: 40, anomalyC: 0.7, intensity: "moderate" },
+      { name: "South America (Pacific)", xPct: 32, yPct: 62, anomalyC: 1.1, intensity: "moderate" },
+      { name: "Southern Africa", xPct: 55, yPct: 75, anomalyC: 0.6, intensity: "moderate" }
+    ]
+  },
+  {
+    year: 2018,
+    phase: "Moderate Warm Phase Pulse",
+    ensoState: "El Niño",
+    oniIndex: 0.9,
+    globalMeanAnomalyC: 0.85,
+    headlineEvent: "Sub-surface Pacific thermal build-up; European summer heatwaves.",
+    bulletin: "A weak-to-moderate central Pacific El Niño (Modoki pattern) pushed regional anomalies toward +0.9°C.",
+    regions: [
+      { name: "Equatorial Pacific", xPct: 20, yPct: 52, anomalyC: 1.2, intensity: "moderate" },
+      { name: "Southeast Asia", xPct: 76, yPct: 56, anomalyC: 1.1, intensity: "moderate" },
+      { name: "Europe (UK/Central)", xPct: 50, yPct: 32, anomalyC: 1.9, intensity: "severe" },
+      { name: "Australia (East)", xPct: 85, yPct: 72, anomalyC: 1.5, intensity: "severe" }
+    ]
+  },
+  {
+    year: 2019,
+    phase: "Protracted Modoki El Niño",
+    ensoState: "El Niño",
+    oniIndex: 0.8,
+    globalMeanAnomalyC: 0.98,
+    headlineEvent: "Extreme Australian 'Black Summer' bushfire conditions fueled by positive Indian Ocean Dipole.",
+    bulletin: "Persistent high pressure over eastern Australia coupled with central Pacific warm anomalies produced record drought.",
+    regions: [
+      { name: "Equatorial Pacific", xPct: 20, yPct: 52, anomalyC: 1.1, intensity: "moderate" },
+      { name: "Australia (East)", xPct: 85, yPct: 72, anomalyC: 2.8, intensity: "critical" },
+      { name: "Southeast Asia", xPct: 76, yPct: 56, anomalyC: 1.4, intensity: "moderate" },
+      { name: "Southern Africa", xPct: 55, yPct: 75, anomalyC: 1.3, intensity: "moderate" }
+    ]
+  },
+  {
+    year: 2020,
+    phase: "La Niña Initiation",
+    ensoState: "La Niña",
+    oniIndex: -1.3,
+    globalMeanAnomalyC: 1.02,
+    headlineEvent: "Equatorial Pacific cold upwelling tongue; record Atlantic hurricane season (30 named storms).",
+    bulletin: "Strong easterly trade winds intensified, pushing equatorial cold upwelling across South America while piling warm water into Australasia.",
+    regions: [
+      { name: "Equatorial Pacific", xPct: 20, yPct: 52, anomalyC: -1.4, intensity: "cooling" },
+      { name: "Southeast Asia", xPct: 76, yPct: 56, anomalyC: 0.5, intensity: "moderate" },
+      { name: "Atlantic / Caribbean", xPct: 30, yPct: 44, anomalyC: 1.4, intensity: "severe" },
+      { name: "Australia (East)", xPct: 85, yPct: 72, anomalyC: -0.4, intensity: "cooling" }
+    ]
+  },
+  {
+    year: 2021,
+    phase: "La Niña Continuation (Year 2)",
+    ensoState: "La Niña",
+    oniIndex: -1.0,
+    globalMeanAnomalyC: 0.84,
+    headlineEvent: "Pacific Northwest heat dome contrasted with persistent cold tropical Pacific.",
+    bulletin: "The La Niña atmospheric teleconnection remained locked, steering storm tracks north of typical winter corridors.",
+    regions: [
+      { name: "Equatorial Pacific", xPct: 20, yPct: 52, anomalyC: -1.2, intensity: "cooling" },
+      { name: "North America (NW)", xPct: 16, yPct: 30, anomalyC: 3.5, intensity: "critical" },
+      { name: "Southeast Asia", xPct: 76, yPct: 56, anomalyC: 0.6, intensity: "moderate" }
+    ]
+  },
+  {
+    year: 2022,
+    phase: "Rare 'Triple-Dip' La Niña (Year 3)",
+    ensoState: "Triple-Dip La Niña",
+    oniIndex: -1.1,
+    globalMeanAnomalyC: 0.89,
+    headlineEvent: "Catastrophic Pakistan monsoon flooding; historic multi-year drought across the Horn of Africa.",
+    bulletin: "Only the third recorded 'triple-dip' La Niña in 70 years of satellite observations, supercharging warm pool moisture convergence in Asia.",
+    regions: [
+      { name: "Equatorial Pacific", xPct: 20, yPct: 52, anomalyC: -1.3, intensity: "cooling" },
+      { name: "South Asia (Pakistan)", xPct: 65, yPct: 42, anomalyC: 2.2, intensity: "critical" },
+      { name: "East Africa (Horn)", xPct: 58, yPct: 58, anomalyC: 1.9, intensity: "severe" },
+      { name: "Australia (East)", xPct: 85, yPct: 72, anomalyC: 0.2, intensity: "moderate" }
+    ]
+  },
+  {
+    year: 2023,
+    phase: "Historic Thermal Shock & Rapid Transition",
+    ensoState: "El Niño",
+    oniIndex: 1.6,
+    globalMeanAnomalyC: 1.18,
+    headlineEvent: "Unprecedented North Atlantic marine heatwave; abrupt collapse of trade winds in July.",
+    bulletin: "Ocean heat content shattered all historical bounds as a massive Kelvin wave initiated the current Super El Niño cycle.",
+    regions: [
+      { name: "Equatorial Pacific", xPct: 20, yPct: 52, anomalyC: 2.3, intensity: "critical" },
+      { name: "North Atlantic", xPct: 38, yPct: 34, anomalyC: 2.8, intensity: "critical" },
+      { name: "Southeast Asia", xPct: 76, yPct: 56, anomalyC: 1.7, intensity: "severe" },
+      { name: "South America (Pacific)", xPct: 32, yPct: 62, anomalyC: 2.6, intensity: "critical" }
+    ]
+  },
+  {
+    year: 2024,
+    phase: "Active Super El Niño & Severe Regional Floods",
+    ensoState: "Super El Niño",
+    oniIndex: 2.1,
+    globalMeanAnomalyC: 1.32,
+    headlineEvent: "Severe flooding across Bangkok & Northern Thailand; over 20 Pacific typhoons impacting Japan.",
+    bulletin: "ONI reached +2.1°C, placing 2024 in the Super El Niño tier. Torrential monsoon runoff inundated Chiang Mai and the Chao Phraya basin while continuous tropical cyclones tracked toward Japan.",
+    regions: [
+      { name: "Southeast Asia (Thailand)", xPct: 76, yPct: 56, anomalyC: 2.4, intensity: "critical" },
+      { name: "East Asia (Japan)", xPct: 82, yPct: 40, anomalyC: 2.0, intensity: "critical" },
+      { name: "Equatorial Pacific", xPct: 20, yPct: 52, anomalyC: 2.9, intensity: "critical" },
+      { name: "South America (Peru)", xPct: 32, yPct: 62, anomalyC: 3.2, intensity: "critical" },
+      { name: "North America (California)", xPct: 18, yPct: 38, anomalyC: 1.4, intensity: "severe" },
+      { name: "Southern Africa", xPct: 55, yPct: 75, anomalyC: 1.6, intensity: "severe" }
+    ]
+  },
+  {
+    year: 2025,
+    phase: "BigQuery ML ARIMA+ Projected Transition",
+    ensoState: "BigQuery ML Forecast",
+    oniIndex: 0.8,
+    globalMeanAnomalyC: 1.15,
+    headlineEvent: "Gradual thermal dissipation; post-El Niño atmospheric energy dispersion.",
+    bulletin: "BigQuery ML ARIMA_PLUS models project steady deceleration of equatorial heat toward ENSO-neutral status by late 2025.",
+    regions: [
+      { name: "Equatorial Pacific", xPct: 20, yPct: 52, anomalyC: 1.2, intensity: "moderate" },
+      { name: "Southeast Asia", xPct: 76, yPct: 56, anomalyC: 1.0, intensity: "moderate" },
+      { name: "East Asia", xPct: 82, yPct: 40, anomalyC: 0.9, intensity: "moderate" },
+      { name: "South America", xPct: 32, yPct: 62, anomalyC: 1.3, intensity: "moderate" }
+    ]
+  },
+  {
+    year: 2026,
+    phase: "BigQuery ML Multi-Year Baseline Forecast",
+    ensoState: "BigQuery ML Forecast",
+    oniIndex: -0.3,
+    globalMeanAnomalyC: 0.95,
+    headlineEvent: "Projected return to equatorial equilibrium or weak La Niña cycle.",
+    bulletin: "Multi-station ARIMA_PLUS forecast indicates a return to regular trade wind velocity with stabilized Pacific thermocline depth.",
+    regions: [
+      { name: "Equatorial Pacific", xPct: 20, yPct: 52, anomalyC: -0.3, intensity: "cooling" },
+      { name: "Southeast Asia", xPct: 76, yPct: 56, anomalyC: 0.4, intensity: "moderate" },
+      { name: "East Asia", xPct: 82, yPct: 40, anomalyC: 0.5, intensity: "moderate" }
+    ]
   }
 ];
 

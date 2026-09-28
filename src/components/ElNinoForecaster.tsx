@@ -8,9 +8,10 @@ import {
   LocationImpact
 } from '@/utils/bigqueryData';
 import BigQueryQueryViewer from './BigQueryQueryViewer';
+import GlobalTemperatureMap from './GlobalTemperatureMap';
 
 export default function ElNinoForecaster() {
-  const [selectedLocationId, setSelectedLocationId] = useState<string>('tokyo-japan');
+  const [selectedLocationId, setSelectedLocationId] = useState<string>('bangkok-thailand');
   const [searchQuery, setSearchQuery] = useState('');
   const [showSql, setShowSql] = useState(false);
   const [hoveredPointIndex, setHoveredPointIndex] = useState<number | null>(null);
@@ -146,7 +147,10 @@ export default function ElNinoForecaster() {
         </div>
       </div>
 
-      {/* 2. Location Search & Global ENSO Teleconnection Forecast */}
+      {/* 2. Multi-Year Temperature Anomaly Progression Map (2015-2026) */}
+      <GlobalTemperatureMap />
+
+      {/* 3. Location Search & Global ENSO Teleconnection Forecast */}
       <div className="bg-zinc-950/60 border border-zinc-800 rounded-3xl p-6 md:p-8 backdrop-blur-xl">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-8">
           <div>

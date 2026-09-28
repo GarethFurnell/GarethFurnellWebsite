@@ -1,215 +1,380 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
+import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { nasaAsteroids, asteroidBigQuerySQL, AsteroidBody } from '@/utils/bigqueryData';
 import BigQueryQueryViewer from './BigQueryQueryViewer';
 
 export default function OrbitalRadar() {
   const [selectedAsteroid, setSelectedAsteroid] = useState<AsteroidBody>(nasaAsteroids[0]);
   const [showSql, setShowSql] = useState(false);
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const [isAutoRotating, setIsAutoRotating] = useState(true);
+  const [hoveredAsteroidName, setHoveredAsteroidName] = useState<string | null>(null);
+
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const controlsRef = useRef<OrbitControls | null>(null);
+  const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
+
+  // Reference to map asteroid meshes to data
+  const asteroidMeshesRef = useRef<{ mesh: THREE.Mesh; data: AsteroidBody }[]>([]);
+  const targetReticleRef = useRef<THREE.Group | null>(null);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+    const container = containerRef.current;
+    if (!container) return;
 
-    let animationFrameId: number;
-    let sweepAngle = 0;
+    const width = container.clientWidth || 600;
+    const height = container.clientHeight || 500;
 
-    const render = () => {
-      // High-DPI scaling
-      const width = canvas.width;
-      const height = canvas.height;
-      const centerX = width / 2;
-      const centerY = height / 2;
-      const maxRadius = Math.min(centerX, centerY) - 20;
+    // 1. Scene, Camera, Renderer
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x050508);
 
-      // Clear with dark deep space background
-      ctx.fillStyle = '#060609';
-      ctx.fillRect(0, 0, width, height);
+    const camera = new THREE.PerspectiveCamera(45, width / height, 1, 3000);
+    camera.position.set(0, 160, 240);
+    cameraRef.current = camera;
 
-      // Radar Concentric Circles (Lunar Distances)
-      const rings = [
-        { r: maxRadius * 0.2, label: '1 LD (384k km)' },
-        { r: maxRadius * 0.45, label: '3 LD' },
-        { r: maxRadius * 0.75, label: '6 LD' },
-        { r: maxRadius, label: '10 LD' }
-      ];
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.domElement.style.borderRadius = '1.5rem';
+    container.appendChild(renderer.domElement);
 
-      rings.forEach(ring => {
-        ctx.beginPath();
-        ctx.arc(centerX, centerY, ring.r, 0, Math.PI * 2);
-        ctx.strokeStyle = 'rgba(59, 130, 246, 0.15)';
-        ctx.lineWidth = 1;
-        ctx.stroke();
+    // 2. OrbitControls
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+    controls.maxDistance = 700;
+    controls.minDistance = 30;
+    controls.autoRotate = isAutoRotating;
+    controls.autoRotateSpeed = 0.6;
+    controlsRef.current = controls;
 
-        ctx.fillStyle = '#4b5563';
-        ctx.font = '10px monospace';
-        ctx.fillText(ring.label, centerX + 6, centerY - ring.r + 12);
+    // 3. Lighting
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+    scene.add(ambientLight);
+
+    const sunLight = new THREE.DirectionalLight(0xffffff, 1.2);
+    sunLight.position.set(200, 100, 150);
+    scene.add(sunLight);
+
+    // 4. Background Starfield
+    const starCount = 600;
+    const starGeometry = new THREE.BufferGeometry();
+    const starPositions = new Float32Array(starCount * 3);
+    for (let i = 0; i < starCount * 3; i += 3) {
+      starPositions[i] = (Math.random() - 0.5) * 1600;
+      starPositions[i + 1] = (Math.random() - 0.5) * 1600;
+      starPositions[i + 2] = (Math.random() - 0.5) * 1600;
+    }
+    starGeometry.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
+    const starMaterial = new THREE.PointsMaterial({ color: 0x64748b, size: 1.5, transparent: true, opacity: 0.5 });
+    const stars = new THREE.Points(starGeometry, starMaterial);
+    scene.add(stars);
+
+    // 5. Earth at Origin (0,0,0)
+    const earthGroup = new THREE.Group();
+    scene.add(earthGroup);
+
+    // Earth Core
+    const earthGeo = new THREE.SphereGeometry(8, 32, 32);
+    const earthMat = new THREE.MeshStandardMaterial({
+      color: 0x0284c7,
+      emissive: 0x0369a1,
+      emissiveIntensity: 0.35,
+      roughness: 0.6,
+      metalness: 0.2
+    });
+    const earthMesh = new THREE.Mesh(earthGeo, earthMat);
+    earthGroup.add(earthMesh);
+
+    // Earth Atmosphere Glow Ring
+    const atmosphereGeo = new THREE.SphereGeometry(9.5, 32, 16);
+    const atmosphereMat = new THREE.MeshBasicMaterial({
+      color: 0x38bdf8,
+      wireframe: true,
+      transparent: true,
+      opacity: 0.15
+    });
+    const atmosphereMesh = new THREE.Mesh(atmosphereGeo, atmosphereMat);
+    earthGroup.add(atmosphereMesh);
+
+    // 6. Lunar Distance Concentric Rings on Ecliptic Plane (y = 0)
+    const lunarRings = [
+      { r: 25, label: '1 LD' },
+      { r: 60, label: '3 LD' },
+      { r: 120, label: '6 LD' },
+      { r: 190, label: '10 LD' }
+    ];
+
+    lunarRings.forEach(ring => {
+      const ringGeo = new THREE.RingGeometry(ring.r - 0.3, ring.r + 0.3, 64);
+      const ringMat = new THREE.MeshBasicMaterial({
+        color: 0x3b82f6,
+        transparent: true,
+        opacity: 0.15,
+        side: THREE.DoubleSide
       });
+      const ringMesh = new THREE.Mesh(ringGeo, ringMat);
+      ringMesh.rotation.x = Math.PI / 2;
+      scene.add(ringMesh);
+    });
 
-      // Crosshairs
-      ctx.beginPath();
-      ctx.moveTo(centerX, centerY - maxRadius);
-      ctx.lineTo(centerX, centerY + maxRadius);
-      ctx.moveTo(centerX - maxRadius, centerY);
-      ctx.lineTo(centerX + maxRadius, centerY);
-      ctx.strokeStyle = 'rgba(59, 130, 246, 0.08)';
-      ctx.lineWidth = 1;
-      ctx.stroke();
+    // 7. Asteroid 3D Orbits & Meshes
+    asteroidMeshesRef.current = [];
 
-      // Earth at Center
-      ctx.beginPath();
-      ctx.arc(centerX, centerY, 8, 0, Math.PI * 2);
-      ctx.fillStyle = '#38bdf8';
-      ctx.shadowColor = '#38bdf8';
-      ctx.shadowBlur = 12;
-      ctx.fill();
-      ctx.shadowBlur = 0;
+    nasaAsteroids.forEach((ast) => {
+      // 3D Orbital Plane Group tilted by real inclination
+      const orbitGroup = new THREE.Group();
+      orbitGroup.rotation.z = (ast.inclinationDeg * Math.PI) / 180;
+      scene.add(orbitGroup);
 
-      ctx.fillStyle = '#e0f2fe';
-      ctx.font = '10px monospace';
-      ctx.textAlign = 'center';
-      ctx.fillText('EARTH', centerX, centerY + 22);
+      // Scaled semi-major radius
+      const r = (ast.orbitRadius / 220) * 190;
+      const rad = (ast.angleDeg * Math.PI) / 180;
 
-      // Radar Sweep Effect
-      sweepAngle += 0.015;
-      const sweepLength = maxRadius;
-      ctx.save();
-      ctx.beginPath();
-      ctx.moveTo(centerX, centerY);
-      ctx.arc(centerX, centerY, sweepLength, sweepAngle - 0.25, sweepAngle);
-      ctx.closePath();
-      const sweepGradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, sweepLength);
-      sweepGradient.addColorStop(0, 'rgba(56, 189, 248, 0)');
-      sweepGradient.addColorStop(1, 'rgba(56, 189, 248, 0.15)');
-      ctx.fillStyle = sweepGradient;
-      ctx.fill();
-      ctx.restore();
-
-      // Plot Asteroids
-      nasaAsteroids.forEach((ast) => {
-        // Compute position based on orbital radius and angle
-        const radius = (ast.orbitRadius / 220) * maxRadius;
-        const rad = (ast.angleDeg * Math.PI) / 180;
-        const x = centerX + Math.cos(rad) * radius;
-        const y = centerY + Math.sin(rad) * radius;
-
-        const isSelected = ast.id === selectedAsteroid.id;
-
-        // Draw orbital trail
-        ctx.beginPath();
-        ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
-        ctx.strokeStyle = isSelected ? 'rgba(56, 189, 248, 0.35)' : 'rgba(255, 255, 255, 0.03)';
-        ctx.lineWidth = isSelected ? 1.5 : 1;
-        ctx.stroke();
-
-        // Draw Asteroid Body
-        ctx.beginPath();
-        ctx.arc(x, y, isSelected ? 6 : ast.isPotentiallyHazardous ? 4.5 : 3.5, 0, Math.PI * 2);
-
-        if (ast.isPotentiallyHazardous) {
-          ctx.fillStyle = isSelected ? '#ef4444' : '#f87171';
-          ctx.shadowColor = '#ef4444';
-          ctx.shadowBlur = isSelected ? 15 : 6;
-        } else {
-          ctx.fillStyle = isSelected ? '#38bdf8' : '#94a3b8';
-          ctx.shadowColor = '#38bdf8';
-          ctx.shadowBlur = isSelected ? 12 : 3;
-        }
-
-        ctx.fill();
-        ctx.shadowBlur = 0;
-
-        // Asteroid Label
-        ctx.fillStyle = isSelected ? '#ffffff' : '#9ca3af';
-        ctx.font = isSelected ? 'bold 11px monospace' : '9px monospace';
-        ctx.textAlign = 'left';
-        ctx.fillText(ast.name.split(' ')[0], x + 8, y + 3);
+      // Orbit Ellipse Curve
+      const curve = new THREE.EllipseCurve(
+        0, 0,
+        r, r * (1 - ast.eccentricity * 0.2), // slightly elliptical
+        0, 2 * Math.PI,
+        false,
+        0
+      );
+      const points = curve.getPoints(64);
+      const curvePoints3D = points.map(p => new THREE.Vector3(p.x, 0, p.y));
+      const orbitLineGeo = new THREE.BufferGeometry().setFromPoints(curvePoints3D);
+      const orbitLineMat = new THREE.LineBasicMaterial({
+        color: ast.isPotentiallyHazardous ? 0xef4444 : 0x38bdf8,
+        transparent: true,
+        opacity: ast.isPotentiallyHazardous ? 0.25 : 0.12
       });
+      const orbitLine = new THREE.Line(orbitLineGeo, orbitLineMat);
+      orbitGroup.add(orbitLine);
 
-      animationFrameId = requestAnimationFrame(render);
+      // Asteroid 3D Mesh
+      const astSize = ast.isPotentiallyHazardous ? 2.8 : 2.0;
+      const astGeo = new THREE.SphereGeometry(astSize, 16, 16);
+      const astMat = new THREE.MeshStandardMaterial({
+        color: ast.isPotentiallyHazardous ? 0xf43f5e : 0x38bdf8,
+        emissive: ast.isPotentiallyHazardous ? 0xe11d48 : 0x0284c7,
+        emissiveIntensity: 0.6,
+        roughness: 0.4
+      });
+      const astMesh = new THREE.Mesh(astGeo, astMat);
+
+      // Position along orbit
+      const astX = Math.cos(rad) * r;
+      const astZ = Math.sin(rad) * r * (1 - ast.eccentricity * 0.2);
+      astMesh.position.set(astX, 0, astZ);
+      orbitGroup.add(astMesh);
+
+      asteroidMeshesRef.current.push({ mesh: astMesh, data: ast });
+    });
+
+    // 8. 3D Target Reticle for Selected Asteroid
+    const reticleGroup = new THREE.Group();
+    const reticleRing = new THREE.RingGeometry(5.5, 6.2, 32);
+    const reticleMat = new THREE.MeshBasicMaterial({
+      color: 0x38bdf8,
+      side: THREE.DoubleSide,
+      transparent: true,
+      opacity: 0.8
+    });
+    const reticleMesh = new THREE.Mesh(reticleRing, reticleMat);
+    reticleMesh.rotation.x = Math.PI / 2;
+    reticleGroup.add(reticleMesh);
+    scene.add(reticleGroup);
+    targetReticleRef.current = reticleGroup;
+
+    // 9. Raycasting for Click & Hover
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2();
+
+    const onPointerMove = (e: MouseEvent) => {
+      const rect = renderer.domElement.getBoundingClientRect();
+      mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+
+      raycaster.setFromCamera(mouse, camera);
+      const interactiveMeshes = asteroidMeshesRef.current.map(item => item.mesh);
+      const intersects = raycaster.intersectObjects(interactiveMeshes);
+
+      if (intersects.length > 0) {
+        renderer.domElement.style.cursor = 'pointer';
+        const hit = asteroidMeshesRef.current.find(item => item.mesh === intersects[0].object);
+        if (hit) setHoveredAsteroidName(hit.data.name);
+      } else {
+        renderer.domElement.style.cursor = 'grab';
+        setHoveredAsteroidName(null);
+      }
     };
 
-    render();
+    const onClick = (e: MouseEvent) => {
+      const rect = renderer.domElement.getBoundingClientRect();
+      mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+
+      raycaster.setFromCamera(mouse, camera);
+      const interactiveMeshes = asteroidMeshesRef.current.map(item => item.mesh);
+      const intersects = raycaster.intersectObjects(interactiveMeshes);
+
+      if (intersects.length > 0) {
+        const hit = asteroidMeshesRef.current.find(item => item.mesh === intersects[0].object);
+        if (hit) {
+          setSelectedAsteroid(hit.data);
+        }
+      }
+    };
+
+    renderer.domElement.addEventListener('pointermove', onPointerMove);
+    renderer.domElement.addEventListener('click', onClick);
+
+    // 10. Window Resize Handler
+    const onResize = () => {
+      if (!container) return;
+      const newWidth = container.clientWidth;
+      const newHeight = container.clientHeight;
+      camera.aspect = newWidth / newHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(newWidth, newHeight);
+    };
+    window.addEventListener('resize', onResize);
+
+    // 11. Animation Loop
+    let animId: number;
+    let clock = new THREE.Clock();
+
+    const animate = () => {
+      animId = requestAnimationFrame(animate);
+
+      const elapsedTime = clock.getElapsedTime();
+
+      // Earth slow spin
+      earthGroup.rotation.y = elapsedTime * 0.15;
+
+      // Position 3D Target Reticle over selected asteroid
+      const selectedItem = asteroidMeshesRef.current.find(item => item.data.id === selectedAsteroid.id);
+      if (selectedItem && targetReticleRef.current) {
+        const worldPos = new THREE.Vector3();
+        selectedItem.mesh.getWorldPosition(worldPos);
+        targetReticleRef.current.position.copy(worldPos);
+        targetReticleRef.current.rotation.y = elapsedTime * 1.5; // spinning reticle
+      }
+
+      // Update controls
+      controls.update();
+
+      renderer.render(scene, camera);
+    };
+
+    animate();
 
     return () => {
-      cancelAnimationFrame(animationFrameId);
-    };
-  }, [selectedAsteroid]);
-
-  const handleCanvasClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const rect = canvas.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * canvas.width;
-    const y = ((e.clientY - rect.top) / rect.height) * canvas.height;
-
-    const centerX = canvas.width / 2;
-    const centerY = canvas.height / 2;
-    const maxRadius = Math.min(centerX, centerY) - 20;
-
-    // Find clicked asteroid
-    nasaAsteroids.forEach(ast => {
-      const radius = (ast.orbitRadius / 220) * maxRadius;
-      const rad = (ast.angleDeg * Math.PI) / 180;
-      const astX = centerX + Math.cos(rad) * radius;
-      const astY = centerY + Math.sin(rad) * radius;
-
-      const dist = Math.sqrt((x - astX) ** 2 + (y - astY) ** 2);
-      if (dist < 18) {
-        setSelectedAsteroid(ast);
+      cancelAnimationFrame(animId);
+      window.removeEventListener('resize', onResize);
+      renderer.domElement.removeEventListener('pointermove', onPointerMove);
+      renderer.domElement.removeEventListener('click', onClick);
+      if (container && renderer.domElement) {
+        container.removeChild(renderer.domElement);
       }
-    });
+      renderer.dispose();
+    };
+  }, [selectedAsteroid.id]);
+
+  // Update controls auto-rotate state dynamically
+  useEffect(() => {
+    if (controlsRef.current) {
+      controlsRef.current.autoRotate = isAutoRotating;
+    }
+  }, [isAutoRotating]);
+
+  const resetCamera = () => {
+    if (cameraRef.current && controlsRef.current) {
+      cameraRef.current.position.set(0, 160, 240);
+      controlsRef.current.target.set(0, 0, 0);
+      controlsRef.current.update();
+    }
   };
 
   return (
     <div className="flex flex-col gap-10">
-      {/* Header */}
+      {/* Header Banner */}
       <div className="relative overflow-hidden rounded-3xl border border-blue-900/40 bg-gradient-to-br from-blue-950/20 via-zinc-950/80 to-black p-6 md:p-10 shadow-2xl backdrop-blur-xl">
         <div className="flex items-center gap-2 mb-2">
           <span className="px-2.5 py-1 rounded-full text-xs font-mono font-bold bg-blue-500/20 text-blue-400 border border-blue-500/30">
-            DEEP SPACE RADAR
+            3D DEEP SPACE RADAR
           </span>
           <span className="px-2.5 py-1 rounded-full text-xs font-mono font-medium bg-purple-500/10 text-purple-400 border border-purple-500/20">
-            BigQuery ML Logistic Regression
+            WebGL Three.js + BigQuery ML
           </span>
         </div>
         <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-white mb-3">
-          NASA Near-Earth Objects Orbital Radar
+          Interactive 3D NASA Near-Earth Objects Orbital Radar
         </h2>
         <p className="text-zinc-400 text-sm sm:text-base leading-relaxed max-w-3xl">
-          Real-time orbital tracking and impact probability classification using NASA JPL telemetry hosted in Google BigQuery. Click any asteroid or orbital vector to inspect its trajectory and BigQuery ML hazard risk score.
+          Three-dimensional orbital simulation rendered in real-time with WebGL and Three.js. Drag to rotate in 3D, scroll to zoom, and click any asteroid or orbital plane to inspect its trajectory and BigQuery ML impact risk probability.
         </p>
       </div>
 
-      {/* Radar Canvas & Telemetry Inspector */}
+      {/* 3D Radar View & Telemetry Inspector */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        {/* Radar View */}
-        <div className="lg:col-span-7 bg-zinc-950 border border-zinc-800 rounded-3xl p-6 flex flex-col items-center justify-center relative overflow-hidden shadow-2xl">
-          <div className="w-full flex items-center justify-between mb-4 text-xs font-mono text-zinc-500">
-            <span className="flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              LIVE TELEMETRY SWEEP
+        {/* 3D WebGL Canvas Container */}
+        <div className="lg:col-span-7 bg-zinc-950 border border-zinc-800 rounded-3xl p-6 flex flex-col relative overflow-hidden shadow-2xl">
+          {/* Top Bar Controls */}
+          <div className="w-full flex flex-wrap items-center justify-between gap-3 mb-4 text-xs font-mono text-zinc-500 z-10">
+            <span className="flex items-center gap-2 text-white">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
+              <span>3D RADAR SWEEP ACTIVE</span>
             </span>
-            <span>DATASET: bigquery-public-data.nasa_jpl_neo</span>
+
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setIsAutoRotating(!isAutoRotating)}
+                className={`px-3 py-1 rounded-lg text-xs font-mono transition-all ${
+                  isAutoRotating
+                    ? 'bg-blue-600/40 text-blue-300 border border-blue-500/40'
+                    : 'bg-zinc-900 text-zinc-400 hover:text-white border border-zinc-800'
+                }`}
+              >
+                {isAutoRotating ? 'Auto-Rotate: ON' : 'Auto-Rotate: OFF'}
+              </button>
+
+              <button
+                onClick={resetCamera}
+                className="px-3 py-1 rounded-lg text-xs font-mono bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white border border-zinc-800 transition-colors"
+              >
+                Reset Camera
+              </button>
+            </div>
           </div>
 
-          <div className="relative w-full max-w-[500px] aspect-square flex items-center justify-center">
-            <canvas
-              ref={canvasRef}
-              width={500}
-              height={500}
-              onClick={handleCanvasClick}
-              className="w-full h-full rounded-2xl cursor-crosshair border border-zinc-900"
-            />
+          {/* 3D Three.js Mount */}
+          <div
+            ref={containerRef}
+            className="relative w-full h-[460px] sm:h-[500px] flex items-center justify-center cursor-grab active:cursor-grabbing rounded-2xl overflow-hidden bg-black/60 border border-zinc-900"
+          >
+            {/* Hover Tooltip Overlay */}
+            {hoveredAsteroidName && (
+              <div className="absolute top-4 left-4 bg-black/90 border border-zinc-700 text-white text-xs font-mono px-3 py-1.5 rounded-xl shadow-xl pointer-events-none z-10 flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-blue-400 animate-ping" />
+                <span>Target: <strong>{hoveredAsteroidName}</strong> (Click to lock)</span>
+              </div>
+            )}
+
+            {/* Orbit Controls Guide Legend */}
+            <div className="absolute bottom-4 left-4 bg-black/80 border border-zinc-800 px-3 py-1.5 rounded-xl text-[10px] font-mono text-zinc-400 pointer-events-none z-10 flex items-center gap-3">
+              <span>🖱️ Drag: Rotate 3D</span>
+              <span>🔍 Wheel: Zoom</span>
+              <span>🎯 Click: Target</span>
+            </div>
           </div>
 
-          <p className="text-zinc-500 text-xs mt-4 text-center font-mono">
-            Click any asteroid on the radar to inspect its trajectory metrics.
-          </p>
+          <div className="flex justify-between items-center text-zinc-500 text-xs mt-4 font-mono">
+            <span>Concentric rings: 1 LD (384k km), 3 LD, 6 LD, 10 LD</span>
+            <span>Dataset: bigquery-public-data.nasa_jpl_neo</span>
+          </div>
         </div>
 
         {/* Selected Asteroid Telemetry & ML Inspector */}
@@ -217,7 +382,7 @@ export default function OrbitalRadar() {
           <div className="bg-zinc-950/70 border border-zinc-800 rounded-3xl p-6 backdrop-blur-xl">
             <div className="flex items-start justify-between gap-3 mb-4">
               <div>
-                <span className="text-xs font-mono text-zinc-500">TARGET DESIGNATION</span>
+                <span className="text-xs font-mono text-zinc-500">3D LOCKED TARGET</span>
                 <h3 className="text-2xl font-bold text-white mt-0.5">{selectedAsteroid.name}</h3>
                 <p className="text-xs text-blue-400 font-mono">Discovered: {selectedAsteroid.discoveryDate}</p>
               </div>
@@ -250,7 +415,7 @@ export default function OrbitalRadar() {
                 />
               </div>
               <p className="text-[11px] text-zinc-500 mt-2">
-                Calculated via binary logistic regression on minimum orbit intersection distance (MOID) and absolute magnitude.
+                Calculated via BigQuery ML binary logistic regression over minimum orbit intersection distance (MOID) and absolute magnitude.
               </p>
             </div>
 
@@ -277,16 +442,16 @@ export default function OrbitalRadar() {
                 </span>
               </div>
               <div className="bg-zinc-900/50 border border-zinc-800/60 rounded-xl p-3">
-                <span className="text-zinc-500 block mb-1">ORBIT PERIOD</span>
+                <span className="text-zinc-500 block mb-1">3D INCLINATION</span>
                 <span className="text-white font-semibold text-sm">
-                  {selectedAsteroid.orbitalPeriodDays} days
+                  {selectedAsteroid.inclinationDeg}°
                 </span>
               </div>
             </div>
 
             {/* Asteroid Selector List */}
             <div>
-              <span className="text-xs font-mono text-zinc-500 block mb-2.5">ACTIVE RADAR CATALOG</span>
+              <span className="text-xs font-mono text-zinc-500 block mb-2.5">ACTIVE 3D RADAR CATALOG</span>
               <div className="flex flex-col gap-2 max-h-48 overflow-y-auto pr-1">
                 {nasaAsteroids.map((ast) => (
                   <button
