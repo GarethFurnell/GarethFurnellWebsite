@@ -59,6 +59,29 @@ export interface YearlyClimateRecord {
   mapImage?: string;
 }
 
+export interface MonthlyClimateRecord {
+  year: number;
+  month: number; // 1 - 12
+  monthName: string;
+  seasonName: string;
+  globalMeanAnomalyC: number;
+  oniIndex: number;
+  mapImage: string;
+  headline: string;
+  source: string;
+}
+
+export interface CFSv2ForecastMonth {
+  index: number; // 1 - 6
+  targetMonth: string; // e.g. "October 2026", "November 2026"
+  targetYear: number;
+  seasonPeriod: string;
+  mapImage: string;
+  headline: string;
+  modelRun: string;
+  projectedNiño34AnomalyC: number;
+}
+
 export const elNinoExplanation = {
   title: "Understanding El Niño & the 2024–2026 Super El Niño Cycle",
   overview: "El Niño is the warm phase of the El Niño-Southern Oscillation (ENSO), a recurring planetary climate pattern driven by ocean-atmosphere interactions across the equatorial Pacific Ocean.",
@@ -935,3 +958,471 @@ ORDER BY
     algorithm: "BigQuery ML Logistic Regression (Binary Classification)"
   }
 };
+
+export const monthlyClimateBreakdowns: Record<number, MonthlyClimateRecord[]> = {
+  2024: [
+    {
+      year: 2024,
+      month: 1,
+      monthName: "January",
+      seasonName: "Boreal Winter",
+      globalMeanAnomalyC: 1.41,
+      oniIndex: 1.84,
+      mapImage: "/images/climate/nasa_gistemp_2024_m01.png",
+      headline: "Peak Super El Niño winter anomaly; extensive equatorial Pacific heat tongue.",
+      source: "NASA GISS GISTEMP v4 (Monthly Analysis)"
+    },
+    {
+      year: 2024,
+      month: 2,
+      monthName: "February",
+      seasonName: "Late Winter",
+      globalMeanAnomalyC: 1.48,
+      oniIndex: 1.53,
+      mapImage: "/images/climate/nasa_gistemp_2024_m02.png",
+      headline: "Extraordinary tropical ocean surface warmth; highest February planetary anomaly on record.",
+      source: "NASA GISS GISTEMP v4 (Monthly Analysis)"
+    },
+    {
+      year: 2024,
+      month: 3,
+      monthName: "March",
+      seasonName: "Early Spring",
+      globalMeanAnomalyC: 1.53,
+      oniIndex: 1.18,
+      mapImage: "/images/climate/nasa_gistemp_2024_m03.png",
+      headline: "Record global sea surface heat content; persistent Kelvin wave warmth across Central America.",
+      source: "NASA GISS GISTEMP v4 (Monthly Analysis)"
+    },
+    {
+      year: 2024,
+      month: 4,
+      monthName: "April",
+      seasonName: "Spring Peak",
+      globalMeanAnomalyC: 1.51,
+      oniIndex: 0.77,
+      mapImage: "/images/climate/nasa_gistemp_2024_m04.png",
+      headline: "Unprecedented Southeast Asia pre-monsoon heatwaves exceeding 44°C across Thailand and Vietnam.",
+      source: "NASA GISS GISTEMP v4 (Monthly Analysis)"
+    },
+    {
+      year: 2024,
+      month: 5,
+      monthName: "May",
+      seasonName: "Late Spring",
+      globalMeanAnomalyC: 1.46,
+      oniIndex: 0.43,
+      mapImage: "/images/climate/nasa_gistemp_2024_m05.png",
+      headline: "12th consecutive month of record global surface warmth; early signs of Pacific thermocline adjustment.",
+      source: "NASA GISS GISTEMP v4 (Monthly Analysis)"
+    },
+    {
+      year: 2024,
+      month: 6,
+      monthName: "June",
+      seasonName: "Summer Solstice",
+      globalMeanAnomalyC: 1.42,
+      oniIndex: 0.18,
+      mapImage: "/images/climate/nasa_gistemp_2024_m06.png",
+      headline: "Sub-surface cold upwelling initiation off South America; Atlantic marine heatwave acceleration.",
+      source: "NASA GISS GISTEMP v4 (Monthly Analysis)"
+    },
+    {
+      year: 2024,
+      month: 7,
+      monthName: "July",
+      seasonName: "Summer Peak",
+      globalMeanAnomalyC: 1.39,
+      oniIndex: 0.06,
+      mapImage: "/images/climate/nasa_gistemp_2024_m07.png",
+      headline: "Hottest individual days ever recorded in modern instrument history; Hurricane Beryl Category 5 surge.",
+      source: "NASA GISS GISTEMP v4 (Monthly Analysis)"
+    },
+    {
+      year: 2024,
+      month: 8,
+      monthName: "August",
+      seasonName: "Late Summer",
+      globalMeanAnomalyC: 1.36,
+      oniIndex: -0.04,
+      mapImage: "/images/climate/nasa_gistemp_2024_m08.png",
+      headline: "Super Typhoon activity surges across the Western Pacific warm pool; typhoons tracking towards Japan.",
+      source: "NASA GISS GISTEMP v4 (Monthly Analysis)"
+    },
+    {
+      year: 2024,
+      month: 9,
+      monthName: "September",
+      seasonName: "Autumn Equinox",
+      globalMeanAnomalyC: 1.32,
+      oniIndex: -0.12,
+      mapImage: "/images/climate/nasa_gistemp_2024_m09.png",
+      headline: "Catastrophic flooding across Chiang Mai and Chao Phraya basin in Thailand; over 20 typhoons recorded near Japan.",
+      source: "NASA GISS GISTEMP v4 (Monthly Analysis)"
+    },
+    {
+      year: 2024,
+      month: 10,
+      monthName: "October",
+      seasonName: "Mid Autumn",
+      globalMeanAnomalyC: 1.25,
+      oniIndex: -0.19,
+      mapImage: "/images/climate/nasa_gistemp_2024_m10.png",
+      headline: "Atmospheric energy dispersion; equatorial Pacific transitions to ENSO-neutral thresholds.",
+      source: "NASA GISS GISTEMP v4 (Monthly Analysis)"
+    },
+    {
+      year: 2024,
+      month: 11,
+      monthName: "November",
+      seasonName: "Late Autumn",
+      globalMeanAnomalyC: 1.18,
+      oniIndex: -0.29,
+      mapImage: "/images/climate/nasa_gistemp_2024_m11.png",
+      headline: "Equatorial Pacific cold tongue emergence; slowing of tropical atmospheric momentum.",
+      source: "NASA GISS GISTEMP v4 (Monthly Analysis)"
+    },
+    {
+      year: 2024,
+      month: 12,
+      monthName: "December",
+      seasonName: "Austral Summer",
+      globalMeanAnomalyC: 1.14,
+      oniIndex: -0.43,
+      mapImage: "/images/climate/nasa_gistemp_2024_m12.png",
+      headline: "Year concludes as warmest calendar year in modern planetary history (+1.29°C annual mean).",
+      source: "NASA GISS GISTEMP v4 (Monthly Analysis)"
+    },
+  ],
+  2023: [
+    {
+      year: 2023,
+      month: 1,
+      monthName: "January",
+      seasonName: "Boreal Winter",
+      globalMeanAnomalyC: 0.88,
+      oniIndex: -0.55,
+      mapImage: "/images/climate/nasa_gistemp_2023_m01.png",
+      headline: "Lingering cold anomalies from rare Triple-Dip La Niña; western Pacific warm pool accumulation.",
+      source: "NASA GISS GISTEMP v4 (Monthly Analysis)"
+    },
+    {
+      year: 2023,
+      month: 2,
+      monthName: "February",
+      seasonName: "Late Winter",
+      globalMeanAnomalyC: 0.96,
+      oniIndex: -0.33,
+      mapImage: "/images/climate/nasa_gistemp_2023_m02.png",
+      headline: "Rapid warming of coastal Peruvian waters (El Niño Costero genesis) with local anomalies exceeding +3°C.",
+      source: "NASA GISS GISTEMP v4 (Monthly Analysis)"
+    },
+    {
+      year: 2023,
+      month: 3,
+      monthName: "March",
+      seasonName: "Early Spring",
+      globalMeanAnomalyC: 1.05,
+      oniIndex: -0.11,
+      mapImage: "/images/climate/nasa_gistemp_2023_m03.png",
+      headline: "Abrupt collapse of equatorial trade winds; massive downwelling oceanic Kelvin wave initiated.",
+      source: "NASA GISS GISTEMP v4 (Monthly Analysis)"
+    },
+    {
+      year: 2023,
+      month: 4,
+      monthName: "April",
+      seasonName: "Spring Peak",
+      globalMeanAnomalyC: 1.12,
+      oniIndex: 0.19,
+      mapImage: "/images/climate/nasa_gistemp_2023_m04.png",
+      headline: "Global sea surface temperature shatters all-time historical satellite record.",
+      source: "NASA GISS GISTEMP v4 (Monthly Analysis)"
+    },
+    {
+      year: 2023,
+      month: 5,
+      monthName: "May",
+      seasonName: "Late Spring",
+      globalMeanAnomalyC: 1.18,
+      oniIndex: 0.46,
+      mapImage: "/images/climate/nasa_gistemp_2023_m05.png",
+      headline: "Equatorial Kelvin wave sloshes across Pacific basin toward Galapagos and South America.",
+      source: "NASA GISS GISTEMP v4 (Monthly Analysis)"
+    },
+    {
+      year: 2023,
+      month: 6,
+      monthName: "June",
+      seasonName: "Summer Solstice",
+      globalMeanAnomalyC: 1.25,
+      oniIndex: 0.73,
+      mapImage: "/images/climate/nasa_gistemp_2023_m06.png",
+      headline: "Official NOAA El Niño Advisory declared as equatorial Pacific breaches +0.5°C threshold.",
+      source: "NASA GISS GISTEMP v4 (Monthly Analysis)"
+    },
+    {
+      year: 2023,
+      month: 7,
+      monthName: "July",
+      seasonName: "Summer Peak",
+      globalMeanAnomalyC: 1.38,
+      oniIndex: 1.0,
+      mapImage: "/images/climate/nasa_gistemp_2023_m07.png",
+      headline: "Warmest month in modern planetary records; unprecedented North Atlantic marine heatwave.",
+      source: "NASA GISS GISTEMP v4 (Monthly Analysis)"
+    },
+    {
+      year: 2023,
+      month: 8,
+      monthName: "August",
+      seasonName: "Late Summer",
+      globalMeanAnomalyC: 1.42,
+      oniIndex: 1.25,
+      mapImage: "/images/climate/nasa_gistemp_2023_m08.png",
+      headline: "Continuous global ocean temperature records; extreme Mediterranean thermal stress.",
+      source: "NASA GISS GISTEMP v4 (Monthly Analysis)"
+    },
+    {
+      year: 2023,
+      month: 9,
+      monthName: "September",
+      seasonName: "Autumn Equinox",
+      globalMeanAnomalyC: 1.61,
+      oniIndex: 1.5,
+      mapImage: "/images/climate/nasa_gistemp_2023_m09.png",
+      headline: "Historic anomaly jump (+1.61°C above baseline), the largest single-month departure ever recorded.",
+      source: "NASA GISS GISTEMP v4 (Monthly Analysis)"
+    },
+    {
+      year: 2023,
+      month: 10,
+      monthName: "October",
+      seasonName: "Mid Autumn",
+      globalMeanAnomalyC: 1.54,
+      oniIndex: 1.74,
+      mapImage: "/images/climate/nasa_gistemp_2023_m10.png",
+      headline: "Super El Niño threshold reached as ONI exceeds +1.7°C; widespread Amazonian drought.",
+      source: "NASA GISS GISTEMP v4 (Monthly Analysis)"
+    },
+    {
+      year: 2023,
+      month: 11,
+      monthName: "November",
+      seasonName: "Late Autumn",
+      globalMeanAnomalyC: 1.58,
+      oniIndex: 1.9,
+      mapImage: "/images/climate/nasa_gistemp_2023_m11.png",
+      headline: "Massive equatorial Pacific thermal tongue; trade winds completely reversed in central basin.",
+      source: "NASA GISS GISTEMP v4 (Monthly Analysis)"
+    },
+    {
+      year: 2023,
+      month: 12,
+      monthName: "December",
+      seasonName: "Austral Summer",
+      globalMeanAnomalyC: 1.51,
+      oniIndex: 1.99,
+      mapImage: "/images/climate/nasa_gistemp_2023_m12.png",
+      headline: "Peak Oceanic Niño Index (+1.99°C) firmly establishes the Super El Niño event.",
+      source: "NASA GISS GISTEMP v4 (Monthly Analysis)"
+    },
+  ],
+  2015: [
+    {
+      year: 2015,
+      month: 1,
+      monthName: "January",
+      seasonName: "Boreal Winter",
+      globalMeanAnomalyC: 0.81,
+      oniIndex: 0.5,
+      mapImage: "/images/climate/nasa_gistemp_2015_m01.png",
+      headline: "Central Pacific warm water buildup; early Kelvin wave precursor.",
+      source: "NASA GISS GISTEMP v4 (Monthly Analysis)"
+    },
+    {
+      year: 2015,
+      month: 2,
+      monthName: "February",
+      seasonName: "Late Winter",
+      globalMeanAnomalyC: 0.86,
+      oniIndex: 0.6,
+      mapImage: "/images/climate/nasa_gistemp_2015_m02.png",
+      headline: "Strong westerly wind bursts trigger deep equatorial thermocline depression.",
+      source: "NASA GISS GISTEMP v4 (Monthly Analysis)"
+    },
+    {
+      year: 2015,
+      month: 3,
+      monthName: "March",
+      seasonName: "Early Spring",
+      globalMeanAnomalyC: 0.9,
+      oniIndex: 0.6,
+      mapImage: "/images/climate/nasa_gistemp_2015_m03.png",
+      headline: "Official NOAA El Niño declaration; rapid eastward expansion of warm pool.",
+      source: "NASA GISS GISTEMP v4 (Monthly Analysis)"
+    },
+    {
+      year: 2015,
+      month: 4,
+      monthName: "April",
+      seasonName: "Spring Peak",
+      globalMeanAnomalyC: 0.88,
+      oniIndex: 0.7,
+      mapImage: "/images/climate/nasa_gistemp_2015_m04.png",
+      headline: "Persistent equatorial Pacific warming; reduction in coastal Peruvian upwelling.",
+      source: "NASA GISS GISTEMP v4 (Monthly Analysis)"
+    },
+    {
+      year: 2015,
+      month: 5,
+      monthName: "May",
+      seasonName: "Late Spring",
+      globalMeanAnomalyC: 0.89,
+      oniIndex: 0.8,
+      mapImage: "/images/climate/nasa_gistemp_2015_m05.png",
+      headline: "Downwelling Kelvin wave reaches South American coast with +2.0°C regional anomalies.",
+      source: "NASA GISS GISTEMP v4 (Monthly Analysis)"
+    },
+    {
+      year: 2015,
+      month: 6,
+      monthName: "June",
+      seasonName: "Summer Solstice",
+      globalMeanAnomalyC: 0.91,
+      oniIndex: 1.0,
+      mapImage: "/images/climate/nasa_gistemp_2015_m06.png",
+      headline: "Godzilla El Niño momentum accelerates; tropical Pacific warmth expands poleward.",
+      source: "NASA GISS GISTEMP v4 (Monthly Analysis)"
+    },
+    {
+      year: 2015,
+      month: 7,
+      monthName: "July",
+      seasonName: "Summer Peak",
+      globalMeanAnomalyC: 0.93,
+      oniIndex: 1.2,
+      mapImage: "/images/climate/nasa_gistemp_2015_m07.png",
+      headline: "Trade winds collapse; massive convective shift from Indonesia to central Pacific.",
+      source: "NASA GISS GISTEMP v4 (Monthly Analysis)"
+    },
+    {
+      year: 2015,
+      month: 8,
+      monthName: "August",
+      seasonName: "Late Summer",
+      globalMeanAnomalyC: 0.96,
+      oniIndex: 1.5,
+      mapImage: "/images/climate/nasa_gistemp_2015_m08.png",
+      headline: "Intense hurricane activity in Central/Eastern Pacific; severe Indonesian rainforest fires.",
+      source: "NASA GISS GISTEMP v4 (Monthly Analysis)"
+    },
+    {
+      year: 2015,
+      month: 9,
+      monthName: "September",
+      seasonName: "Autumn Equinox",
+      globalMeanAnomalyC: 0.97,
+      oniIndex: 1.8,
+      mapImage: "/images/climate/nasa_gistemp_2015_m09.png",
+      headline: "Global ocean warmth jumps; historic tropical cyclone Patricia reaches 345 km/h winds.",
+      source: "NASA GISS GISTEMP v4 (Monthly Analysis)"
+    },
+    {
+      year: 2015,
+      month: 10,
+      monthName: "October",
+      seasonName: "Mid Autumn",
+      globalMeanAnomalyC: 1.06,
+      oniIndex: 2.1,
+      mapImage: "/images/climate/nasa_gistemp_2015_m10.png",
+      headline: "First month in GISS record exceeding +1.0°C anomaly; massive equatorial Pacific thermal tongue.",
+      source: "NASA GISS GISTEMP v4 (Monthly Analysis)"
+    },
+    {
+      year: 2015,
+      month: 11,
+      monthName: "November",
+      seasonName: "Late Autumn",
+      globalMeanAnomalyC: 1.1,
+      oniIndex: 2.4,
+      mapImage: "/images/climate/nasa_gistemp_2015_m11.png",
+      headline: "Niño 3.4 index peaks at +2.6°C, tying the legendary 1997 Super El Niño.",
+      source: "NASA GISS GISTEMP v4 (Monthly Analysis)"
+    },
+    {
+      year: 2015,
+      month: 12,
+      monthName: "December",
+      seasonName: "Austral Summer",
+      globalMeanAnomalyC: 1.16,
+      oniIndex: 2.6,
+      mapImage: "/images/climate/nasa_gistemp_2015_m12.png",
+      headline: "Atmospheric teleconnections lock worldwide; torrential Andean floods and Australian drought.",
+      source: "NASA GISS GISTEMP v4 (Monthly Analysis)"
+    },
+  ],
+};
+
+export const cfsv2ForecastMonths: CFSv2ForecastMonth[] = [
+  {
+    index: 1,
+    targetMonth: "October 2026",
+    targetYear: 2026,
+    seasonPeriod: "Early Autumn Forecast",
+    mapImage: "/images/climate/noaa_cfsv2_mon1.gif",
+    headline: "NOAA CFSv2 model projects initial equatorial cooling with neutral-to-weak La Niña conditions.",
+    modelRun: "NOAA NCEP Coupled Forecast System Model version 2 (CFSv2)",
+    projectedNiño34AnomalyC: -0.3
+  },
+  {
+    index: 2,
+    targetMonth: "November 2026",
+    targetYear: 2026,
+    seasonPeriod: "Late Autumn Forecast",
+    mapImage: "/images/climate/noaa_cfsv2_mon2.gif",
+    headline: "Equatorial Pacific thermocline shoaling intensifies cold upwelling along the South American coast.",
+    modelRun: "NOAA NCEP Coupled Forecast System Model version 2 (CFSv2)",
+    projectedNiño34AnomalyC: -0.5
+  },
+  {
+    index: 3,
+    targetMonth: "December 2026",
+    targetYear: 2026,
+    seasonPeriod: "Winter Solstice Forecast",
+    mapImage: "/images/climate/noaa_cfsv2_mon3.gif",
+    headline: "Tropical Pacific Sea Surface Temperature anomalies stabilize within weak La Niña thresholds (-0.6°C).",
+    modelRun: "NOAA NCEP Coupled Forecast System Model version 2 (CFSv2)",
+    projectedNiño34AnomalyC: -0.6
+  },
+  {
+    index: 4,
+    targetMonth: "January 2027",
+    targetYear: 2027,
+    seasonPeriod: "Mid-Winter Forecast",
+    mapImage: "/images/climate/noaa_cfsv2_mon4.gif",
+    headline: "Peak winter ENSO projection: persistent cool tongue in Niño 3.4 region with typical northern storm track deflection.",
+    modelRun: "NOAA NCEP Coupled Forecast System Model version 2 (CFSv2)",
+    projectedNiño34AnomalyC: -0.5
+  },
+  {
+    index: 5,
+    targetMonth: "February 2027",
+    targetYear: 2027,
+    seasonPeriod: "Late Winter Forecast",
+    mapImage: "/images/climate/noaa_cfsv2_mon5.gif",
+    headline: "Gradual moderation of equatorial upwelling; trade wind velocity stabilizes near 30-year climatological norms.",
+    modelRun: "NOAA NCEP Coupled Forecast System Model version 2 (CFSv2)",
+    projectedNiño34AnomalyC: -0.4
+  },
+  {
+    index: 6,
+    targetMonth: "March 2027",
+    targetYear: 2027,
+    seasonPeriod: "Early Spring Forecast",
+    mapImage: "/images/climate/noaa_cfsv2_mon6.gif",
+    headline: "Spring predictability barrier horizon: model indicates transition back toward neutral ENSO baseline conditions.",
+    modelRun: "NOAA NCEP Coupled Forecast System Model version 2 (CFSv2)",
+    projectedNiño34AnomalyC: -0.2
+  },
+];
