@@ -430,40 +430,356 @@ export const nasaAsteroids: AsteroidBody[] = [
 
 export const yearlyClimateRecords: YearlyClimateRecord[] = [
   {
+    year: 1985,
+    phase: "Weak La Niña Phase",
+    ensoState: "La Niña",
+    oniIndex: -0.5,
+    globalMeanAnomalyC: 0.12,
+    headlineEvent: "Cold equatorial Pacific upwelling; baseline pre-modern warming period.",
+    bulletin: "The global atmosphere was close to 20th-century baseline norms, with equatorial Pacific sea surface temperatures dipping into weak La Niña conditions.",
+    mapImage: "/images/climate/nasa_gistemp_1985.png",
+    regions: [{"name": "Equatorial Pacific", "xPct": 20, "yPct": 52, "anomalyC": -0.8, "intensity": "cooling"}, {"name": "North America", "xPct": 22, "yPct": 32, "anomalyC": -0.4, "intensity": "cooling"}]
+  },
+  {
+    year: 1986,
+    phase: "El Niño Transition",
+    ensoState: "El Niño",
+    oniIndex: 0.5,
+    globalMeanAnomalyC: 0.18,
+    headlineEvent: "Emergence of central Pacific warm pool; mild tropical warming.",
+    bulletin: "Trade winds began to slacken in late spring, initiating the 1986-1987 moderate-to-strong El Niño event.",
+    mapImage: "/images/climate/nasa_gistemp_1986.png",
+    regions: [{"name": "Equatorial Pacific", "xPct": 20, "yPct": 52, "anomalyC": 0.9, "intensity": "moderate"}]
+  },
+  {
+    year: 1987,
+    phase: "Strong El Niño Thermal Peak",
+    ensoState: "El Niño",
+    oniIndex: 1.6,
+    globalMeanAnomalyC: 0.32,
+    headlineEvent: "Significant equatorial Pacific warming; drought conditions across Australia and India.",
+    bulletin: "Strong El Niño conditions peaked with ONI reaching +1.6°C, reducing monsoon rainfall across the Indian subcontinent and elevating global tropospheric temperatures.",
+    mapImage: "/images/climate/nasa_gistemp_1987.png",
+    regions: [{"name": "Equatorial Pacific", "xPct": 20, "yPct": 52, "anomalyC": 1.8, "intensity": "severe"}, {"name": "India / S. Asia", "xPct": 68, "yPct": 46, "anomalyC": 1.1, "intensity": "moderate"}]
+  },
+  {
+    year: 1988,
+    phase: "Powerful La Niña & North American Drought",
+    ensoState: "La Niña",
+    oniIndex: -1.9,
+    globalMeanAnomalyC: 0.39,
+    headlineEvent: "Severe 1988 North American drought; dramatic Pacific cold tongue plunge (ONI -1.9°C).",
+    bulletin: "One of the strongest recorded La Niña episodes of the 20th century triggered massive anticyclonic jet stream blocking and devastating Midwest agricultural drought.",
+    mapImage: "/images/climate/nasa_gistemp_1988.png",
+    regions: [{"name": "Equatorial Pacific", "xPct": 20, "yPct": 52, "anomalyC": -2.1, "intensity": "cooling"}, {"name": "North America (Midwest)", "xPct": 22, "yPct": 34, "anomalyC": 2.2, "intensity": "critical"}]
+  },
+  {
+    year: 1989,
+    phase: "La Niña Continuation",
+    ensoState: "La Niña",
+    oniIndex: -0.9,
+    globalMeanAnomalyC: 0.27,
+    headlineEvent: "Persistent equatorial cold waters; stabilization of continental temperatures.",
+    bulletin: "The Pacific cold tongue persisted into early 1989 before transitioning back toward ENSO-neutral status by late summer.",
+    mapImage: "/images/climate/nasa_gistemp_1989.png",
+    regions: [{"name": "Equatorial Pacific", "xPct": 20, "yPct": 52, "anomalyC": -1.1, "intensity": "cooling"}]
+  },
+  {
+    year: 1990,
+    phase: "ENSO-Neutral Transition",
+    ensoState: "Neutral",
+    oniIndex: 0.4,
+    globalMeanAnomalyC: 0.45,
+    headlineEvent: "Planetary warmth jump; record high global mean anomaly for the decade.",
+    bulletin: "Without strong ENSO forcing, background greenhouse forcing elevated global surface temperatures to what was then the warmest year on modern record.",
+    mapImage: "/images/climate/nasa_gistemp_1990.png",
+    regions: [{"name": "Eurasia", "xPct": 65, "yPct": 28, "anomalyC": 1.5, "intensity": "moderate"}]
+  },
+  {
+    year: 1991,
+    phase: "Mount Pinatubo Eruption vs Developing El Niño",
+    ensoState: "El Niño",
+    oniIndex: 1.6,
+    globalMeanAnomalyC: 0.41,
+    headlineEvent: "Cataclysmic Mount Pinatubo eruption injects 20M tons of SO2 while Pacific warms.",
+    bulletin: "A rare clash between a developing strong El Niño and massive volcanic stratospheric aerosol reflection, setting up global cooling in subsequent years.",
+    mapImage: "/images/climate/nasa_gistemp_1991.png",
+    regions: [{"name": "Equatorial Pacific", "xPct": 20, "yPct": 52, "anomalyC": 1.7, "intensity": "severe"}, {"name": "SE Asia (Philippines)", "xPct": 78, "yPct": 50, "anomalyC": 0.8, "intensity": "moderate"}]
+  },
+  {
+    year: 1992,
+    phase: "Pinatubo Volcanic Global Cooling",
+    ensoState: "El Niño",
+    oniIndex: 1.4,
+    globalMeanAnomalyC: 0.22,
+    headlineEvent: "Global solar dimming suppresses planetary temperatures despite persistent Pacific El Niño.",
+    bulletin: "Sulfate aerosols from Pinatubo encircled the globe, reducing global mean temperature by approximately 0.5°C and muting El Niño surface manifestation.",
+    mapImage: "/images/climate/nasa_gistemp_1992.png",
+    regions: [{"name": "Global Aerosol Veil", "xPct": 50, "yPct": 30, "anomalyC": -0.6, "intensity": "cooling"}]
+  },
+  {
+    year: 1993,
+    phase: "Protracted Warm Phase & Great Mississippi Flood",
+    ensoState: "Neutral",
+    oniIndex: 0.5,
+    globalMeanAnomalyC: 0.23,
+    headlineEvent: "Historic Great Flood of 1993 along Mississippi basin; gradual volcanic aerosol clearing.",
+    bulletin: "The central Pacific remained anomalously warm in an unusual multi-year El Niño-like state, driving persistent moisture plumes into central North America.",
+    mapImage: "/images/climate/nasa_gistemp_1993.png",
+    regions: [{"name": "North America (Central)", "xPct": 22, "yPct": 34, "anomalyC": 1.4, "intensity": "severe"}]
+  },
+  {
+    year: 1994,
+    phase: "Central Pacific Warm Pulse",
+    ensoState: "El Niño",
+    oniIndex: 1.1,
+    globalMeanAnomalyC: 0.32,
+    headlineEvent: "Resurgence of tropical Pacific warmth; severe Australian drought.",
+    bulletin: "Warm SST anomalies re-concentrated in the Niño 3.4 region, triggering renewed rainfall deficits across eastern Australia and Indonesia.",
+    mapImage: "/images/climate/nasa_gistemp_1994.png",
+    regions: [{"name": "Australia (East)", "xPct": 85, "yPct": 72, "anomalyC": 1.8, "intensity": "severe"}]
+  },
+  {
+    year: 1995,
+    phase: "La Niña Onset & Historic Chicago Heatwave",
+    ensoState: "La Niña",
+    oniIndex: -0.8,
+    globalMeanAnomalyC: 0.45,
+    headlineEvent: "Deadly Midwestern heatwave; transition to cold Pacific equatorial upwelling.",
+    bulletin: "The Pacific swung into La Niña in late 1995, following extreme summer humidity and heat domes across the central United States.",
+    mapImage: "/images/climate/nasa_gistemp_1995.png",
+    regions: [{"name": "North America", "xPct": 24, "yPct": 33, "anomalyC": 2.6, "intensity": "critical"}]
+  },
+  {
+    year: 1996,
+    phase: "Weak La Niña Phase",
+    ensoState: "La Niña",
+    oniIndex: -0.5,
+    globalMeanAnomalyC: 0.33,
+    headlineEvent: "Subtropical high-pressure blocking; active Atlantic hurricane season.",
+    bulletin: "Cool tropical Pacific waters promoted low vertical wind shear in the Atlantic basin, stimulating an active tropical cyclone cycle.",
+    mapImage: "/images/climate/nasa_gistemp_1996.png",
+    regions: [{"name": "Equatorial Pacific", "xPct": 20, "yPct": 52, "anomalyC": -0.7, "intensity": "cooling"}]
+  },
+  {
+    year: 1997,
+    phase: "Super El Niño Genesis & Massive Kelvin Wave",
+    ensoState: "Super El Niño",
+    oniIndex: 2.4,
+    globalMeanAnomalyC: 0.47,
+    headlineEvent: "Unprecedented rapid development of the 1997-98 Super El Niño; devastating Indonesian wildfires.",
+    bulletin: "Westerly wind bursts collapsed equatorial trade winds, unleashing massive downwelling Kelvin waves that spiked Pacific SSTs to +2.4°C and choked Southeast Asian rainforests.",
+    mapImage: "/images/climate/nasa_gistemp_1997.png",
+    regions: [{"name": "Equatorial Pacific", "xPct": 20, "yPct": 52, "anomalyC": 3.4, "intensity": "critical"}, {"name": "Southeast Asia (Borneo)", "xPct": 77, "yPct": 54, "anomalyC": 2.2, "intensity": "critical"}]
+  },
+  {
+    year: 1998,
+    phase: "Super El Niño Peak & Historic Global Thermal Spike",
+    ensoState: "Super El Niño",
+    oniIndex: 2.2,
+    globalMeanAnomalyC: 0.61,
+    headlineEvent: "Record-shattering global warmth; catastrophic worldwide coral reef bleaching.",
+    bulletin: "Atmospheric energy release from the 1997-98 Super El Niño drove global temperatures to an unprecedented +0.61°C anomaly, initiating the first global mass coral bleaching event.",
+    mapImage: "/images/climate/nasa_gistemp_1998.png",
+    regions: [{"name": "Equatorial Pacific", "xPct": 20, "yPct": 52, "anomalyC": 2.8, "intensity": "critical"}, {"name": "Global Coral Belts", "xPct": 50, "yPct": 50, "anomalyC": 2.5, "intensity": "critical"}]
+  },
+  {
+    year: 1999,
+    phase: "Severe La Niña Snapback",
+    ensoState: "La Niña",
+    oniIndex: -1.6,
+    globalMeanAnomalyC: 0.38,
+    headlineEvent: "Violent atmospheric rebound; powerful cold tongue across the equatorial Pacific.",
+    bulletin: "Strong trade winds re-asserted themselves with exceptional vigor, dropping central Pacific SSTs to -1.6°C and triggering massive convective storms in Australasia.",
+    mapImage: "/images/climate/nasa_gistemp_1999.png",
+    regions: [{"name": "Equatorial Pacific", "xPct": 20, "yPct": 52, "anomalyC": -1.9, "intensity": "cooling"}]
+  },
+  {
+    year: 2000,
+    phase: "La Niña Multi-Year Lock",
+    ensoState: "La Niña",
+    oniIndex: -1.7,
+    globalMeanAnomalyC: 0.39,
+    headlineEvent: "Persistent tropical cold tongue; cool temperate Pacific anomalies.",
+    bulletin: "The turn of the millennium maintained strong cold anomalies across the Pacific, locking global surface warming in a temporary atmospheric holding pattern.",
+    mapImage: "/images/climate/nasa_gistemp_2000.png",
+    regions: [{"name": "Equatorial Pacific", "xPct": 20, "yPct": 52, "anomalyC": -1.8, "intensity": "cooling"}]
+  },
+  {
+    year: 2001,
+    phase: "ENSO-Neutral Baseline Stabilization",
+    ensoState: "Neutral",
+    oniIndex: -0.3,
+    globalMeanAnomalyC: 0.53,
+    headlineEvent: "Gradual dissipation of La Niña; onset of accelerated 21st-century warming.",
+    bulletin: "Pacific equatorial SSTs returned to within 0.3°C of long-term climatological averages as global mean surface warmth reached +0.53°C.",
+    mapImage: "/images/climate/nasa_gistemp_2001.png",
+    regions: [{"name": "Eurasia", "xPct": 60, "yPct": 26, "anomalyC": 1.4, "intensity": "moderate"}]
+  },
+  {
+    year: 2002,
+    phase: "Moderate El Niño Pulse",
+    ensoState: "El Niño",
+    oniIndex: 1.3,
+    globalMeanAnomalyC: 0.63,
+    headlineEvent: "Moderate tropical Pacific warming; severe drought across eastern Australia.",
+    bulletin: "A classic El Niño event re-emerged with ONI reaching +1.3°C, reviving rainfall deficits across the Murray-Darling basin in Australia.",
+    mapImage: "/images/climate/nasa_gistemp_2002.png",
+    regions: [{"name": "Equatorial Pacific", "xPct": 20, "yPct": 52, "anomalyC": 1.5, "intensity": "severe"}, {"name": "Australia", "xPct": 84, "yPct": 72, "anomalyC": 1.9, "intensity": "severe"}]
+  },
+  {
+    year: 2003,
+    phase: "Historic European Summer Heatwave",
+    ensoState: "Neutral",
+    oniIndex: 0.4,
+    globalMeanAnomalyC: 0.62,
+    headlineEvent: "Deadly Western European heat dome causes >70,000 excess casualties.",
+    bulletin: "Omega-blocking pattern over France and Central Europe created unprecedented summer temperature anomalies exceeding +4.5°C locally.",
+    mapImage: "/images/climate/nasa_gistemp_2003.png",
+    regions: [{"name": "Western Europe", "xPct": 48, "yPct": 28, "anomalyC": 3.8, "intensity": "critical"}]
+  },
+  {
+    year: 2004,
+    phase: "Central Pacific Warm Phase",
+    ensoState: "El Niño",
+    oniIndex: 0.7,
+    globalMeanAnomalyC: 0.53,
+    headlineEvent: "Weak El Niño conditions; historic December 26 Indian Ocean megathrust earthquake.",
+    bulletin: "Equatorial Pacific SSTs hovered in weak warm-phase territory with consistent subtropical jet stream energy.",
+    mapImage: "/images/climate/nasa_gistemp_2004.png",
+    regions: [{"name": "Equatorial Pacific", "xPct": 20, "yPct": 52, "anomalyC": 0.9, "intensity": "moderate"}]
+  },
+  {
+    year: 2005,
+    phase: "Record Atlantic Hurricane Season (Katrina/Wilma)",
+    ensoState: "Neutral",
+    oniIndex: 0.5,
+    globalMeanAnomalyC: 0.68,
+    headlineEvent: "Hottest year on modern record (tied 1998); unprecedented 28 Atlantic tropical storms.",
+    bulletin: "Extraordinary tropical North Atlantic sea surface temperatures fueled Category 5 hurricanes Katrina, Rita, and Wilma.",
+    mapImage: "/images/climate/nasa_gistemp_2005.png",
+    regions: [{"name": "Gulf of Mexico / Caribbean", "xPct": 28, "yPct": 42, "anomalyC": 2.2, "intensity": "critical"}]
+  },
+  {
+    year: 2006,
+    phase: "Late-Season El Niño Development",
+    ensoState: "El Niño",
+    oniIndex: 1.0,
+    globalMeanAnomalyC: 0.64,
+    headlineEvent: "Autumn Pacific warming abruptly suppresses Atlantic hurricane development.",
+    bulletin: "A rapid mid-year surge in Pacific SSTs produced high vertical wind shear in the Atlantic, sharply reducing late-season cyclone activity.",
+    mapImage: "/images/climate/nasa_gistemp_2006.png",
+    regions: [{"name": "Equatorial Pacific", "xPct": 20, "yPct": 52, "anomalyC": 1.2, "intensity": "moderate"}]
+  },
+  {
+    year: 2007,
+    phase: "Strong La Niña & Record Arctic Sea Ice Collapse",
+    ensoState: "La Niña",
+    oniIndex: -1.4,
+    globalMeanAnomalyC: 0.66,
+    headlineEvent: "Historic Arctic summer sea ice minimum; strong Pacific cold tongue.",
+    bulletin: "La Niña returned with vigor (ONI -1.4°C) while the Arctic Ocean experienced unprecedented summer sea ice loss.",
+    mapImage: "/images/climate/nasa_gistemp_2007.png",
+    regions: [{"name": "Arctic Basin", "xPct": 50, "yPct": 10, "anomalyC": 3.2, "intensity": "critical"}, {"name": "Equatorial Pacific", "xPct": 20, "yPct": 52, "anomalyC": -1.5, "intensity": "cooling"}]
+  },
+  {
+    year: 2008,
+    phase: "Persistent La Niña Cold Pulse",
+    ensoState: "La Niña",
+    oniIndex: -1.5,
+    globalMeanAnomalyC: 0.54,
+    headlineEvent: "Planetary surface temperatures cool temporarily under deep Pacific upwelling.",
+    bulletin: "Strong easterly trade winds maintained deep Pacific thermocline shoaling, producing the coolest global mean surface year of the decade.",
+    mapImage: "/images/climate/nasa_gistemp_2008.png",
+    regions: [{"name": "Equatorial Pacific", "xPct": 20, "yPct": 52, "anomalyC": -1.6, "intensity": "cooling"}]
+  },
+  {
+    year: 2009,
+    phase: "Central Pacific El Niño Resurgence",
+    ensoState: "El Niño",
+    oniIndex: 1.6,
+    globalMeanAnomalyC: 0.66,
+    headlineEvent: "Modoki El Niño development; severe Australian heatwaves and Black Saturday fires.",
+    bulletin: "Warming concentrated in the central equatorial Pacific (Niño 4/3.4), destabilizing weather patterns from Melbourne to Mumbai.",
+    mapImage: "/images/climate/nasa_gistemp_2009.png",
+    regions: [{"name": "Equatorial Pacific", "xPct": 20, "yPct": 52, "anomalyC": 1.7, "intensity": "severe"}, {"name": "Australia (SE)", "xPct": 86, "yPct": 75, "anomalyC": 2.6, "intensity": "critical"}]
+  },
+  {
+    year: 2010,
+    phase: "Russian Mega-Heatwave & Pakistan Deluge",
+    ensoState: "La Niña",
+    oniIndex: -1.6,
+    globalMeanAnomalyC: 0.72,
+    headlineEvent: "Record-breaking Russian wildfire heatwave; catastrophic Pakistan Indus flooding.",
+    bulletin: "An extreme atmospheric wave-train linked a massive high-pressure block over Moscow with torrential monsoon convergence over the Indus River basin.",
+    mapImage: "/images/climate/nasa_gistemp_2010.png",
+    regions: [{"name": "Russia / W. Siberia", "xPct": 60, "yPct": 22, "anomalyC": 4.1, "intensity": "critical"}, {"name": "Pakistan / S. Asia", "xPct": 65, "yPct": 42, "anomalyC": 2.3, "intensity": "critical"}]
+  },
+  {
+    year: 2011,
+    phase: "Severe La Niña & Catastrophic Thailand Floods",
+    ensoState: "La Niña",
+    oniIndex: -1.4,
+    globalMeanAnomalyC: 0.61,
+    headlineEvent: "Historic Chao Phraya river inundation in Bangkok; strong Pacific cold tongue.",
+    bulletin: "Continuous monsoon tropical depressions fueled by peak La Niña moisture convergence submerged massive industrial estates across central Thailand.",
+    mapImage: "/images/climate/nasa_gistemp_2011.png",
+    regions: [{"name": "Southeast Asia (Thailand)", "xPct": 76, "yPct": 56, "anomalyC": 1.8, "intensity": "critical"}, {"name": "Equatorial Pacific", "xPct": 20, "yPct": 52, "anomalyC": -1.5, "intensity": "cooling"}]
+  },
+  {
+    year: 2012,
+    phase: "North American Super-Drought & Superstorm Sandy",
+    ensoState: "Neutral",
+    oniIndex: -0.4,
+    globalMeanAnomalyC: 0.65,
+    headlineEvent: "Worst US agricultural drought since 1956; late-season hybrid superstorm strikes New York.",
+    bulletin: "Atmospheric ridging created coast-to-coast US drought before Hurricane Sandy merged with a polar trough to flood Lower Manhattan.",
+    mapImage: "/images/climate/nasa_gistemp_2012.png",
+    regions: [{"name": "North America (Central)", "xPct": 22, "yPct": 34, "anomalyC": 2.8, "intensity": "critical"}]
+  },
+  {
+    year: 2013,
+    phase: "Super Typhoon Haiyan / Yolanda",
+    ensoState: "Neutral",
+    oniIndex: -0.3,
+    globalMeanAnomalyC: 0.68,
+    headlineEvent: "One of the strongest tropical cyclones in human history strikes the central Philippines.",
+    bulletin: "Unusually deep ocean heat content in the Western Pacific warm pool enabled Haiyan to achieve 315 km/h sustained winds at landfall.",
+    mapImage: "/images/climate/nasa_gistemp_2013.png",
+    regions: [{"name": "Western Pacific (Philippines)", "xPct": 78, "yPct": 52, "anomalyC": 1.9, "intensity": "critical"}]
+  },
+  {
+    year: 2014,
+    phase: "Ocean Heat Accumulation & Pre-El Niño Buildup",
+    ensoState: "El Niño",
+    oniIndex: 0.5,
+    globalMeanAnomalyC: 0.75,
+    headlineEvent: "Global ocean heat content sets historic record; oceanic Kelvin wave precursor.",
+    bulletin: "Subsurface warm water piled up across the Western Pacific, laying the hydrodynamic fuel for the impending Godzilla Super El Niño.",
+    mapImage: "/images/climate/nasa_gistemp_2014.png",
+    regions: [{"name": "Equatorial Pacific", "xPct": 20, "yPct": 52, "anomalyC": 1.1, "intensity": "moderate"}]
+  },
+  {
     year: 2015,
     phase: "Godzilla Super El Niño Initiation",
     ensoState: "Super El Niño",
     oniIndex: 2.6,
-    globalMeanAnomalyC: 0.93,
+    globalMeanAnomalyC: 0.9,
     headlineEvent: "Massive thermal surge across equatorial Pacific; historical deluge in coastal Peru.",
     bulletin: "Weakening of the trade winds allowed an extraordinary Kelvin wave to warm the Niño 3.4 region to +2.6°C, rivaling the 1997 event.",
     mapImage: "/images/climate/nasa_gistemp_2015.png",
-    regions: [
-      { name: "Equatorial Pacific", xPct: 20, yPct: 52, anomalyC: 3.2, intensity: "critical" },
-      { name: "Southeast Asia", xPct: 76, yPct: 56, anomalyC: 1.8, intensity: "severe" },
-      { name: "East Asia", xPct: 82, yPct: 40, anomalyC: 1.2, intensity: "moderate" },
-      { name: "South America (Pacific)", xPct: 32, yPct: 62, anomalyC: 2.9, intensity: "critical" },
-      { name: "Southern Africa", xPct: 55, yPct: 75, anomalyC: 1.5, intensity: "severe" },
-      { name: "North America (West)", xPct: 18, yPct: 38, anomalyC: 1.6, intensity: "severe" }
-    ]
+    regions: [{"name": "Equatorial Pacific", "xPct": 20, "yPct": 52, "anomalyC": 3.2, "intensity": "critical"}, {"name": "South America (Peru)", "xPct": 32, "yPct": 62, "anomalyC": 2.9, "intensity": "critical"}]
   },
   {
     year: 2016,
     phase: "Super El Niño Peak & Global Record Warmth",
     ensoState: "Super El Niño",
     oniIndex: 2.2,
-    globalMeanAnomalyC: 1.02,
+    globalMeanAnomalyC: 1.01,
     headlineEvent: "Hottest year on modern planetary record to date; unprecedented Great Barrier Reef bleaching.",
     bulletin: "Atmospheric energy discharge reached planetary maximum before oceanic Kelvin wave dissipation in late spring.",
     mapImage: "/images/climate/nasa_gistemp_2016.png",
-    regions: [
-      { name: "Equatorial Pacific", xPct: 20, yPct: 52, anomalyC: 2.7, intensity: "critical" },
-      { name: "Southeast Asia", xPct: 76, yPct: 56, anomalyC: 2.1, intensity: "critical" },
-      { name: "East Asia", xPct: 82, yPct: 40, anomalyC: 1.6, intensity: "severe" },
-      { name: "South America (Pacific)", xPct: 32, yPct: 62, anomalyC: 2.3, intensity: "critical" },
-      { name: "Southern Africa", xPct: 55, yPct: 75, anomalyC: 1.7, intensity: "severe" },
-      { name: "North America (West)", xPct: 18, yPct: 38, anomalyC: 1.4, intensity: "moderate" }
-    ]
+    regions: [{"name": "Equatorial Pacific", "xPct": 20, "yPct": 52, "anomalyC": 2.7, "intensity": "critical"}, {"name": "Great Barrier Reef", "xPct": 85, "yPct": 68, "anomalyC": 2.5, "intensity": "critical"}]
   },
   {
     year: 2017,
@@ -474,13 +790,7 @@ export const yearlyClimateRecords: YearlyClimateRecord[] = [
     headlineEvent: "Brief coastal Peruvian warming followed by baseline atmospheric stabilization.",
     bulletin: "Trade winds temporarily re-established, though background ocean heat content remained well above pre-industrial norms.",
     mapImage: "/images/climate/nasa_gistemp_2017.png",
-    regions: [
-      { name: "Equatorial Pacific", xPct: 20, yPct: 52, anomalyC: 0.2, intensity: "moderate" },
-      { name: "Southeast Asia", xPct: 76, yPct: 56, anomalyC: 0.8, intensity: "moderate" },
-      { name: "East Asia", xPct: 82, yPct: 40, anomalyC: 0.7, intensity: "moderate" },
-      { name: "South America (Pacific)", xPct: 32, yPct: 62, anomalyC: 1.1, intensity: "moderate" },
-      { name: "Southern Africa", xPct: 55, yPct: 75, anomalyC: 0.6, intensity: "moderate" }
-    ]
+    regions: [{"name": "Equatorial Pacific", "xPct": 20, "yPct": 52, "anomalyC": 0.2, "intensity": "moderate"}]
   },
   {
     year: 2018,
@@ -491,125 +801,84 @@ export const yearlyClimateRecords: YearlyClimateRecord[] = [
     headlineEvent: "Sub-surface Pacific thermal build-up; European summer heatwaves.",
     bulletin: "A weak-to-moderate central Pacific El Niño (Modoki pattern) pushed regional anomalies toward +0.9°C.",
     mapImage: "/images/climate/nasa_gistemp_2018.png",
-    regions: [
-      { name: "Equatorial Pacific", xPct: 20, yPct: 52, anomalyC: 1.2, intensity: "moderate" },
-      { name: "Southeast Asia", xPct: 76, yPct: 56, anomalyC: 1.1, intensity: "moderate" },
-      { name: "Europe (UK/Central)", xPct: 50, yPct: 32, anomalyC: 1.9, intensity: "severe" },
-      { name: "Australia (East)", xPct: 85, yPct: 72, anomalyC: 1.5, intensity: "severe" }
-    ]
+    regions: [{"name": "Europe", "xPct": 50, "yPct": 32, "anomalyC": 1.9, "intensity": "severe"}]
   },
   {
     year: 2019,
-    phase: "Protracted Modoki El Niño",
+    phase: "Protracted Modoki El Niño & Australian Bushfires",
     ensoState: "El Niño",
     oniIndex: 0.8,
     globalMeanAnomalyC: 0.98,
-    headlineEvent: "Extreme Australian 'Black Summer' bushfire conditions fueled by positive Indian Ocean Dipole.",
-    bulletin: "Persistent high pressure over eastern Australia coupled with central Pacific warm anomalies produced record drought.",
+    headlineEvent: "Extreme Australian Black Summer bushfire conditions fueled by positive Indian Ocean Dipole.",
+    bulletin: "Persistent high pressure over eastern Australia coupled with central Pacific warm anomalies produced record drought and catastrophic fires.",
     mapImage: "/images/climate/nasa_gistemp_2019.png",
-    regions: [
-      { name: "Equatorial Pacific", xPct: 20, yPct: 52, anomalyC: 1.1, intensity: "moderate" },
-      { name: "Australia (East)", xPct: 85, yPct: 72, anomalyC: 2.8, intensity: "critical" },
-      { name: "Southeast Asia", xPct: 76, yPct: 56, anomalyC: 1.4, intensity: "moderate" },
-      { name: "Southern Africa", xPct: 55, yPct: 75, anomalyC: 1.3, intensity: "moderate" }
-    ]
+    regions: [{"name": "Australia (East)", "xPct": 85, "yPct": 72, "anomalyC": 2.8, "intensity": "critical"}]
   },
   {
     year: 2020,
-    phase: "La Niña Initiation",
+    phase: "Triple-Dip La Niña Initiation",
     ensoState: "La Niña",
     oniIndex: -1.3,
-    globalMeanAnomalyC: 1.02,
+    globalMeanAnomalyC: 1.01,
     headlineEvent: "Equatorial Pacific cold upwelling tongue; record Atlantic hurricane season (30 named storms).",
     bulletin: "Strong easterly trade winds intensified, pushing equatorial cold upwelling across South America while piling warm water into Australasia.",
     mapImage: "/images/climate/nasa_gistemp_2020.png",
-    regions: [
-      { name: "Equatorial Pacific", xPct: 20, yPct: 52, anomalyC: -1.4, intensity: "cooling" },
-      { name: "Southeast Asia", xPct: 76, yPct: 56, anomalyC: 0.5, intensity: "moderate" },
-      { name: "Atlantic / Caribbean", xPct: 30, yPct: 44, anomalyC: 1.4, intensity: "severe" },
-      { name: "Australia (East)", xPct: 85, yPct: 72, anomalyC: -0.4, intensity: "cooling" }
-    ]
+    regions: [{"name": "Equatorial Pacific", "xPct": 20, "yPct": 52, "anomalyC": -1.4, "intensity": "cooling"}, {"name": "Atlantic", "xPct": 30, "yPct": 44, "anomalyC": 1.4, "intensity": "severe"}]
   },
   {
     year: 2021,
-    phase: "La Niña Continuation (Year 2)",
+    phase: "La Niña Year 2 & Pacific Northwest Heat Dome",
     ensoState: "La Niña",
     oniIndex: -1.0,
-    globalMeanAnomalyC: 0.84,
-    headlineEvent: "Pacific Northwest heat dome contrasted with persistent cold tropical Pacific.",
+    globalMeanAnomalyC: 0.85,
+    headlineEvent: "Historic Pacific Northwest heat dome (49.6°C in Lytton, BC) contrasted with persistent cold tropical Pacific.",
     bulletin: "The La Niña atmospheric teleconnection remained locked, steering storm tracks north of typical winter corridors.",
     mapImage: "/images/climate/nasa_gistemp_2021.png",
-    regions: [
-      { name: "Equatorial Pacific", xPct: 20, yPct: 52, anomalyC: -1.2, intensity: "cooling" },
-      { name: "North America (NW)", xPct: 16, yPct: 30, anomalyC: 3.5, intensity: "critical" },
-      { name: "Southeast Asia", xPct: 76, yPct: 56, anomalyC: 0.6, intensity: "moderate" }
-    ]
+    regions: [{"name": "Pacific Northwest", "xPct": 16, "yPct": 30, "anomalyC": 3.5, "intensity": "critical"}, {"name": "Equatorial Pacific", "xPct": 20, "yPct": 52, "anomalyC": -1.2, "intensity": "cooling"}]
   },
   {
     year: 2022,
-    phase: "Rare 'Triple-Dip' La Niña (Year 3)",
+    phase: "Rare Triple-Dip La Niña Year 3",
     ensoState: "Triple-Dip La Niña",
     oniIndex: -1.1,
     globalMeanAnomalyC: 0.89,
     headlineEvent: "Catastrophic Pakistan monsoon flooding; historic multi-year drought across the Horn of Africa.",
-    bulletin: "Only the third recorded 'triple-dip' La Niña in 70 years of satellite observations, supercharging warm pool moisture convergence in Asia.",
+    bulletin: "Only the third recorded triple-dip La Niña in 70 years of satellite observations, supercharging warm pool moisture convergence in Asia.",
     mapImage: "/images/climate/nasa_gistemp_2022.png",
-    regions: [
-      { name: "Equatorial Pacific", xPct: 20, yPct: 52, anomalyC: -1.3, intensity: "cooling" },
-      { name: "South Asia (Pakistan)", xPct: 65, yPct: 42, anomalyC: 2.2, intensity: "critical" },
-      { name: "East Africa (Horn)", xPct: 58, yPct: 58, anomalyC: 1.9, intensity: "severe" },
-      { name: "Australia (East)", xPct: 85, yPct: 72, anomalyC: 0.2, intensity: "moderate" }
-    ]
+    regions: [{"name": "South Asia (Pakistan)", "xPct": 65, "yPct": 42, "anomalyC": 2.2, "intensity": "critical"}, {"name": "Equatorial Pacific", "xPct": 20, "yPct": 52, "anomalyC": -1.3, "intensity": "cooling"}]
   },
   {
     year: 2023,
     phase: "Historic Thermal Shock & Rapid Transition",
     ensoState: "El Niño",
     oniIndex: 1.6,
-    globalMeanAnomalyC: 1.18,
+    globalMeanAnomalyC: 1.17,
     headlineEvent: "Unprecedented North Atlantic marine heatwave; abrupt collapse of trade winds in July.",
     bulletin: "Ocean heat content shattered all historical bounds as a massive Kelvin wave initiated the current Super El Niño cycle.",
-    mapImage: "/images/climate/nasa_gistemp_2023_rob.png",
-    regions: [
-      { name: "Equatorial Pacific", xPct: 20, yPct: 52, anomalyC: 2.3, intensity: "critical" },
-      { name: "North Atlantic", xPct: 38, yPct: 34, anomalyC: 2.8, intensity: "critical" },
-      { name: "Southeast Asia", xPct: 76, yPct: 56, anomalyC: 1.7, intensity: "severe" },
-      { name: "South America (Pacific)", xPct: 32, yPct: 62, anomalyC: 2.6, intensity: "critical" }
-    ]
+    mapImage: "/images/climate/nasa_gistemp_2023.png",
+    regions: [{"name": "Equatorial Pacific", "xPct": 20, "yPct": 52, "anomalyC": 2.3, "intensity": "critical"}, {"name": "North Atlantic", "xPct": 38, "yPct": 34, "anomalyC": 2.8, "intensity": "critical"}]
   },
   {
     year: 2024,
     phase: "Active Super El Niño & Severe Regional Floods",
     ensoState: "Super El Niño",
     oniIndex: 2.1,
-    globalMeanAnomalyC: 1.32,
+    globalMeanAnomalyC: 1.29,
     headlineEvent: "Severe flooding across Bangkok & Northern Thailand; over 20 Pacific typhoons impacting Japan.",
     bulletin: "ONI reached +2.1°C, placing 2024 in the Super El Niño tier. Torrential monsoon runoff inundated Chiang Mai and the Chao Phraya basin while continuous tropical cyclones tracked toward Japan.",
     mapImage: "/images/climate/nasa_gistemp_2024.png",
-    regions: [
-      { name: "Southeast Asia (Thailand)", xPct: 76, yPct: 56, anomalyC: 2.4, intensity: "critical" },
-      { name: "East Asia (Japan)", xPct: 82, yPct: 40, anomalyC: 2.0, intensity: "critical" },
-      { name: "Equatorial Pacific", xPct: 20, yPct: 52, anomalyC: 2.9, intensity: "critical" },
-      { name: "South America (Peru)", xPct: 32, yPct: 62, anomalyC: 3.2, intensity: "critical" },
-      { name: "North America (California)", xPct: 18, yPct: 38, anomalyC: 1.4, intensity: "severe" },
-      { name: "Southern Africa", xPct: 55, yPct: 75, anomalyC: 1.6, intensity: "severe" }
-    ]
+    regions: [{"name": "Southeast Asia (Thailand)", "xPct": 76, "yPct": 56, "anomalyC": 2.4, "intensity": "critical"}, {"name": "East Asia (Japan)", "xPct": 82, "yPct": 40, "anomalyC": 2.0, "intensity": "critical"}]
   },
   {
     year: 2025,
-    phase: "BigQuery ML ARIMA+ Projected Transition",
+    phase: "Post-El Niño Atmospheric Dispersion",
     ensoState: "BigQuery ML Forecast",
-    oniIndex: 0.8,
-    globalMeanAnomalyC: 1.15,
+    oniIndex: -0.4,
+    globalMeanAnomalyC: 1.19,
     headlineEvent: "Gradual thermal dissipation; post-El Niño atmospheric energy dispersion.",
-    bulletin: "BigQuery ML ARIMA_PLUS models project steady deceleration of equatorial heat toward ENSO-neutral status by late 2025.",
+    bulletin: "Official NASA GISTEMP analysis confirms sustained elevated baselines with equatorial Pacific cooling toward weak La Niña thresholds.",
     mapImage: "/images/climate/nasa_gistemp_2025.png",
-    regions: [
-      { name: "Equatorial Pacific", xPct: 20, yPct: 52, anomalyC: 1.2, intensity: "moderate" },
-      { name: "Southeast Asia", xPct: 76, yPct: 56, anomalyC: 1.0, intensity: "moderate" },
-      { name: "East Asia", xPct: 82, yPct: 40, anomalyC: 0.9, intensity: "moderate" },
-      { name: "South America", xPct: 32, yPct: 62, anomalyC: 1.3, intensity: "moderate" }
-    ]
+    regions: [{"name": "Equatorial Pacific", "xPct": 20, "yPct": 52, "anomalyC": -0.4, "intensity": "cooling"}]
   },
   {
     year: 2026,
@@ -620,12 +889,8 @@ export const yearlyClimateRecords: YearlyClimateRecord[] = [
     headlineEvent: "Projected return to equatorial equilibrium or weak La Niña cycle.",
     bulletin: "Multi-station ARIMA_PLUS forecast indicates a return to regular trade wind velocity with stabilized Pacific thermocline depth.",
     mapImage: "/images/climate/noaa_cfsv2_forecast.gif",
-    regions: [
-      { name: "Equatorial Pacific", xPct: 20, yPct: 52, anomalyC: -0.3, intensity: "cooling" },
-      { name: "Southeast Asia", xPct: 76, yPct: 56, anomalyC: 0.4, intensity: "moderate" },
-      { name: "East Asia", xPct: 82, yPct: 40, anomalyC: 0.5, intensity: "moderate" }
-    ]
-  }
+    regions: [{"name": "Equatorial Pacific", "xPct": 20, "yPct": 52, "anomalyC": -0.3, "intensity": "cooling"}]
+  },
 ];
 
 export const asteroidBigQuerySQL = {
