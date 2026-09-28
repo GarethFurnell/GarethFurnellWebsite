@@ -56,6 +56,7 @@ export interface YearlyClimateRecord {
   headlineEvent: string;
   bulletin: string;
   regions: HeatRegion[];
+  mapImage?: string;
 }
 
 export const elNinoExplanation = {
@@ -436,6 +437,7 @@ export const yearlyClimateRecords: YearlyClimateRecord[] = [
     globalMeanAnomalyC: 0.93,
     headlineEvent: "Massive thermal surge across equatorial Pacific; historical deluge in coastal Peru.",
     bulletin: "Weakening of the trade winds allowed an extraordinary Kelvin wave to warm the Niño 3.4 region to +2.6°C, rivaling the 1997 event.",
+    mapImage: "/images/climate/nasa_gistemp_2015.png",
     regions: [
       { name: "Equatorial Pacific", xPct: 20, yPct: 52, anomalyC: 3.2, intensity: "critical" },
       { name: "Southeast Asia", xPct: 76, yPct: 56, anomalyC: 1.8, intensity: "severe" },
@@ -453,6 +455,7 @@ export const yearlyClimateRecords: YearlyClimateRecord[] = [
     globalMeanAnomalyC: 1.02,
     headlineEvent: "Hottest year on modern planetary record to date; unprecedented Great Barrier Reef bleaching.",
     bulletin: "Atmospheric energy discharge reached planetary maximum before oceanic Kelvin wave dissipation in late spring.",
+    mapImage: "/images/climate/nasa_gistemp_2016.png",
     regions: [
       { name: "Equatorial Pacific", xPct: 20, yPct: 52, anomalyC: 2.7, intensity: "critical" },
       { name: "Southeast Asia", xPct: 76, yPct: 56, anomalyC: 2.1, intensity: "critical" },
@@ -470,6 +473,7 @@ export const yearlyClimateRecords: YearlyClimateRecord[] = [
     globalMeanAnomalyC: 0.92,
     headlineEvent: "Brief coastal Peruvian warming followed by baseline atmospheric stabilization.",
     bulletin: "Trade winds temporarily re-established, though background ocean heat content remained well above pre-industrial norms.",
+    mapImage: "/images/climate/nasa_gistemp_2017.png",
     regions: [
       { name: "Equatorial Pacific", xPct: 20, yPct: 52, anomalyC: 0.2, intensity: "moderate" },
       { name: "Southeast Asia", xPct: 76, yPct: 56, anomalyC: 0.8, intensity: "moderate" },
@@ -486,6 +490,7 @@ export const yearlyClimateRecords: YearlyClimateRecord[] = [
     globalMeanAnomalyC: 0.85,
     headlineEvent: "Sub-surface Pacific thermal build-up; European summer heatwaves.",
     bulletin: "A weak-to-moderate central Pacific El Niño (Modoki pattern) pushed regional anomalies toward +0.9°C.",
+    mapImage: "/images/climate/nasa_gistemp_2018.png",
     regions: [
       { name: "Equatorial Pacific", xPct: 20, yPct: 52, anomalyC: 1.2, intensity: "moderate" },
       { name: "Southeast Asia", xPct: 76, yPct: 56, anomalyC: 1.1, intensity: "moderate" },
@@ -501,6 +506,7 @@ export const yearlyClimateRecords: YearlyClimateRecord[] = [
     globalMeanAnomalyC: 0.98,
     headlineEvent: "Extreme Australian 'Black Summer' bushfire conditions fueled by positive Indian Ocean Dipole.",
     bulletin: "Persistent high pressure over eastern Australia coupled with central Pacific warm anomalies produced record drought.",
+    mapImage: "/images/climate/nasa_gistemp_2019.png",
     regions: [
       { name: "Equatorial Pacific", xPct: 20, yPct: 52, anomalyC: 1.1, intensity: "moderate" },
       { name: "Australia (East)", xPct: 85, yPct: 72, anomalyC: 2.8, intensity: "critical" },
@@ -516,6 +522,7 @@ export const yearlyClimateRecords: YearlyClimateRecord[] = [
     globalMeanAnomalyC: 1.02,
     headlineEvent: "Equatorial Pacific cold upwelling tongue; record Atlantic hurricane season (30 named storms).",
     bulletin: "Strong easterly trade winds intensified, pushing equatorial cold upwelling across South America while piling warm water into Australasia.",
+    mapImage: "/images/climate/nasa_gistemp_2020.png",
     regions: [
       { name: "Equatorial Pacific", xPct: 20, yPct: 52, anomalyC: -1.4, intensity: "cooling" },
       { name: "Southeast Asia", xPct: 76, yPct: 56, anomalyC: 0.5, intensity: "moderate" },
@@ -531,6 +538,7 @@ export const yearlyClimateRecords: YearlyClimateRecord[] = [
     globalMeanAnomalyC: 0.84,
     headlineEvent: "Pacific Northwest heat dome contrasted with persistent cold tropical Pacific.",
     bulletin: "The La Niña atmospheric teleconnection remained locked, steering storm tracks north of typical winter corridors.",
+    mapImage: "/images/climate/nasa_gistemp_2021.png",
     regions: [
       { name: "Equatorial Pacific", xPct: 20, yPct: 52, anomalyC: -1.2, intensity: "cooling" },
       { name: "North America (NW)", xPct: 16, yPct: 30, anomalyC: 3.5, intensity: "critical" },
@@ -545,6 +553,7 @@ export const yearlyClimateRecords: YearlyClimateRecord[] = [
     globalMeanAnomalyC: 0.89,
     headlineEvent: "Catastrophic Pakistan monsoon flooding; historic multi-year drought across the Horn of Africa.",
     bulletin: "Only the third recorded 'triple-dip' La Niña in 70 years of satellite observations, supercharging warm pool moisture convergence in Asia.",
+    mapImage: "/images/climate/nasa_gistemp_2022.png",
     regions: [
       { name: "Equatorial Pacific", xPct: 20, yPct: 52, anomalyC: -1.3, intensity: "cooling" },
       { name: "South Asia (Pakistan)", xPct: 65, yPct: 42, anomalyC: 2.2, intensity: "critical" },
@@ -560,6 +569,7 @@ export const yearlyClimateRecords: YearlyClimateRecord[] = [
     globalMeanAnomalyC: 1.18,
     headlineEvent: "Unprecedented North Atlantic marine heatwave; abrupt collapse of trade winds in July.",
     bulletin: "Ocean heat content shattered all historical bounds as a massive Kelvin wave initiated the current Super El Niño cycle.",
+    mapImage: "/images/climate/nasa_gistemp_2023_rob.png",
     regions: [
       { name: "Equatorial Pacific", xPct: 20, yPct: 52, anomalyC: 2.3, intensity: "critical" },
       { name: "North Atlantic", xPct: 38, yPct: 34, anomalyC: 2.8, intensity: "critical" },
@@ -575,6 +585,7 @@ export const yearlyClimateRecords: YearlyClimateRecord[] = [
     globalMeanAnomalyC: 1.32,
     headlineEvent: "Severe flooding across Bangkok & Northern Thailand; over 20 Pacific typhoons impacting Japan.",
     bulletin: "ONI reached +2.1°C, placing 2024 in the Super El Niño tier. Torrential monsoon runoff inundated Chiang Mai and the Chao Phraya basin while continuous tropical cyclones tracked toward Japan.",
+    mapImage: "/images/climate/nasa_gistemp_2024.png",
     regions: [
       { name: "Southeast Asia (Thailand)", xPct: 76, yPct: 56, anomalyC: 2.4, intensity: "critical" },
       { name: "East Asia (Japan)", xPct: 82, yPct: 40, anomalyC: 2.0, intensity: "critical" },
@@ -592,6 +603,7 @@ export const yearlyClimateRecords: YearlyClimateRecord[] = [
     globalMeanAnomalyC: 1.15,
     headlineEvent: "Gradual thermal dissipation; post-El Niño atmospheric energy dispersion.",
     bulletin: "BigQuery ML ARIMA_PLUS models project steady deceleration of equatorial heat toward ENSO-neutral status by late 2025.",
+    mapImage: "/images/climate/nasa_gistemp_2025.png",
     regions: [
       { name: "Equatorial Pacific", xPct: 20, yPct: 52, anomalyC: 1.2, intensity: "moderate" },
       { name: "Southeast Asia", xPct: 76, yPct: 56, anomalyC: 1.0, intensity: "moderate" },
@@ -607,6 +619,7 @@ export const yearlyClimateRecords: YearlyClimateRecord[] = [
     globalMeanAnomalyC: 0.95,
     headlineEvent: "Projected return to equatorial equilibrium or weak La Niña cycle.",
     bulletin: "Multi-station ARIMA_PLUS forecast indicates a return to regular trade wind velocity with stabilized Pacific thermocline depth.",
+    mapImage: "/images/climate/noaa_cfsv2_forecast.gif",
     regions: [
       { name: "Equatorial Pacific", xPct: 20, yPct: 52, anomalyC: -0.3, intensity: "cooling" },
       { name: "Southeast Asia", xPct: 76, yPct: 56, anomalyC: 0.4, intensity: "moderate" },
