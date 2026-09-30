@@ -185,91 +185,126 @@ export default function MongodbClient({ mongodbImages }: { mongodbImages: string
           <div className="py-6 flex flex-col gap-6">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               <div className="lg:col-span-1 flex flex-col gap-4">
-                <h3 className="text-xl font-bold text-white mb-2">Semantic Bird Search</h3>
-                <p className="text-sm text-zinc-400 mb-4">
-                  Query the MongoDB Atlas Vector Store using Voyage AI embeddings. 
-                  Search for descriptive qualities of bird calls (e.g. &quot;majestic eagle&quot;).
-                </p>
+                <div className="flex flex-col gap-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-lg">🦅</span>
+                    <h3 className="text-xl font-bold text-white">Semantic Bird Search</h3>
+                  </div>
+                  <p className="text-xs text-zinc-400">
+                    Query the MongoDB Atlas Vector Store across 1024-dimensional embeddings. The dataset is dual-encoded with Voyage AI semantic embeddings and spatial Fourier harmonics forming an aerodynamic 3D bird in flight.
+                  </p>
+                </div>
+
                 <div className="flex gap-2">
                   <input 
                     type="text" 
                     value={vsSearchQuery}
                     onChange={(e) => setVsSearchQuery(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleVectorSearch()}
-                    placeholder="e.g. majestic eagle call" 
-                    className="flex-1  border border-[#00684A] rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#00ED64]" 
+                    placeholder="e.g. eagle screech, warbler melody" 
+                    className="flex-1 bg-[#001E2B]/60 border border-[#00684A] rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#00ED64]" 
                   />
                   <button 
                     onClick={handleVectorSearch}
                     disabled={vsLoading}
-                    className="bg-[#00ED64] text-[#001E2B] px-4 py-3 rounded-xl font-bold hover:bg-[#00ED64]/90 transition-colors disabled:opacity-50"
+                    className="bg-[#00ED64] text-[#001E2B] px-5 py-3 rounded-xl font-bold hover:bg-[#00ED64]/90 transition-colors disabled:opacity-50 text-sm shadow-md"
                   >
                     {vsLoading ? '...' : 'Search'}
                   </button>
                 </div>
 
                 {vsError && (
-                  <div className="text-red-400 text-xs mt-2 bg-red-400/10 p-3 rounded-lg border border-red-400/20">
+                  <div className="text-red-400 text-xs mt-1 bg-red-400/10 p-3 rounded-lg border border-red-400/20 font-mono">
                     {vsError}
                   </div>
                 )}
 
                 {!graphLoading && (
-                  <button onClick={seedVectorData} disabled={vsLoading} className="mt-4 w-full bg-[#023430] border border-[#00684A] text-[#00ED64] px-4 py-3 rounded-xl font-bold hover:bg-[#00684A]/50 transition-colors">
-                    {vsLoading ? 'Seeding Data...' : 'Seed Data from Xeno-canto'}
+                  <button 
+                    onClick={seedVectorData} 
+                    disabled={vsLoading} 
+                    className="mt-2 w-full bg-[#023430] border border-[#00684A] text-[#00ED64] px-4 py-3 rounded-xl font-bold hover:bg-[#00684A]/50 transition-colors flex items-center justify-center gap-2 text-sm shadow"
+                  >
+                    <span>🦅</span>
+                    <span>{vsLoading ? 'Embedding & Seeding Flight Vectors...' : 'Seed Data from Xeno-canto'}</span>
                   </button>
                 )}
 
                 {vsResults && (
-                  <div className="mt-6 flex flex-col gap-3 flex-1 overflow-y-auto max-h-[400px]">
-                    <h4 className="text-sm font-bold text-[#00ED64]">Top Matches</h4>
+                  <div className="mt-4 flex flex-col gap-3 flex-1 overflow-y-auto max-h-[380px]">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xs font-bold text-[#00ED64] uppercase tracking-wider font-mono">Atlas Vector Search Matches</h4>
+                      <button onClick={() => setVsResults(null)} className="text-[11px] text-zinc-500 hover:text-zinc-300">Clear</button>
+                    </div>
                     {vsResults.map((res: any) => (
-                      <div key={res._id} className="p-4 bg-[#023430]/40 border border-[#00684A] rounded-xl hover:border-[#00ED64]/50 transition-colors">
-                        <div className="flex justify-between items-start mb-2">
+                      <div key={res._id} className="p-3.5 bg-[#023430]/40 border border-[#00684A] rounded-xl hover:border-[#00ED64]/50 transition-colors">
+                        <div className="flex justify-between items-start mb-1.5">
                           <div className="font-bold text-white text-sm">{res.name}</div>
-                          <div className="text-xs bg-[#00ED64]/10 text-[#00ED64] px-2 py-0.5 rounded border border-[#00ED64]/20">
-                            Score: {res.score.toFixed(3)}
+                          <div className="text-[11px] bg-[#00ED64]/10 text-[#00ED64] px-2 py-0.5 rounded border border-[#00ED64]/20 font-mono">
+                            Score: {res.score?.toFixed(3)}
                           </div>
                         </div>
                         <div className="text-xs text-zinc-400 font-mono mb-1">{res.scientific_name} • {res.family}</div>
-                        <div className="text-xs text-zinc-500 line-clamp-2">{res.remarks || 'No remarks available.'}</div>
+                        {res.anatomical_label && (
+                          <div className="text-[11px] text-[#00E5FF] font-mono mb-1 flex items-center gap-1.5">
+                            <span>📍 Anatomy:</span>
+                            <span>{res.anatomical_label}</span>
+                          </div>
+                        )}
+                        <div className="text-xs text-zinc-500 line-clamp-2">{res.remarks || 'High-fidelity acoustic recording.'}</div>
                       </div>
                     ))}
                   </div>
                 )}
 
                 {selectedGraphNode && !vsResults && (
-                  <div className="mt-8 p-6 bg-[#023430]/40 border border-[#00684A] rounded-xl animate-in fade-in overflow-hidden flex flex-col">
-                     <h4 className="text-sm font-bold text-[#00ED64] mb-2">Selected Node</h4>
-                     <div className="text-white font-bold mb-1 text-xl">{selectedGraphNode.name}</div>
-                     <div className="text-xs text-[#00ED64] font-mono mb-4">Genus: {selectedGraphNode.genus || selectedGraphNode.family}</div>
+                  <div className="mt-4 p-5 bg-[#023430]/40 border border-[#00684A] rounded-2xl animate-in fade-in overflow-hidden flex flex-col shadow-lg">
+                     <div className="flex items-center justify-between mb-2">
+                       <h4 className="text-[11px] font-bold text-[#00ED64] uppercase tracking-wider font-mono">Selected Vector Node</h4>
+                       <span className="text-[10px] bg-white/10 text-zinc-300 px-2 py-0.5 rounded font-mono">3D Point</span>
+                     </div>
+                     <div className="text-white font-bold mb-0.5 text-lg leading-snug">{selectedGraphNode.name}</div>
+                     <div className="text-xs text-[#00ED64] font-mono mb-3 italic">{selectedGraphNode.scientific_name || selectedGraphNode.genus}</div>
+
+                     {/* Anatomical Role in 3D Flight Constellation */}
+                     {selectedGraphNode.anatomical_label && (
+                       <div className="mb-3 p-2.5 rounded-xl bg-[#001E2B]/80 border border-[#00684A]/60 flex items-center justify-between text-xs font-mono">
+                         <div className="flex items-center gap-2">
+                           <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: selectedGraphNode.color || '#00ED64' }}></span>
+                           <span className="text-white font-medium">{selectedGraphNode.anatomical_label}</span>
+                         </div>
+                         <span className="text-[10px] text-zinc-400 capitalize bg-white/5 px-2 py-0.5 rounded border border-white/10">
+                           {selectedGraphNode.anatomical_part?.replace('_', ' ')}
+                         </span>
+                       </div>
+                     )}
                      
                      {/* Dynamic Bird Image */}
                      {mediaLoading ? (
-                       <div className="w-full h-48 bg-[#001E2B]/50 rounded-lg animate-pulse mb-4 flex items-center justify-center border border-[#00684A]/50">
+                       <div className="w-full h-44 bg-[#001E2B]/50 rounded-xl animate-pulse mb-3 flex items-center justify-center border border-[#00684A]/50">
                          <span className="text-[#00ED64]/50 text-xs font-mono">Fetching Media...</span>
                        </div>
                      ) : selectedBirdImage ? (
-                       <div className="w-full h-48 relative rounded-lg overflow-hidden mb-4 border border-[#00684A]">
+                       <div className="w-full h-44 relative rounded-xl overflow-hidden mb-3 border border-[#00684A]">
                          <img src={selectedBirdImage} alt={selectedGraphNode.name} className="w-full h-full object-cover" />
                        </div>
                      ) : (
-                       <div className="w-full h-24 bg-[#001E2B]/30 rounded-lg flex items-center justify-center mb-4 border border-[#00684A]/30">
+                       <div className="w-full h-20 bg-[#001E2B]/30 rounded-xl flex items-center justify-center mb-3 border border-[#00684A]/30">
                          <span className="text-zinc-500 text-xs italic">No image found on iNaturalist</span>
                        </div>
                      )}
 
                      {/* Dynamic Bird Audio */}
                      {!mediaLoading && selectedBirdAudio && (
-                        <div className="mb-4">
-                          <audio controls src={selectedBirdAudio} className="w-full h-10 outline-none rounded-lg" controlsList="nodownload">
+                        <div className="mb-3">
+                          <audio controls src={selectedBirdAudio} className="w-full h-9 outline-none rounded-lg" controlsList="nodownload">
                             Your browser does not support the audio element.
                           </audio>
-                          <span className="text-[10px] text-zinc-500 mt-1 block">Audio provided by Xeno-canto</span>
+                          <span className="text-[10px] text-zinc-500 mt-1 block">Acoustics provided by Xeno-canto</span>
                         </div>
                      )}
 
-                     <div className="grid grid-cols-2 gap-2 mt-2">
+                     <div className="grid grid-cols-2 gap-2 mt-1">
                        {selectedGraphNode.country && (
                          <div className="text-xs text-zinc-300 flex items-center gap-1.5 bg-[#001E2B]/50 p-2 rounded-lg border border-[#00684A]/30">
                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
