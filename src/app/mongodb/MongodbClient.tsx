@@ -187,11 +187,11 @@ export default function MongodbClient({ mongodbImages }: { mongodbImages: string
               <div className="lg:col-span-1 flex flex-col gap-4">
                 <div className="flex flex-col gap-1">
                   <div className="flex items-center gap-2">
-                    <span className="text-lg">🦅</span>
+                    <span className="text-lg">🐦</span>
                     <h3 className="text-xl font-bold text-white">Semantic Bird Search</h3>
                   </div>
                   <p className="text-xs text-zinc-400">
-                    Query the MongoDB Atlas Vector Store across 1024-dimensional embeddings. The dataset is dual-encoded with Voyage AI semantic embeddings and spatial Fourier harmonics forming an aerodynamic 3D bird in flight.
+                    Query the MongoDB Atlas Vector Store across 1024-dimensional Voyage AI embeddings. The 3D force graph positions each bird purely based on acoustic and semantic similarity, forming natural clusters in vector space.
                   </p>
                 </div>
 
@@ -201,7 +201,7 @@ export default function MongodbClient({ mongodbImages }: { mongodbImages: string
                     value={vsSearchQuery}
                     onChange={(e) => setVsSearchQuery(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleVectorSearch()}
-                    placeholder="e.g. eagle screech, warbler melody" 
+                    placeholder="e.g. eagle screech, warbler melody, aquatic call" 
                     className="flex-1 bg-[#001E2B]/60 border border-[#00684A] rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#00ED64]" 
                   />
                   <button 
@@ -225,8 +225,7 @@ export default function MongodbClient({ mongodbImages }: { mongodbImages: string
                     disabled={vsLoading} 
                     className="mt-2 w-full bg-[#023430] border border-[#00684A] text-[#00ED64] px-4 py-3 rounded-xl font-bold hover:bg-[#00684A]/50 transition-colors flex items-center justify-center gap-2 text-sm shadow"
                   >
-                    <span>🦅</span>
-                    <span>{vsLoading ? 'Embedding & Seeding Flight Vectors...' : 'Seed Data from Xeno-canto'}</span>
+                    <span>{vsLoading ? 'Embedding & Seeding Vector Space...' : 'Seed Data from Xeno-canto'}</span>
                   </button>
                 )}
 
@@ -245,12 +244,6 @@ export default function MongodbClient({ mongodbImages }: { mongodbImages: string
                           </div>
                         </div>
                         <div className="text-xs text-zinc-400 font-mono mb-1">{res.scientific_name} • {res.family}</div>
-                        {res.anatomical_label && (
-                          <div className="text-[11px] text-[#00E5FF] font-mono mb-1 flex items-center gap-1.5">
-                            <span>📍 Anatomy:</span>
-                            <span>{res.anatomical_label}</span>
-                          </div>
-                        )}
                         <div className="text-xs text-zinc-500 line-clamp-2">{res.remarks || 'High-fidelity acoustic recording.'}</div>
                       </div>
                     ))}
@@ -258,38 +251,42 @@ export default function MongodbClient({ mongodbImages }: { mongodbImages: string
                 )}
 
                 {selectedGraphNode && !vsResults && (
-                  <div className="mt-4 p-5 bg-[#023430]/40 border border-[#00684A] rounded-2xl animate-in fade-in overflow-hidden flex flex-col shadow-lg">
+                  <div className="mt-4 p-5 bg-[#023430]/40 border border-[#00684A] rounded-2xl animate-in fade-in overflow-hidden flex flex-col shadow-lg transition-all duration-300">
                      <div className="flex items-center justify-between mb-2">
                        <h4 className="text-[11px] font-bold text-[#00ED64] uppercase tracking-wider font-mono">Selected Vector Node</h4>
-                       <span className="text-[10px] bg-white/10 text-zinc-300 px-2 py-0.5 rounded font-mono">3D Point</span>
+                       <span className="text-[10px] bg-white/10 text-zinc-300 px-2 py-0.5 rounded font-mono">3D Cluster Point</span>
                      </div>
                      <div className="text-white font-bold mb-0.5 text-lg leading-snug">{selectedGraphNode.name}</div>
-                     <div className="text-xs text-[#00ED64] font-mono mb-3 italic">{selectedGraphNode.scientific_name || selectedGraphNode.genus}</div>
+                     <div className="text-xs text-[#00ED64] font-mono mb-2.5 italic">{selectedGraphNode.scientific_name || selectedGraphNode.genus}</div>
 
-                     {/* Anatomical Role in 3D Flight Constellation */}
-                     {selectedGraphNode.anatomical_label && (
-                       <div className="mb-3 p-2.5 rounded-xl bg-[#001E2B]/80 border border-[#00684A]/60 flex items-center justify-between text-xs font-mono">
-                         <div className="flex items-center gap-2">
-                           <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: selectedGraphNode.color || '#00ED64' }}></span>
-                           <span className="text-white font-medium">{selectedGraphNode.anatomical_label}</span>
-                         </div>
-                         <span className="text-[10px] text-zinc-400 capitalize bg-white/5 px-2 py-0.5 rounded border border-white/10">
-                           {selectedGraphNode.anatomical_part?.replace('_', ' ')}
+                     {/* Genus / Family / Sound Info */}
+                     <div className="flex items-center gap-2 mb-3">
+                       <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: selectedGraphNode.color || '#00ED64' }}></span>
+                       <span className="text-xs text-zinc-300 font-mono">
+                         {selectedGraphNode.family ? `Family: ${selectedGraphNode.family}` : `Genus: ${selectedGraphNode.genus}`}
+                       </span>
+                       {selectedGraphNode.sound_type && (
+                         <span className="text-[10px] bg-[#00ED64]/10 text-[#00ED64] px-2 py-0.5 rounded border border-[#00ED64]/20 font-mono capitalize ml-auto">
+                           {selectedGraphNode.sound_type}
                          </span>
-                       </div>
-                     )}
+                       )}
+                     </div>
                      
-                     {/* Dynamic Bird Image */}
+                     {/* Dynamic Bird Image - Responsive Adaptive Container (no cutoff) */}
                      {mediaLoading ? (
-                       <div className="w-full h-44 bg-[#001E2B]/50 rounded-xl animate-pulse mb-3 flex items-center justify-center border border-[#00684A]/50">
+                       <div className="w-full min-h-[160px] bg-[#001E2B]/50 rounded-xl animate-pulse mb-3 flex items-center justify-center border border-[#00684A]/50">
                          <span className="text-[#00ED64]/50 text-xs font-mono">Fetching Media...</span>
                        </div>
                      ) : selectedBirdImage ? (
-                       <div className="w-full h-44 relative rounded-xl overflow-hidden mb-3 border border-[#00684A]">
-                         <img src={selectedBirdImage} alt={selectedGraphNode.name} className="w-full h-full object-cover" />
+                       <div className="w-full relative rounded-xl overflow-hidden mb-3 border border-[#00684A] bg-[#00141D] flex items-center justify-center transition-all duration-300">
+                         <img 
+                           src={selectedBirdImage} 
+                           alt={selectedGraphNode.name} 
+                           className="w-full h-auto max-h-[380px] object-contain rounded-xl block shadow-lg" 
+                         />
                        </div>
                      ) : (
-                       <div className="w-full h-20 bg-[#001E2B]/30 rounded-xl flex items-center justify-center mb-3 border border-[#00684A]/30">
+                       <div className="w-full min-h-[70px] bg-[#001E2B]/30 rounded-xl flex items-center justify-center mb-3 border border-[#00684A]/30">
                          <span className="text-zinc-500 text-xs italic">No image found on iNaturalist</span>
                        </div>
                      )}
