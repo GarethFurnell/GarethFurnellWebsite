@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { ObjectId } from 'mongodb';
 import clientPromise from '@/utils/mongodb';
 
 // Helper function to generate pure semantic embeddings via Voyage API directly
@@ -43,12 +44,33 @@ const generateEmbeddings = async (texts: string[]) => {
 
 export async function POST(request: Request) {
   try {
-    const { action, query } = await request.json();
+    const { action, query, id } = await request.json();
     const client = await clientPromise;
     const db = client.db('gfweb');
     const collection = db.collection('bird_sounds');
 
     switch (action) {
+      case 'get_document': {
+        if (!id) throw new Error('Document id is required');
+
+        let queryObj: any = { id };
+        try {
+          if (ObjectId.isValid(id)) {
+            queryObj = { $or: [{ _id: new ObjectId(id) }, { id }] };
+          }
+        } catch {
+          // fallback to string id
+        }
+
+        const doc = await collection.findOne(queryObj);
+        if (!doc) throw new Error('Document not found in MongoDB');
+
+        return NextResponse.json({
+          status: 'success',
+          document: doc
+        });
+      }
+
       case 'seed': {
         const xcApiKey = process.env.XENO_CANTO_API_KEY;
         if (!xcApiKey) {
@@ -186,7 +208,7 @@ export async function POST(request: Request) {
 
         if (!queryVector) throw new Error('Failed to generate query embedding');
 
-        // 2. Perform MongoDB Atlas Vector Search
+        // 2. Perform MongoDB Atlas Vector Search with score and full embedding preserved
         const pipeline = [
           {
             $vectorSearch: {
@@ -198,8 +220,7 @@ export async function POST(request: Request) {
             }
           },
           {
-            $project: {
-              embedding: 0,
+            $addFields: {
               score: { $meta: 'vectorSearchScore' }
             }
           }
@@ -209,6 +230,7 @@ export async function POST(request: Request) {
 
         return NextResponse.json({
           status: 'success',
+          queryVector,
           results
         });
       }

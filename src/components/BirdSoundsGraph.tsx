@@ -46,6 +46,8 @@ export interface GraphNode {
   file_url?: string;
   val?: number;
   color?: string;
+  embedding?: number[];
+  score?: number;
   x?: number;
   y?: number;
   z?: number;

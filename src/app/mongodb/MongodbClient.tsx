@@ -6,6 +6,7 @@ import ImageGallery from '@/components/ImageGallery';
 import Accordion from '@/components/Accordion';
 import BirdSoundsGraph, { GraphNode, GraphLink } from '@/components/BirdSoundsGraph';
 import WeatherTimeSeries from '@/components/WeatherTimeSeries';
+import VectorInspector from '@/components/VectorInspector';
 
 const basePath = '';
 
@@ -139,9 +140,30 @@ export default function MongodbClient({ mongodbImages }: { mongodbImages: string
       location: res.location,
       file_url: res.file_url || res.file,
       val: 2,
-      color: res.color || '#00ED64'
+      color: res.color || '#00ED64',
+      embedding: res.embedding,
+      score: res.score
     };
     setSelectedGraphNode(nodeObj);
+  };
+
+  const handleFetchVector = async (nodeId: string): Promise<number[] | null> => {
+    try {
+      const res = await fetch(`${basePath}/api/vector-search`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'get_document', id: nodeId })
+      });
+      const data = await res.json();
+      if (data.status === 'success' && data.document?.embedding) {
+        // Also update selectedGraphNode so it stays cached
+        setSelectedGraphNode((prev: any) => prev ? { ...prev, embedding: data.document.embedding } : prev);
+        return data.document.embedding;
+      }
+    } catch (err) {
+      console.error('Failed to fetch document vector', err);
+    }
+    return null;
   };
 
   const seedVectorData = async () => {
@@ -390,6 +412,12 @@ export default function MongodbClient({ mongodbImages }: { mongodbImages: string
                                     </div>
                                   )}
                                 </div>
+
+                                {/* Raw Vector & MongoDB Atlas BSON Inspector */}
+                                <VectorInspector 
+                                  node={selectedGraphNode} 
+                                  onFetchVector={handleFetchVector} 
+                                />
                               </div>
                             )}
                           </React.Fragment>
@@ -474,6 +502,12 @@ export default function MongodbClient({ mongodbImages }: { mongodbImages: string
                          </div>
                        )}
                      </div>
+
+                     {/* Raw Vector & MongoDB Atlas BSON Inspector */}
+                     <VectorInspector 
+                       node={selectedGraphNode} 
+                       onFetchVector={handleFetchVector} 
+                     />
                   </div>
                 )}
               </div>
