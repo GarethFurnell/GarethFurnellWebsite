@@ -133,7 +133,7 @@ export default function VectorInspector({ node, onFetchVector }: VectorInspector
   };
 
   return (
-    <div className="mt-2.5 border border-[#00684A]/60 rounded-xl overflow-hidden bg-[#00141D]/90 transition-all">
+    <div className="shrink-0 w-full mt-2.5 border border-[#00684A]/60 rounded-xl overflow-hidden bg-[#00141D]/90 transition-all">
       {/* Toggle Header */}
       <button
         onClick={() => setIsOpen(!isOpen)}

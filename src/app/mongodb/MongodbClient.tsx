@@ -292,7 +292,7 @@ export default function MongodbClient({ mongodbImages }: { mongodbImages: string
                         Clear Search
                       </button>
                     </div>
-                    <div className="flex flex-col gap-2 max-h-[600px] overflow-y-auto pr-1">
+                    <div className="flex flex-col gap-2.5 max-h-[650px] overflow-y-auto pr-1">
                       {vsResults.map((res: any) => {
                         const isSelected = selectedGraphNode && (
                           selectedGraphNode.id === (res._id?.toString() || res.id) || 
@@ -302,7 +302,7 @@ export default function MongodbClient({ mongodbImages }: { mongodbImages: string
                           <React.Fragment key={res._id || res.id}>
                             <div 
                               onClick={() => handleSelectSearchResult(res)}
-                              className={`p-3 rounded-xl border transition-all duration-200 cursor-pointer text-left ${
+                              className={`shrink-0 p-3 rounded-xl border transition-all duration-200 cursor-pointer text-left ${
                                 isSelected 
                                   ? 'bg-[#00ED64]/15 border-[#00ED64] ring-1 ring-[#00ED64] shadow-md shadow-[#00ED64]/10' 
                                   : 'bg-[#023430]/40 border-[#00684A] hover:border-[#00ED64]/70 hover:bg-[#00684A]/30'
@@ -333,7 +333,15 @@ export default function MongodbClient({ mongodbImages }: { mongodbImages: string
 
                             {/* Render Photo, Audio, and Info directly below this specific card */}
                             {isSelected && (
-                              <div className="p-4 bg-[#012520]/90 border border-[#00ED64]/40 border-l-4 border-l-[#00ED64] rounded-xl my-1 animate-in fade-in slide-in-from-top-2 duration-200 overflow-hidden flex flex-col shadow-xl">
+                              <div 
+                                ref={(el) => {
+                                  if (el) {
+                                    // Smoothly reveal into view if partially hidden
+                                    el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                                  }
+                                }}
+                                className="shrink-0 w-full min-h-fit p-4 bg-[#012520]/95 border border-[#00ED64]/50 border-l-4 border-l-[#00ED64] rounded-xl my-2 flex flex-col shadow-2xl transition-all"
+                              >
                                 <div className="flex items-center justify-between mb-2">
                                   <div className="flex items-center gap-2">
                                     <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: selectedGraphNode.color || '#00ED64' }}></span>
