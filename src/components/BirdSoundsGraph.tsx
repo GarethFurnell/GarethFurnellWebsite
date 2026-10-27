@@ -52,8 +52,8 @@ export interface GraphNode {
 }
 
 export interface GraphLink {
-  source: string;
-  target: string;
+  source: string | any;
+  target: string | any;
   value?: number;
   color?: string;
 }
@@ -61,10 +61,11 @@ export interface GraphLink {
 interface BirdSoundsGraphProps {
   nodes: GraphNode[];
   links: GraphLink[];
+  selectedNodeId?: string | null;
   onNodeClick?: (node: GraphNode) => void;
 }
 
-export default function BirdSoundsGraph({ nodes, links, onNodeClick }: BirdSoundsGraphProps) {
+export default function BirdSoundsGraph({ nodes, links, selectedNodeId, onNodeClick }: BirdSoundsGraphProps) {
   const fgRef = useRef<any>(null);
   const [dimensions, setDimensions] = useState({ width: 800, height: 600 });
   const containerRef = useRef<HTMLDivElement>(null);
@@ -80,11 +81,26 @@ export default function BirdSoundsGraph({ nodes, links, onNodeClick }: BirdSound
     return () => observer.disconnect();
   }, []);
 
+  // Smoothly center and focus camera when selectedNodeId changes
+  useEffect(() => {
+    if (!selectedNodeId || !fgRef.current || !nodes.length) return;
+    const match = nodes.find(n => n.id === selectedNodeId || n.name === selectedNodeId);
+    if (match && typeof match.x === 'number') {
+      const distance = 50;
+      const distRatio = 1 + distance / (Math.hypot(match.x || 1, match.y || 1, match.z || 1) || 1);
+      fgRef.current.cameraPosition(
+        { x: (match.x || 0) * distRatio, y: (match.y || 0) * distRatio, z: (match.z || 0) * distRatio },
+        match,
+        1500
+      );
+    }
+  }, [selectedNodeId, nodes]);
+
   // Reset camera to standard perspective
   const handleResetCamera = useCallback(() => {
     if (fgRef.current) {
       fgRef.current.cameraPosition(
-        { x: 0, y: 0, z: 280 },
+        { x: 0, y: 0, z: 320 },
         { x: 0, y: 0, z: 0 },
         1200
       );
@@ -94,7 +110,7 @@ export default function BirdSoundsGraph({ nodes, links, onNodeClick }: BirdSound
   return (
     <div
       ref={containerRef}
-      className="w-full h-[620px] rounded-2xl overflow-hidden border border-[#00684A]/60 bg-[#001E2B]/95 relative shadow-2xl shadow-[#001E2B]/80 flex flex-col"
+      className="w-full h-[640px] rounded-2xl overflow-hidden border border-[#00684A]/60 bg-[#001E2B]/95 relative shadow-2xl shadow-[#001E2B]/80 flex flex-col"
     >
       {/* Top HUD Controls */}
       <div className="absolute top-4 left-4 right-4 z-20 flex flex-wrap items-center justify-between gap-3 pointer-events-none">
@@ -105,11 +121,11 @@ export default function BirdSoundsGraph({ nodes, links, onNodeClick }: BirdSound
             <div className="text-xs font-bold text-white tracking-wide flex items-center gap-1.5">
               <span>3D Vector Similarity Space</span>
               <span className="text-[10px] bg-[#00ED64]/15 text-[#00ED64] px-1.5 py-0.5 rounded border border-[#00ED64]/30 font-mono">
-                1024-Dim
+                {nodes.length} Species
               </span>
             </div>
             <div className="text-[10px] text-zinc-400 font-mono">
-              Force-directed semantic & acoustic clustering (Voyage AI)
+              1024-Dim Voyage AI Embeddings • Force-Directed Semantic Clustering
             </div>
           </div>
         </div>
@@ -118,7 +134,7 @@ export default function BirdSoundsGraph({ nodes, links, onNodeClick }: BirdSound
         <div className="flex items-center gap-2 pointer-events-auto">
           <button
             onClick={handleResetCamera}
-            className="bg-[#001E2B]/90 backdrop-blur-md border border-[#00684A]/50 hover:border-[#00ED64]/60 text-zinc-300 hover:text-white px-3 py-1.5 rounded-xl text-xs transition-colors shadow-lg flex items-center gap-1.5"
+            className="bg-[#001E2B]/90 backdrop-blur-md border border-[#00684A]/50 hover:border-[#00ED64]/60 text-zinc-300 hover:text-white px-3 py-1.5 rounded-xl text-xs transition-colors shadow-lg flex items-center gap-1.5 font-medium"
             title="Reset to center perspective"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
@@ -145,16 +161,32 @@ export default function BirdSoundsGraph({ nodes, links, onNodeClick }: BirdSound
                 <div style="color: #38bdf8; font-size: 10px; margin-top: 5px;">🎧 Click node to focus, play audio & view photo</div>
               </div>
             `}
-            nodeColor={(node: any) => node.color || '#00ED64'}
-            nodeVal={(node: any) => node.val || 2}
-            linkColor={(link: any) => link.color || 'rgba(0, 237, 100, 0.28)'}
-            linkWidth={(link: any) => (link.value ? Math.max((link.value - 0.5) * 4, 0.8) : 1)}
-            nodeResolution={20}
-            cooldownTime={3500}
+            nodeColor={(node: any) => {
+              const isSelected = selectedNodeId && (node.id === selectedNodeId || node.name === selectedNodeId);
+              return isSelected ? '#FFFFFF' : (node.color || '#00ED64');
+            }}
+            nodeVal={(node: any) => {
+              const isSelected = selectedNodeId && (node.id === selectedNodeId || node.name === selectedNodeId);
+              return isSelected ? 4.5 : (node.val || 2);
+            }}
+            linkColor={(link: any) => {
+              const sourceId = typeof link.source === 'object' ? (link.source?.id || link.source?.name) : link.source;
+              const targetId = typeof link.target === 'object' ? (link.target?.id || link.target?.name) : link.target;
+              const isConnected = selectedNodeId && (sourceId === selectedNodeId || targetId === selectedNodeId);
+              return isConnected ? '#00ED64' : (link.color || 'rgba(0, 237, 100, 0.25)');
+            }}
+            linkWidth={(link: any) => {
+              const sourceId = typeof link.source === 'object' ? (link.source?.id || link.source?.name) : link.source;
+              const targetId = typeof link.target === 'object' ? (link.target?.id || link.target?.name) : link.target;
+              const isConnected = selectedNodeId && (sourceId === selectedNodeId || targetId === selectedNodeId);
+              return isConnected ? 2.5 : (link.value ? Math.max((link.value - 0.5) * 3, 0.8) : 1);
+            }}
+            nodeResolution={14}
+            cooldownTime={3000}
             onNodeClick={(node: any) => {
               // Aim camera smoothly at the selected node
               const distance = 45;
-              const distRatio = 1 + distance / Math.hypot(node.x || 1, node.y || 1, node.z || 1);
+              const distRatio = 1 + distance / (Math.hypot(node.x || 1, node.y || 1, node.z || 1) || 1);
               if (fgRef.current) {
                 fgRef.current.cameraPosition(
                   { x: (node.x || 0) * distRatio, y: (node.y || 0) * distRatio, z: (node.z || 0) * distRatio },
@@ -172,7 +204,7 @@ export default function BirdSoundsGraph({ nodes, links, onNodeClick }: BirdSound
       {/* Bottom Hint */}
       <div className="absolute bottom-3 left-4 right-4 z-20 flex flex-wrap items-center justify-between gap-2 pointer-events-none">
         <div className="text-[11px] text-zinc-400 font-mono bg-[#001E2B]/85 backdrop-blur-sm border border-[#00684A]/40 px-3 py-1.5 rounded-lg">
-          Drag to rotate • Scroll to zoom • Click node to inspect details • Proximity reflects semantic vector closeness
+          Drag to rotate • Scroll to zoom • Click any node or search card to inspect • Proximity reflects semantic vector closeness
         </div>
       </div>
     </div>

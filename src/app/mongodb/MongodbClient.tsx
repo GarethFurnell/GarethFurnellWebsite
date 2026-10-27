@@ -119,6 +119,23 @@ export default function MongodbClient({ mongodbImages }: { mongodbImages: string
     }
   };
 
+  const handleSelectSearchResult = (res: any) => {
+    const nodeObj: GraphNode = {
+      id: res._id?.toString() || res.id,
+      name: res.name,
+      scientific_name: res.scientific_name,
+      genus: res.genus,
+      family: res.family,
+      sound_type: res.sound_type,
+      country: res.cnt || res.country,
+      location: res.location,
+      file_url: res.file_url || res.file,
+      val: 2,
+      color: res.color || '#00ED64'
+    };
+    setSelectedGraphNode(nodeObj);
+  };
+
   const seedVectorData = async () => {
     setVsLoading(true);
     setVsError(null);
@@ -230,27 +247,61 @@ export default function MongodbClient({ mongodbImages }: { mongodbImages: string
                 )}
 
                 {vsResults && (
-                  <div className="mt-4 flex flex-col gap-3 flex-1 overflow-y-auto max-h-[380px]">
+                  <div className="mt-4 flex flex-col gap-2.5">
                     <div className="flex items-center justify-between">
-                      <h4 className="text-xs font-bold text-[#00ED64] uppercase tracking-wider font-mono">Atlas Vector Search Matches</h4>
-                      <button onClick={() => setVsResults(null)} className="text-[11px] text-zinc-500 hover:text-zinc-300">Clear</button>
+                      <h4 className="text-xs font-bold text-[#00ED64] uppercase tracking-wider font-mono flex items-center gap-1.5">
+                        <span>Vector Search Matches</span>
+                        <span className="text-[10px] bg-[#00ED64]/15 px-1.5 py-0.5 rounded text-[#00ED64]">
+                          {vsResults.length}
+                        </span>
+                      </h4>
+                      <button 
+                        onClick={() => setVsResults(null)} 
+                        className="text-[11px] text-zinc-400 hover:text-white transition-colors"
+                      >
+                        Clear Search
+                      </button>
                     </div>
-                    {vsResults.map((res: any) => (
-                      <div key={res._id} className="p-3.5 bg-[#023430]/40 border border-[#00684A] rounded-xl hover:border-[#00ED64]/50 transition-colors">
-                        <div className="flex justify-between items-start mb-1.5">
-                          <div className="font-bold text-white text-sm">{res.name}</div>
-                          <div className="text-[11px] bg-[#00ED64]/10 text-[#00ED64] px-2 py-0.5 rounded border border-[#00ED64]/20 font-mono">
-                            Score: {res.score?.toFixed(3)}
+                    <div className="flex flex-col gap-2 max-h-[250px] overflow-y-auto pr-1">
+                      {vsResults.map((res: any) => {
+                        const isSelected = selectedGraphNode && (
+                          selectedGraphNode.id === (res._id || res.id) || 
+                          selectedGraphNode.name === res.name
+                        );
+                        return (
+                          <div 
+                            key={res._id || res.id} 
+                            onClick={() => handleSelectSearchResult(res)}
+                            className={`p-3 rounded-xl border transition-all duration-200 cursor-pointer text-left ${
+                              isSelected 
+                                ? 'bg-[#00ED64]/15 border-[#00ED64] ring-1 ring-[#00ED64] shadow-md shadow-[#00ED64]/10' 
+                                : 'bg-[#023430]/40 border-[#00684A] hover:border-[#00ED64]/70 hover:bg-[#00684A]/30'
+                            }`}
+                          >
+                            <div className="flex justify-between items-start mb-1">
+                              <div className="font-bold text-white text-sm flex items-center gap-1.5">
+                                <span>{res.name}</span>
+                                {isSelected && <span className="text-xs text-[#00ED64]">●</span>}
+                              </div>
+                              <div className="text-[10px] bg-[#00ED64]/10 text-[#00ED64] px-1.5 py-0.5 rounded border border-[#00ED64]/20 font-mono font-semibold">
+                                Score: {res.score?.toFixed(3)}
+                              </div>
+                            </div>
+                            <div className="text-xs text-zinc-400 font-mono mb-1 flex items-center justify-between">
+                              <span className="italic">{res.scientific_name || res.genus}</span>
+                              {res.country && <span className="text-zinc-500 font-normal">📍 {res.country}</span>}
+                            </div>
+                            <div className="text-[11px] text-[#00ED64]/80 flex items-center gap-1 mt-1 font-mono">
+                              <span>🎧 Click to view photo & listen</span>
+                            </div>
                           </div>
-                        </div>
-                        <div className="text-xs text-zinc-400 font-mono mb-1">{res.scientific_name} • {res.family}</div>
-                        <div className="text-xs text-zinc-500 line-clamp-2">{res.remarks || 'High-fidelity acoustic recording.'}</div>
-                      </div>
-                    ))}
+                        );
+                      })}
+                    </div>
                   </div>
                 )}
 
-                {selectedGraphNode && !vsResults && (
+                {selectedGraphNode && (
                   <div className="mt-4 p-5 bg-[#023430]/40 border border-[#00684A] rounded-2xl animate-in fade-in overflow-hidden flex flex-col shadow-lg transition-all duration-300">
                      <div className="flex items-center justify-between mb-2">
                        <h4 className="text-[11px] font-bold text-[#00ED64] uppercase tracking-wider font-mono">Selected Vector Node</h4>
@@ -328,6 +379,7 @@ export default function MongodbClient({ mongodbImages }: { mongodbImages: string
                   <BirdSoundsGraph 
                     nodes={graphData.nodes}
                     links={graphData.links}
+                    selectedNodeId={selectedGraphNode?.id || selectedGraphNode?.name}
                     onNodeClick={setSelectedGraphNode}
                   />
                 ) : (
