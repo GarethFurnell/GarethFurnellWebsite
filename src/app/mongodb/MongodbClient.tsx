@@ -120,6 +120,14 @@ export default function MongodbClient({ mongodbImages }: { mongodbImages: string
   };
 
   const handleSelectSearchResult = (res: any) => {
+    const isCurrentlySelected = selectedGraphNode && (
+      selectedGraphNode.id === (res._id?.toString() || res.id) ||
+      selectedGraphNode.name === res.name
+    );
+    if (isCurrentlySelected) {
+      setSelectedGraphNode(null);
+      return;
+    }
     const nodeObj: GraphNode = {
       id: res._id?.toString() || res.id,
       name: res.name,
@@ -262,50 +270,150 @@ export default function MongodbClient({ mongodbImages }: { mongodbImages: string
                         Clear Search
                       </button>
                     </div>
-                    <div className="flex flex-col gap-2 max-h-[250px] overflow-y-auto pr-1">
+                    <div className="flex flex-col gap-2 max-h-[600px] overflow-y-auto pr-1">
                       {vsResults.map((res: any) => {
                         const isSelected = selectedGraphNode && (
-                          selectedGraphNode.id === (res._id || res.id) || 
+                          selectedGraphNode.id === (res._id?.toString() || res.id) || 
                           selectedGraphNode.name === res.name
                         );
                         return (
-                          <div 
-                            key={res._id || res.id} 
-                            onClick={() => handleSelectSearchResult(res)}
-                            className={`p-3 rounded-xl border transition-all duration-200 cursor-pointer text-left ${
-                              isSelected 
-                                ? 'bg-[#00ED64]/15 border-[#00ED64] ring-1 ring-[#00ED64] shadow-md shadow-[#00ED64]/10' 
-                                : 'bg-[#023430]/40 border-[#00684A] hover:border-[#00ED64]/70 hover:bg-[#00684A]/30'
-                            }`}
-                          >
-                            <div className="flex justify-between items-start mb-1">
-                              <div className="font-bold text-white text-sm flex items-center gap-1.5">
-                                <span>{res.name}</span>
-                                {isSelected && <span className="text-xs text-[#00ED64]">●</span>}
+                          <React.Fragment key={res._id || res.id}>
+                            <div 
+                              onClick={() => handleSelectSearchResult(res)}
+                              className={`p-3 rounded-xl border transition-all duration-200 cursor-pointer text-left ${
+                                isSelected 
+                                  ? 'bg-[#00ED64]/15 border-[#00ED64] ring-1 ring-[#00ED64] shadow-md shadow-[#00ED64]/10' 
+                                  : 'bg-[#023430]/40 border-[#00684A] hover:border-[#00ED64]/70 hover:bg-[#00684A]/30'
+                              }`}
+                            >
+                              <div className="flex justify-between items-start mb-1">
+                                <div className="font-bold text-white text-sm flex items-center gap-1.5">
+                                  <span>{res.name}</span>
+                                  {isSelected && <span className="text-xs text-[#00ED64]">●</span>}
+                                </div>
+                                <div className="flex items-center gap-1.5">
+                                  <div className="text-[10px] bg-[#00ED64]/10 text-[#00ED64] px-1.5 py-0.5 rounded border border-[#00ED64]/20 font-mono font-semibold">
+                                    Score: {res.score?.toFixed(3)}
+                                  </div>
+                                  <span className="text-xs text-zinc-400 font-mono">
+                                    {isSelected ? '▲' : '▼'}
+                                  </span>
+                                </div>
                               </div>
-                              <div className="text-[10px] bg-[#00ED64]/10 text-[#00ED64] px-1.5 py-0.5 rounded border border-[#00ED64]/20 font-mono font-semibold">
-                                Score: {res.score?.toFixed(3)}
+                              <div className="text-xs text-zinc-400 font-mono mb-1 flex items-center justify-between">
+                                <span className="italic">{res.scientific_name || res.genus}</span>
+                                {res.country && <span className="text-zinc-500 font-normal">📍 {res.country}</span>}
+                              </div>
+                              <div className="text-[11px] text-[#00ED64]/80 flex items-center gap-1 mt-1 font-mono">
+                                <span>{isSelected ? 'Click to collapse details' : '🎧 Click to open photo & audio'}</span>
                               </div>
                             </div>
-                            <div className="text-xs text-zinc-400 font-mono mb-1 flex items-center justify-between">
-                              <span className="italic">{res.scientific_name || res.genus}</span>
-                              {res.country && <span className="text-zinc-500 font-normal">📍 {res.country}</span>}
-                            </div>
-                            <div className="text-[11px] text-[#00ED64]/80 flex items-center gap-1 mt-1 font-mono">
-                              <span>🎧 Click to view photo & listen</span>
-                            </div>
-                          </div>
+
+                            {/* Render Photo, Audio, and Info directly below this specific card */}
+                            {isSelected && (
+                              <div className="p-4 bg-[#012520]/90 border border-[#00ED64]/40 border-l-4 border-l-[#00ED64] rounded-xl my-1 animate-in fade-in slide-in-from-top-2 duration-200 overflow-hidden flex flex-col shadow-xl">
+                                <div className="flex items-center justify-between mb-2">
+                                  <div className="flex items-center gap-2">
+                                    <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: selectedGraphNode.color || '#00ED64' }}></span>
+                                    <h4 className="text-[11px] font-bold text-[#00ED64] uppercase tracking-wider font-mono">
+                                      Species Information
+                                    </h4>
+                                  </div>
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setSelectedGraphNode(null);
+                                    }}
+                                    className="text-[11px] text-zinc-400 hover:text-white px-2 py-0.5 rounded bg-white/5 hover:bg-white/10 font-mono transition-colors flex items-center gap-1"
+                                    title="Collapse details"
+                                  >
+                                    <span>✕</span>
+                                    <span>Close</span>
+                                  </button>
+                                </div>
+
+                                <div className="text-white font-bold mb-0.5 text-base leading-snug">{selectedGraphNode.name}</div>
+                                <div className="text-xs text-[#00ED64] font-mono mb-2 italic">{selectedGraphNode.scientific_name || selectedGraphNode.genus}</div>
+
+                                {/* Genus / Family / Sound Info */}
+                                <div className="flex items-center gap-2 mb-3 flex-wrap">
+                                  <span className="text-xs text-zinc-300 font-mono">
+                                    {selectedGraphNode.family ? `Family: ${selectedGraphNode.family}` : `Genus: ${selectedGraphNode.genus}`}
+                                  </span>
+                                  {selectedGraphNode.sound_type && (
+                                    <span className="text-[10px] bg-[#00ED64]/10 text-[#00ED64] px-2 py-0.5 rounded border border-[#00ED64]/20 font-mono capitalize ml-auto">
+                                      {selectedGraphNode.sound_type}
+                                    </span>
+                                  )}
+                                </div>
+                                
+                                {/* Dynamic Bird Image - Responsive Adaptive Container (no cutoff) */}
+                                {mediaLoading ? (
+                                  <div className="w-full min-h-[160px] bg-[#001E2B]/50 rounded-xl animate-pulse mb-3 flex items-center justify-center border border-[#00684A]/50">
+                                    <span className="text-[#00ED64]/50 text-xs font-mono">Fetching High-Res Photo...</span>
+                                  </div>
+                                ) : selectedBirdImage ? (
+                                  <div className="w-full relative rounded-xl overflow-hidden mb-3 border border-[#00684A] bg-[#00141D] flex items-center justify-center transition-all duration-300">
+                                    <img 
+                                      src={selectedBirdImage} 
+                                      alt={selectedGraphNode.name} 
+                                      className="w-full h-auto max-h-[340px] object-contain rounded-xl block shadow-lg" 
+                                    />
+                                  </div>
+                                ) : (
+                                  <div className="w-full min-h-[70px] bg-[#001E2B]/30 rounded-xl flex items-center justify-center mb-3 border border-[#00684A]/30">
+                                    <span className="text-zinc-500 text-xs italic">No image found on iNaturalist</span>
+                                  </div>
+                                )}
+
+                                {/* Dynamic Bird Audio */}
+                                {!mediaLoading && selectedBirdAudio && (
+                                  <div className="mb-3">
+                                    <audio controls src={selectedBirdAudio} className="w-full h-9 outline-none rounded-lg" controlsList="nodownload">
+                                      Your browser does not support the audio element.
+                                    </audio>
+                                    <span className="text-[10px] text-zinc-500 mt-1 block">Acoustics provided by Xeno-canto</span>
+                                  </div>
+                                )}
+
+                                <div className="grid grid-cols-2 gap-2 mt-1">
+                                  {selectedGraphNode.country && (
+                                    <div className="text-xs text-zinc-300 flex items-center gap-1.5 bg-[#001E2B]/50 p-2 rounded-lg border border-[#00684A]/30">
+                                      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                                      <span className="truncate">{selectedGraphNode.country}</span>
+                                    </div>
+                                  )}
+                                  {selectedGraphNode.location?.coordinates && (
+                                    <div className="text-xs text-zinc-400 font-mono flex items-center gap-1.5 bg-[#001E2B]/50 p-2 rounded-lg border border-[#00684A]/30">
+                                      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon></svg>
+                                      [{selectedGraphNode.location.coordinates[0].toFixed(2)}, {selectedGraphNode.location.coordinates[1].toFixed(2)}]
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            )}
+                          </React.Fragment>
                         );
                       })}
                     </div>
                   </div>
                 )}
 
-                {selectedGraphNode && (
+                {/* Standalone card display when no search is active, or if user clicked a 3D node that isn't in search results */}
+                {selectedGraphNode && (!vsResults || !vsResults.some((r: any) => 
+                  (selectedGraphNode.id && (r._id?.toString() === selectedGraphNode.id || r.id === selectedGraphNode.id)) ||
+                  r.name === selectedGraphNode.name
+                )) && (
                   <div className="mt-4 p-5 bg-[#023430]/40 border border-[#00684A] rounded-2xl animate-in fade-in overflow-hidden flex flex-col shadow-lg transition-all duration-300">
                      <div className="flex items-center justify-between mb-2">
                        <h4 className="text-[11px] font-bold text-[#00ED64] uppercase tracking-wider font-mono">Selected Vector Node</h4>
-                       <span className="text-[10px] bg-white/10 text-zinc-300 px-2 py-0.5 rounded font-mono">3D Cluster Point</span>
+                       <button
+                         onClick={() => setSelectedGraphNode(null)}
+                         className="text-[11px] text-zinc-400 hover:text-white px-2 py-0.5 rounded bg-white/5 hover:bg-white/10 font-mono transition-colors flex items-center gap-1"
+                       >
+                         <span>✕</span>
+                         <span>Close</span>
+                       </button>
                      </div>
                      <div className="text-white font-bold mb-0.5 text-lg leading-snug">{selectedGraphNode.name}</div>
                      <div className="text-xs text-[#00ED64] font-mono mb-2.5 italic">{selectedGraphNode.scientific_name || selectedGraphNode.genus}</div>
